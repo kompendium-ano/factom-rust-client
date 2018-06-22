@@ -59,6 +59,7 @@ fn api_call(json_str: String)-> impl Future<Item=(), Error=()>{
                                     });
     result.map(|posted| posted)
         .map_err(|err| err)
+}
 
 impl From<hyper::Error> for FetchError {
     fn from(err: hyper::Error) -> FetchError {
@@ -108,13 +109,6 @@ impl Factomd {
         self.port = port;
         self
     }
-}
-
-    // fn concat_uri(mut self){
-    //     self.full_uri = concat!(self.scheme, self.host, ":", port, "/",
-    //                             "v", self.version);
-    // }
-
 }
 
 #[cfg(test)]
