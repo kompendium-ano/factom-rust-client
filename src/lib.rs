@@ -105,6 +105,51 @@ struct Factomd {
     json_rpc_version: &'static str
 }
 
+impl Factomd {
+    fn new()->Factomd{
+        Factomd {
+            scheme: "http",
+            host: "api.factomd.net",
+            port: DAEMON_PORT,
+            api_version: API_VERSION,
+            json_rpc_version: JSONRPC
+        }
+    }
+
+    fn https(&mut self){
+        self.scheme = "https";
+    }
+
+    fn host(&mut self, host: &'static str){ 
+        self.host = host;
+    }
+
+    fn port(&mut self, port: u16){
+        self.port = port;
+    }
+    fn api_version(&mut self, version: u8){
+        self.api_version = version;
+    }
+
+    fn json_rpc_version(&mut self, version: &'static str){
+        self.json_rpc_version = version;
+    }
+
+    fn uri(self)-> Uri{
+        let authority = [self.host, ":", &self.port.to_string()].concat();
+        let path = ["/v", &self.api_version.to_string()].concat();
+        dbg!(&authority);
+        dbg!(&path);
+        Uri::builder()
+            .scheme(self.scheme)
+            .authority(authority.as_str())
+            .path_and_query(path.as_str())
+            .build()
+            .expect("Error building URI from Factomd struct")
+    }
+
+}
+
 
 
 #[cfg(test)]
