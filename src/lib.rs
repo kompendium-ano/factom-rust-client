@@ -1,7 +1,4 @@
-
 #![allow(dead_code)]
-// extern crate serde-json;
-
 use std::collections::HashMap;
 use serde::{Serialize, Deserialize};
 use hyper::{Client, Uri};
@@ -11,7 +8,11 @@ use http::header::HeaderValue;
 use hyper_tls::HttpsConnector;
 use serde_json::Value;
 
-const JSONRPC : &str  = "2.0";
+const JSONRPC : &str = "2.0";
+const ID: u32 = 0;
+const DAEMON_PORT: u16 = 8088;
+const WALLET_PORT: u16 = 8089;
+const API_VERSION: u8 = 2;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Response{
@@ -28,14 +29,30 @@ struct ApiRequest{
     parameters: HashMap<String, Value>
 }
 
-fn api_call(json_str: String)-> impl Future<Item=(), Error=()>{
-    let uri: hyper::Uri = "https://api.factomd.net/v2".parse().unwrap();
-    let json = r#"{
-                    "jsonrpc": "2.0",
-                    "id": 0,
-                    "method": "heights",
-                    "parameters": {}
-                }"#;
+impl ApiRequest {
+    fn method(method: &str)-> ApiRequest{
+        ApiRequest{
+            jsonrpc: JSONRPC.to_string(),
+            id: ID,
+            method: method.to_string(),
+            parameters: HashMap::new()
+        }
+    }
+
+    fn parameters(&mut self, parameters: HashMap<String, Value>){
+        self.parameters = parameters;
+    }
+
+    fn to_json(&self)-> String{
+        serde_json::to_string(&self).expect("error parsing json")
+    }
+
+}
+
+fn api_call(json_str: String, uri: Uri )->  impl Future<Item=Response, Error=FetchError> {
+    // let uri: hyper::Uri = "https://api.factomd.net/v2".parse().unwrap();
+    // let uri: hyper::Uri = "http://jsonplaceholder.typicode.com/todos/1".parse().unwrap();
+
     let mut req = Request::new(Body::from(json_str));
     *req.method_mut() = Method::POST;
     *req.uri_mut() = uri.clone();
@@ -48,17 +65,23 @@ fn api_call(json_str: String)-> impl Future<Item=(), Error=()>{
     let https = HttpsConnector::new(4).expect("TLS initialization failed");
 
     let client = Client::builder().build::<_, hyper::Body>(https);
-    let result = client
-                    .request(req)
-                    .and_then(|res| {res.into_body().concat2()})
-                    .from_err::<FetchError>()
-                    .and_then(|json| {
-                                    dbg!(&json);
-                                    let output: Response = serde_json::from_slice(&json)?;
-                                    Ok(output)
-                                    });
-    result.map(|posted| posted)
-        .map_err(|err| err)
+    client
+        .request(req)
+        .and_then(|res| {res.into_body().concat2()})
+        .from_err::<FetchError>()
+        .and_then(|json| {
+                        dbg!(&json);
+                        let output: Response = serde_json::from_slice(&json)?;
+                        Ok(output)
+                        })
+
+}
+
+// Define a type so we can return multiple types of errors
+#[derive(Debug)]
+enum FetchError {
+    Http(hyper::Error),
+    Json(serde_json::Error),
 }
 
 impl From<hyper::Error> for FetchError {
@@ -74,68 +97,106 @@ impl From<serde_json::Error> for FetchError {
 }
 
 struct Factomd {
-    scheme: String,
-    host: String,
-    port: u32,
-    version: String,
-    full_uri: Uri,
-    json_rpc_version: u8
+    scheme: &'static str,
+    host: &'static str,
+    port: u16,
+    api_version: u8,
+    json_rpc_version: &'static str
 }
 
 impl Factomd {
-
     fn new()->Factomd{
         Factomd {
-            scheme: "http".to_string(),
-            host: "api.factomd.net/v2".to_string(),
-            port: 8088,
-            version: "2".to_string(),
-            full_uri: Uri::default(),
-            json_rpc_version: 2
+            scheme: "http",
+            host: "api.factomd.net",
+            port: DAEMON_PORT,
+            api_version: API_VERSION,
+            json_rpc_version: JSONRPC
         }
     }
 
-    fn chain_head(keymr: &str)-> &str{
-        let method = "chain-head";
-        method
+    fn https(&mut self){
+        self.scheme = "https";
     }
 
-    fn set_json_rpc_version(mut self, version: u8)-> Factomd{
-        self.json_rpc_version = version;
-        self
+    fn host(&mut self, host: &'static str){ 
+        self.host = host;
     }
 
-    fn port(mut self, port: u32)-> Factomd{
+    fn port(&mut self, port: u16){
         self.port = port;
-        self
     }
+    fn api_version(&mut self, version: u8){
+        self.api_version = version;
+    }
+
+    fn json_rpc_version(&mut self, version: &'static str){
+        self.json_rpc_version = version;
+    }
+
+    fn uri(self)-> Uri{
+        let authority = [self.host, ":", &self.port.to_string()].concat();
+        let path = ["/v", &self.api_version.to_string()].concat();
+        dbg!(&authority);
+        dbg!(&path);
+        Uri::builder()
+            .scheme(self.scheme)
+            .authority(authority.as_str())
+            .path_and_query(path.as_str())
+            .build()
+            .expect("Error building URI from Factomd struct")
+    }
+
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::*;   
     #[test]
-    fn api_request() {
-        let body = ApiRequest{
-            jsonrpc: JSONRPC.to_string(),
-            id: 0,
-            method: "heights".to_string(),
-            parameters: HashMap::new()
-        };
-        let payload = serde_json::to_string(&body).expect("error parsing json");
-        let request = api_call(payload);
-        rt::run(request);
+    fn heights() {
+        let mut factomd = Factomd::new();
+        factomd.port(443);
+        factomd.https();
+        let uri = factomd.uri();
+        dbg!(&uri);
+        let request = ApiRequest::method("heights").to_json();
+        let response = api_call(request, uri)
+                            .map(|result| {dbg!(result.result);})
+                            .map_err(|err| {println!("{:?}", err);});
+        rt::run(response);
     }
 
-    #[test]
-    fn jsontest() {
-        let payload1 = b"{\"result\":{\"entryblockheight\":123456,\"leaderheight\":183429,\"directoryblockheight\":183429,\"entryheight\":183429},\"jsonrpc\":\"2.0\",\"id\":0}";
-        let payload2 = b"{\"result\":{\"entryblockheight\":\"shouldfail\",\"leaderheight\":183429,\"directoryblockheight\":183429,\"entryheight\":183429},\"jsonrpc\":\"2.0\",\"id\":0}";
+
+    // #[test]
+    // fn api_request() {
+    //     let body = ApiRequest{
+    //         jsonrpc: JSONRPC.to_string(),
+    //         id: 0,
+    //         method: "heights".to_string(),
+    //         parameters: HashMap::new()
+    //     };
+    //     let payload = serde_json::to_string(&body).expect("error parsing json");
+    //     let request = api_call(payload)
+    //                     .map(|posted| {dbg!(posted);})
+    //                     .map_err(|e| {
+    //                         match e {
+    //                             FetchError::Http(e) => eprintln!("http error: {}", e),
+    //                             FetchError::Json(e) => eprintln!("json parsing error: {}", e),
+    //                         }           
+    //                     });
+    //     rt::run(request);
+    // }
+
+    // #[test]
+    // fn jsontest() {
+    //     let payload1 = b"{\"result\":{\"entryblockheight\":123456,\"leaderheight\":183429,\"directoryblockheight\":183429,\"entryheight\":183429},\"jsonrpc\":\"2.0\",\"id\":0}";
+    //     let payload2 = b"{\"result\":{\"entryblockheight\":\"shouldfail\",\"leaderheight\":183429,\"directoryblockheight\":183429,\"entryheight\":183429},\"jsonrpc\":\"2.0\",\"id\":0}";
         
-        let result1: Response = serde_json::from_slice(payload2).expect("Error parsing json");
-        let result2: Value = serde_json::from_slice(payload2).expect("Error parsing json");
+    //     let result1: Response = serde_json::from_slice(payload2).expect("Error parsing json");
+    //     let result2: Value = serde_json::from_slice(payload2).expect("Error parsing json");
 
-        dbg!(result2);
-    }
+    //     dbg!(result2);
+    // }
     
 }
+
