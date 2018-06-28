@@ -6,7 +6,8 @@ use hyper::rt::{self, Future, Stream};
 use hyper::{Method, Request, Body};
 use http::header::HeaderValue;
 use hyper_tls::HttpsConnector;
-use serde_json::Value;
+#[macro_use]
+use serde_json::{Value, json};
 
 const JSONRPC : &str = "2.0";
 const ID: u32 = 0;
@@ -39,8 +40,14 @@ impl ApiRequest {
         }
     }
 
-    fn parameters(&mut self, parameters: HashMap<String, Value>){
-        self.parameters = parameters;
+    fn parameters(self, parameters: HashMap<String, Value>)-> ApiRequest{
+        ApiRequest{
+            jsonrpc: self.jsonrpc,
+            id: self.id,
+            method: self.method,
+            parameters
+        }
+        
     }
 
     fn to_json(&self)-> String{
@@ -49,36 +56,6 @@ impl ApiRequest {
 
 }
 
-
-fn api_call(json_str: String, uri: Uri )->  impl Future<Item=Response, Error=FetchError> {
-    // let uri: hyper::Uri = "https://api.factomd.net/v2".parse().unwrap();
-    // let uri: hyper::Uri = "http://jsonplaceholder.typicode.com/todos/1".parse().unwrap();
-
-    let mut req = Request::new(Body::from(json_str));
-    *req.method_mut() = Method::POST;
-    *req.uri_mut() = uri.clone();
-    req.headers_mut().insert(
-        hyper::header::CONTENT_TYPE,
-        HeaderValue::from_static("application/json")
-        );
-
-    // https connector
-    let https = HttpsConnector::new(4).expect("TLS initialization failed");
-
-    let client = Client::builder().build::<_, hyper::Body>(https);
-    client
-        .request(req)
-        .and_then(|res| {res.into_body().concat2()})
-        .from_err::<FetchError>()
-        .and_then(|json| {
-                        dbg!(&json);
-                        let output: Response = serde_json::from_slice(&json)?;
-                        Ok(output)
-                        })
-
-}
-
-// Define a type so we can return multiple types of errors
 #[derive(Debug)]
 enum FetchError {
     Http(hyper::Error),
@@ -102,7 +79,8 @@ struct Factomd {
     host: &'static str,
     port: u16,
     api_version: u8,
-    json_rpc_version: &'static str
+    json_rpc_version: &'static str,
+    uri: Uri
 }
 
 impl Factomd {
@@ -112,7 +90,8 @@ impl Factomd {
             host: "api.factomd.net",
             port: DAEMON_PORT,
             api_version: API_VERSION,
-            json_rpc_version: JSONRPC
+            json_rpc_version: JSONRPC,
+            uri: Uri::default()
         }
     }
 
@@ -148,13 +127,53 @@ impl Factomd {
             .expect("Error building URI from Factomd struct")
     }
 
+    fn ablock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("height".to_string(), json!(height));
+        let json = ApiRequest::method("ablock-by-height")
+                                .parameters(params)
+                                .to_json();
+        api_call(json, self.uri())
+    }
 }
 
+    fn api_call(json_str: String, uri: Uri)->  impl Future<Item=Response, Error=FetchError> {
+        let mut req = Request::new(Body::from(json_str));
+        *req.method_mut() = Method::POST;
+        *req.uri_mut() = uri.clone();
+        req.headers_mut().insert(
+            hyper::header::CONTENT_TYPE,
+            HeaderValue::from_static("application/json")
+            );
+
+        // https connector
+        let https = HttpsConnector::new(4).expect("TLS initialization failed");
+
+        let client = Client::builder().build::<_, hyper::Body>(https);
+        client
+            .request(req)
+            .and_then(|res| {res.into_body().concat2()})
+            .from_err::<FetchError>()
+            .and_then(|json| {
+                            dbg!(&json);
+                            let output: Response = serde_json::from_slice(&json)?;
+                            Ok(output)
+                            })
+
+    }
 
 
 #[cfg(test)]
 mod tests {
-    use super::*;   
+    use super::*; 
+
+    fn setup()-> Factomd{
+        let mut factomd = Factomd::new();
+        factomd.port(443);
+        factomd.https();
+        factomd
+    }
+
     #[test]
     fn heights() {
         let mut factomd = Factomd::new();
@@ -169,8 +188,14 @@ mod tests {
         rt::run(response);
     }
 
+    #[test]
+    fn ablock_by_height() {
+        let factomd = setup();
+        let response = factomd.ablock_by_height(14460)
+                            .map(|result| {dbg!(result);})
+                            .map_err(|err| println!("{:?}", err));
+        rt::run(response);
+                            
 
-
-    
+    }
 }
-
