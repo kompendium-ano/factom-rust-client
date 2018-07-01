@@ -175,6 +175,16 @@ mod tests {
         factomd
     }
 
+    fn get_result<F, R, E>(fut: F)-> Result<R, E>
+        where
+            F: Send + 'static + Future<Item = R, Error = E>,
+            R: Send + 'static,
+            E: Send + 'static,
+        {
+            let mut runtime = tokio::runtime::Runtime::new().expect("Unable to create a tokio runtime");
+            runtime.block_on(fut)
+        }
+
     // #[test]
     // fn heights() {
     //     let mut factomd = Factomd::new();
@@ -189,40 +199,22 @@ mod tests {
     //     rt::run(response);
     // }
 
-    // fn run_one<F>(f: F) -> Result<F::Item, F::Error>
-    //     where
-    //         F: IntoFuture,
-    //         F::Future: Send + 'static,
-    //         F::Item: Send + 'static,
-    //         F::Error: Send + 'static,
-    //     {
-    //         let mut runtime = tokio::runtime::Runtime::new().expect("Unable to create a runtime");
-    //         runtime.block_on(f.into_future())
-    //     }
-
 
     #[test]
     fn ablock_by_height() {
         let factomd = setup();
-
-        let response = factomd.ablock_by_height(14460)
+        let query = factomd.ablock_by_height(14460)
                             .map(|result| {
-                                result.result
-                                // dbg!(&result.result);
-                                
-                                // let backrefhash: &str = &result.result["ablock"]["backreferencehash"]
-                                //                             .as_str().unwrap();
-                                // dbg!(&backrefhash);
-                                // let expected = "0a9aa1efbe7d0e8d9c1d460d1c78e3e7b50f984e65a3f3ee7b73100a94189dbf";
-                                // assert_eq!(backrefhash, expected);
+                                result.result["ablock"]["backreferencehash"].clone()
                             })
-                            .map_err(|err|  err);
-        // rt::run(response);
-        // println!("{:?}", response.wait());
-        let mut runtime = tokio::runtime::Runtime::new().expect("Unable to create a tokio runtime");
-        let res = runtime.block_on(response);
-        println!("{:?}", res.unwrap() );
-
+                            .map_err(|err| err);
+        // let mut runtime = tokio::runtime::Runtime::new().expect("Unable to create a tokio runtime");
+        // let res = runtime.block_on(query);
+        // println!("{:?}", &res.unwrap());
+        let result = get_result(query);
+        // backreferencehash at admin block #14460
+        let expected = "0a9aa1efbe7d0e8d9c1d460d1c78e3e7b50f984e65a3f3ee7b73100a94189dbf";
+        assert_eq!(result.unwrap(), expected);
                             
 
     }
