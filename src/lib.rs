@@ -8,6 +8,7 @@ use http::header::HeaderValue;
 use hyper_tls::HttpsConnector;
 #[macro_use]
 use serde_json::{Value, json};
+use tokio::prelude::*;
 
 const JSONRPC : &str = "2.0";
 const ID: u32 = 0;
@@ -117,8 +118,8 @@ impl Factomd {
     fn uri(self)-> Uri{
         let authority = [self.host, ":", &self.port.to_string()].concat();
         let path = ["/v", &self.api_version.to_string()].concat();
-        dbg!(&authority);
-        dbg!(&path);
+        // dbg!(&authority);
+        // dbg!(&Fpath);
         Uri::builder()
             .scheme(self.scheme)
             .authority(authority.as_str())
@@ -155,7 +156,7 @@ impl Factomd {
             .and_then(|res| {res.into_body().concat2()})
             .from_err::<FetchError>()
             .and_then(|json| {
-                            dbg!(&json);
+                            // dbg!(&json);
                             let output: Response = serde_json::from_slice(&json)?;
                             Ok(output)
                             })
@@ -174,27 +175,54 @@ mod tests {
         factomd
     }
 
-    #[test]
-    fn heights() {
-        let mut factomd = Factomd::new();
-        factomd.port(443);
-        factomd.https();
-        let uri = factomd.uri();
-        dbg!(&uri);
-        let request = ApiRequest::method("heights").to_json();
-        let response = api_call(request, uri)
-                            .map(|result| {dbg!(result.result);})
-                            .map_err(|err| {println!("{:?}", err);});
-        rt::run(response);
-    }
+    // #[test]
+    // fn heights() {
+    //     let mut factomd = Factomd::new();
+    //     factomd.port(443);
+    //     factomd.https();
+    //     let uri = factomd.uri();
+    //     dbg!(&uri);
+    //     let request = ApiRequest::method("heights").to_json();
+    //     let response = api_call(request, uri)
+    //                         .map(|result| {dbg!(result.result);})
+    //                         .map_err(|err| {println!("{:?}", err);});
+    //     rt::run(response);
+    // }
+
+    // fn run_one<F>(f: F) -> Result<F::Item, F::Error>
+    //     where
+    //         F: IntoFuture,
+    //         F::Future: Send + 'static,
+    //         F::Item: Send + 'static,
+    //         F::Error: Send + 'static,
+    //     {
+    //         let mut runtime = tokio::runtime::Runtime::new().expect("Unable to create a runtime");
+    //         runtime.block_on(f.into_future())
+    //     }
+
 
     #[test]
     fn ablock_by_height() {
         let factomd = setup();
+
         let response = factomd.ablock_by_height(14460)
-                            .map(|result| {dbg!(result);})
-                            .map_err(|err| println!("{:?}", err));
-        rt::run(response);
+                            .map(|result| {
+                                result.result
+                                // dbg!(&result.result);
+                                
+                                // let backrefhash: &str = &result.result["ablock"]["backreferencehash"]
+                                //                             .as_str().unwrap();
+                                // dbg!(&backrefhash);
+                                // let expected = "0a9aa1efbe7d0e8d9c1d460d1c78e3e7b50f984e65a3f3ee7b73100a94189dbf";
+                                // assert_eq!(backrefhash, expected);
+                            })
+                            .map_err(|err|  err);
+        // rt::run(response);
+        // println!("{:?}", response.wait());
+        let mut runtime = tokio::runtime::Runtime::new().expect("Unable to create a tokio runtime");
+        let res = runtime.block_on(response);
+        println!("{:?}", res.unwrap() );
+
                             
 
     }
