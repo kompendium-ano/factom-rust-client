@@ -125,7 +125,7 @@ impl Factomd {
             .authority(authority.as_str())
             .path_and_query(path.as_str())
             .build()
-            .expect("Error building URI from Factomd struct")
+            .expect("Unable to build URI from Factomd struct")
     }
 
     fn ablock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
@@ -168,7 +168,7 @@ impl Factomd {
 mod tests {
     use super::*; 
 
-    fn setup()-> Factomd{
+    fn factomd()-> Factomd{
         let mut factomd = Factomd::new();
         factomd.port(443);
         factomd.https();
@@ -185,37 +185,15 @@ mod tests {
             runtime.block_on(fut)
         }
 
-    // #[test]
-    // fn heights() {
-    //     let mut factomd = Factomd::new();
-    //     factomd.port(443);
-    //     factomd.https();
-    //     let uri = factomd.uri();
-    //     dbg!(&uri);
-    //     let request = ApiRequest::method("heights").to_json();
-    //     let response = api_call(request, uri)
-    //                         .map(|result| {dbg!(result.result);})
-    //                         .map_err(|err| {println!("{:?}", err);});
-    //     rt::run(response);
-    // }
-
-
     #[test]
     fn ablock_by_height() {
-        let factomd = setup();
-        let query = factomd.ablock_by_height(14460)
-                            .map(|result| {
-                                result.result["ablock"]["backreferencehash"].clone()
-                            })
-                            .map_err(|err| err);
-        // let mut runtime = tokio::runtime::Runtime::new().expect("Unable to create a tokio runtime");
-        // let res = runtime.block_on(query);
-        // println!("{:?}", &res.unwrap());
-        let result = get_result(query);
-        // backreferencehash at admin block #14460
+        let query = factomd().ablock_by_height(14460)
+                                .map(|result| {
+                                    result.result["ablock"]["backreferencehash"].clone()
+                                })
+                                .map_err(|err| err);
         let expected = "0a9aa1efbe7d0e8d9c1d460d1c78e3e7b50f984e65a3f3ee7b73100a94189dbf";
+        let result = get_result(query);
         assert_eq!(result.unwrap(), expected);
-                            
-
     }
 }
