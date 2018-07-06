@@ -183,4 +183,20 @@ impl Factomd{
                                 .to_json())
     }
 
+    pub fn pending_entries(self)-> impl Future<Item=Response, Error=FetchError>{
+        self.api_call(ApiRequest::method("pending-entries")
+                                .to_json())
+    }
+
+    pub fn pending_transactions(self, address: Option<&str>)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        if let Some(add) = address {
+            params.insert("address".to_string(), json!(add));
+        }
+        self.api_call(ApiRequest::method("pending-transactions")
+                                .parameters(params)
+                                .to_json())
+    }
+
+
 }
