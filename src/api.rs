@@ -30,5 +30,13 @@ impl Factomd{
                                 .to_json())
     }
 
+    pub fn chain_head(self, chainid: &str)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("chainid".to_string(), json!(chainid));
+        self.api_call(ApiRequest::method("chain-head")
+                                .parameters(params)
+                                .to_json())
+    }
+
 
 }
