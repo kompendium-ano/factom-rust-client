@@ -90,4 +90,43 @@ impl Factomd{
                                 .to_json())
     }
 
+
+    pub fn entry(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("hash".to_string(), json!(hash));
+        self.api_call(ApiRequest::method("entry")
+                                .parameters(params)
+                                .to_json())
+    }
+
+    pub fn entry_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("keymr".to_string(), json!(keymr));
+        self.api_call(ApiRequest::method("entry-block")
+                                .parameters(params)
+                                .to_json())
+    }
+
+    pub fn entry_credit_balance(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("address".to_string(), json!(address));
+        self.api_call(ApiRequest::method("entry-credit-balance")
+                                .parameters(params)
+                                .to_json())
+    }
+
+    pub fn entry_credit_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("keymr".to_string(), json!(keymr));
+        self.api_call(ApiRequest::method("entrycredit-block")
+                                .parameters(params)
+                                .to_json())
+    }
+
+    pub fn entry_credit_rate(self)-> impl Future<Item=Response, Error=FetchError>{
+        self.api_call(ApiRequest::method("entry-credit-rate")
+                                .to_json())
+    }
+
+
 }
