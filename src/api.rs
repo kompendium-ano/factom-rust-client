@@ -162,4 +162,9 @@ impl Factomd{
     }
 
 
+    pub fn heights(self)-> impl Future<Item=Response, Error=FetchError>{
+        self.api_call(ApiRequest::method("heights")
+                                .to_json())
+    }
+
 }
