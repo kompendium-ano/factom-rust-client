@@ -167,4 +167,20 @@ impl Factomd{
                                 .to_json())
     }
 
+    pub fn multiple_ec_balances(self, addresses: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("addresses".to_string(), json!(addresses));
+        self.api_call(ApiRequest::method("multiple-ec-balances")
+                                .parameters(params)
+                                .to_json())
+    }
+
+    pub fn multiple_fct_balances(self, addresses: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("addresses".to_string(), json!(addresses));
+        self.api_call(ApiRequest::method("multiple-fct-balances")
+                                .parameters(params)
+                                .to_json())
+    }
+
 }
