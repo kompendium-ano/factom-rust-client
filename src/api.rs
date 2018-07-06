@@ -219,4 +219,20 @@ impl Factomd{
                                 .to_json())
     }
 
+    pub fn reveal_chain(self, entry: &str)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("entry".to_string(), json!(entry));
+        self.api_call(ApiRequest::method("reveal-chain")
+                                .parameters(params)
+                                .to_json())
+    }
+
+    pub fn reveal_entry(self, entry: &str)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("entry".to_string(), json!(entry));
+        self.api_call(ApiRequest::method("reveal-entry")
+                                .parameters(params)
+                                .to_json())
+    }
+
 }
