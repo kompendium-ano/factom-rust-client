@@ -211,4 +211,12 @@ impl Factomd{
                                 .to_json())
     }
 
+    pub fn receipt(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("hash".to_string(), json!(hash));
+        self.api_call(ApiRequest::method("receipt")
+                                .parameters(params)
+                                .to_json())
+    }
+
 }
