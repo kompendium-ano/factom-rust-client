@@ -203,5 +203,12 @@ impl Factomd{
                                 .to_json())
     }
 
+    pub fn raw_data(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("hash".to_string(), json!(hash));
+        self.api_call(ApiRequest::method("raw-data")
+                                .parameters(params)
+                                .to_json())
+    }
 
 }
