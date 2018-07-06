@@ -45,4 +45,13 @@ impl Factomd{
                                 .parameters(params)
                                 .to_json())
     }
+
+    pub fn commit_entry(self, message: &str)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("message".to_string(), json!(message));
+        self.api_call(ApiRequest::method("commit-entry")
+                                .parameters(params)
+                                .to_json())
+    }
+
 }
