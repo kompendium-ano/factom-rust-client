@@ -198,5 +198,10 @@ impl Factomd{
                                 .to_json())
     }
 
+    pub fn properties(self)-> impl Future<Item=Response, Error=FetchError>{
+        self.api_call(ApiRequest::method("properties")
+                                .to_json())
+    }
+
 
 }
