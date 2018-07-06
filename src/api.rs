@@ -77,5 +77,11 @@ impl Factomd{
                                 .to_json())
     }
 
+    pub fn directory_block_head(self)-> impl Future<Item=Response, Error=FetchError>{
+        self.api_call(ApiRequest::method("directory-block-head")
+                                .to_json())
+    }
+
+
 
 }
