@@ -1,14 +1,13 @@
-#![allow(dead_code)]
+#![allow(dead_code, non_camel_case_types)]
 use std::collections::HashMap;
 use serde::{Serialize, Deserialize};
 use hyper::{Client, Uri};
-use hyper::rt::{self, Future, Stream};
+use hyper::rt::{Future, Stream};
 use hyper::{Method, Request, Body};
 use http::header::HeaderValue;
 use hyper_tls::HttpsConnector;
-#[macro_use]
 use serde_json::{Value, json};
-use tokio::prelude::*;
+
 
 mod tests;
 mod api;
@@ -19,11 +18,18 @@ const DAEMON_PORT: u16 = 8088;
 const WALLET_PORT: u16 = 8089;
 const API_VERSION: u8 = 2;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Debug, Deserialize, PartialEq, Clone)]
+enum Outcome{
+    result(Value),
+    error(HashMap<String, Value>)
+}
+
+#[derive(Deserialize, Debug, PartialEq)]
 struct Response{
     jsonrpc: String,
     id: u32,
-    result: HashMap<String, Value>
+    #[serde(flatten)]
+    result: Outcome
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -31,7 +37,7 @@ struct ApiRequest{
     jsonrpc: String,
     id: u32,
     method: String,
-    parameters: HashMap<String, Value>
+    params: HashMap<String, Value>
 }
 
 impl ApiRequest {
@@ -40,16 +46,16 @@ impl ApiRequest {
             jsonrpc: JSONRPC.to_string(),
             id: ID,
             method: method.to_string(),
-            parameters: HashMap::new()
+            params: HashMap::new()
         }
     }
 
-    fn parameters(self, parameters: HashMap<String, Value>)-> ApiRequest{
+    fn parameters(self, params: HashMap<String, Value>)-> ApiRequest{
         ApiRequest{
             jsonrpc: self.jsonrpc,
             id: self.id,
             method: self.method,
-            parameters
+            params
         }
         
     }
@@ -78,7 +84,100 @@ impl From<serde_json::Error> for FetchError {
     }
 }
 
+struct Walletd{
+    scheme: &'static str,
+    host: &'static str,
+    port: u16,
+    api_version: u8,
+    json_rpc_version: &'static str,
+    uri: Uri
+}
+
+
+
+
+impl Walletd {
+    fn new()-> Walletd{
+        Walletd {
+            scheme: "http",
+            host: "api.factomd.net",
+            port: WALLET_PORT,
+            api_version: API_VERSION,
+            json_rpc_version: JSONRPC,
+            uri: Uri::default()
+        }
+    }
+
+    pub fn https(&mut self){
+        self.scheme = "https";
+    }
+
+    fn host(&mut self, host: &'static str){ 
+        self.host = host;
+    }
+
+    fn port(&mut self, port: u16){
+        self.port = port;
+    }
+    fn api_version(&mut self, version: u8){
+        self.api_version = version;
+    }
+
+    fn json_rpc_version(&mut self, version: &'static str){
+        self.json_rpc_version = version;
+    }
+
+    fn uri(self)-> Uri{
+        let authority = [self.host, ":", &self.port.to_string()].concat();
+        let path = ["/v", &self.api_version.to_string()].concat();
+        // dbg!(&authority);
+        // dbg!(&Fpath);
+        Uri::builder()
+            .scheme(self.scheme)
+            .authority(authority.as_str())
+            .path_and_query(path.as_str())
+            .build()
+            .expect("Unable to build URI from Factomd struct")
+    }
+
+    fn api_call(self, json_str: String)->  impl Future<Item=Response, Error=FetchError> {
+        // dbg!(&json_str);
+        let mut req = Request::new(Body::from(json_str));
+        *req.method_mut() = Method::POST;
+        *req.uri_mut() = self.uri();
+        req.headers_mut().insert(
+            hyper::header::CONTENT_TYPE,
+            HeaderValue::from_static("application/json")
+            );
+
+        // https connector
+        let https = HttpsConnector::new(4).expect("TLS initialization failed");
+
+        let client = Client::builder().build::<_, hyper::Body>(https);
+        client
+            .request(req)
+            .and_then(|res| {res.into_body().concat2()})
+            .from_err::<FetchError>()
+            .and_then(|json| {
+                            // dbg!(&json);
+                            let output: Response = serde_json::from_slice(&json)?;
+                            Ok(output)
+                            })
+
+    }
+}
+
+
 struct Factomd {
+    scheme: &'static str,
+    host: &'static str,
+    port: u16,
+    api_version: u8,
+    json_rpc_version: &'static str,
+    uri: Uri
+}
+
+struct Factom{
     scheme: &'static str,
     host: &'static str,
     port: u16,
@@ -131,12 +230,11 @@ impl Factomd {
             .expect("Unable to build URI from Factomd struct")
     }
 
-}
-
-    fn api_call(json_str: String, uri: Uri)->  impl Future<Item=Response, Error=FetchError> {
+    fn api_call(self, json_str: String)->  impl Future<Item=Response, Error=FetchError> {
+        // dbg!(&json_str);
         let mut req = Request::new(Body::from(json_str));
         *req.method_mut() = Method::POST;
-        *req.uri_mut() = uri.clone();
+        *req.uri_mut() = self.uri();
         req.headers_mut().insert(
             hyper::header::CONTENT_TYPE,
             HeaderValue::from_static("application/json")
@@ -155,7 +253,9 @@ impl Factomd {
                             let output: Response = serde_json::from_slice(&json)?;
                             Ok(output)
                             })
-
     }
+}
+
+
 
 

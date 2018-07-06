@@ -21,5 +21,14 @@ impl Factomd{
                                     .parameters(params)
                                     .to_json())
     }
+    
+    pub fn admin_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("keymr".to_string(), json!(keymr));
+        self.api_call(ApiRequest::method("admin-block")
+                                .parameters(params)
+                                .to_json())
+    }
+
 
 }
