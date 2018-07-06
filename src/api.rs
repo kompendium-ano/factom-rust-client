@@ -128,5 +128,38 @@ impl Factomd{
                                 .to_json())
     }
 
+    pub fn factoid_balance(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("address".to_string(), json!(address));
+        self.api_call(ApiRequest::method("factoid-balance")
+                                .parameters(params)
+                                .to_json())
+    }
+
+    pub fn factoid_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("keymr".to_string(), json!(keymr));
+        self.api_call(ApiRequest::method("factoid-block")
+                                .parameters(params)
+                                .to_json())
+    }
+
+    pub fn factoid_submit(self, transaction: &str)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("transaction".to_string(), json!(transaction));
+        self.api_call(ApiRequest::method("factoid-submit")
+                                .parameters(params)
+                                .to_json())
+    }
+
+
+    pub fn fblock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("height".to_string(), json!(height));
+        self.api_call(ApiRequest::method("fblock-by-height")
+                                .parameters(params)
+                                .to_json())
+    }
+
 
 }
