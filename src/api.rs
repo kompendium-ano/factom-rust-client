@@ -54,4 +54,9 @@ impl Factomd{
                                 .to_json())
     }
 
+    pub fn current_minute(self)-> impl Future<Item=Response, Error=FetchError>{
+        self.api_call(ApiRequest::method("current-minute")
+                                .to_json())
+    }
+
 }
