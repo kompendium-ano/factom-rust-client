@@ -261,4 +261,14 @@ impl Walletd{
     }
 
 
+    pub fn add_fee(self, txname: &str, address: &str)
+                                                -> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("tx-name".to_string(), json!(txname));
+        params.insert("address".to_string(), json!(address));
+        self.api_call(ApiRequest::method("add-fee")
+                                    .parameters(params)
+                                    .to_json())
+    }
+
 }
