@@ -271,4 +271,16 @@ impl Walletd{
                                     .to_json())
     }
 
+
+    pub fn add_input(self, txname: &str, address: &str, amount: u64)
+                                                -> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("tx-name".to_string(), json!(txname));
+        params.insert("address".to_string(), json!(address));
+        params.insert("amount".to_string(), json!(amount));
+        self.api_call(ApiRequest::method("add-input")
+                                    .parameters(params)
+                                    .to_json())
+    }
+
 }
