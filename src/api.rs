@@ -294,6 +294,14 @@ impl Walletd{
                                     .parameters(params)
                                     .to_json())
     }
+
+    pub fn address(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("address".to_string(), json!(address));
+        self.api_call(ApiRequest::method("address")
+                                .parameters(params)
+                                .to_json())
+    }
     
 
 }
