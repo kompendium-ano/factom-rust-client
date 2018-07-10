@@ -303,5 +303,9 @@ impl Walletd{
                                 .to_json())
     }
     
+    pub fn all_addresses(self)-> impl Future<Item=Response, Error=FetchError>{
+        self.api_call(ApiRequest::method("all-addresses")
+                                .to_json())
+    }
 
 }
