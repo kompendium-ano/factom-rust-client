@@ -361,5 +361,10 @@ impl Walletd{
                                 .to_json())
     }
 
+    pub fn get_height(self)-> impl Future<Item=Response, Error=FetchError>{
+        self.api_call(ApiRequest::method("get-height")
+                                .to_json())
+    }
+
 
 }
