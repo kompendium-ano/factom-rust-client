@@ -367,4 +367,18 @@ impl Walletd{
     }
 
 
+    pub fn import_addresses(self, addresses: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        let mut secrets: HashMap<&str, &str> = HashMap::new();
+        for address in addresses{
+            secrets.insert("secret", address);
+        }
+        params.insert("addresses".to_string(), json!(secrets));
+        self.api_call(ApiRequest::method("import-addresses")
+                                    .parameters(params)
+                                    .to_json())
+    }
+
+
+
 }
