@@ -356,5 +356,10 @@ impl Walletd{
                                     .to_json())
     }
 
+    pub fn generate_factoid_address(self)-> impl Future<Item=Response, Error=FetchError>{
+        self.api_call(ApiRequest::method("generate-factoid-address")
+                                .to_json())
+    }
+
 
 }
