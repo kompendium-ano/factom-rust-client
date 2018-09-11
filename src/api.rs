@@ -308,4 +308,43 @@ impl Walletd{
                                 .to_json())
     }
 
+    pub fn compose_chain(self, extids: Vec<&str>, content: &str, ecpub: &str)
+                                                -> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        let chain = json!({
+            "firstentry": {
+                "extids": extids,
+                "content": content
+            }
+        });
+        params.insert("chain".to_string(), chain);
+        params.insert("ecpub".to_string(), json!(ecpub));
+        self.api_call(ApiRequest::method("compose-chain")
+                                    .parameters(params)
+                                    .to_json())
+    }
+
+    pub fn compose_entry(self, chainid: &str, extids: Vec<&str>, content: &str, ecpub: &str)
+                                                -> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        let entry = json!({
+        "chainid": chainid,
+        "extids": extids,
+        "content": content
+        });
+        params.insert("entry".to_string(), entry);
+        params.insert("ecpub".to_string(), json!(ecpub));
+        self.api_call(ApiRequest::method("compose-entry")
+                                    .parameters(params)
+                                    .to_json())
+    }
+
+    pub fn compose_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("tx-name".to_string(), json!(tx_name));
+        self.api_call(ApiRequest::method("compose-transaction")
+                                    .parameters(params)
+                                    .to_json())
+    }
+
 }
