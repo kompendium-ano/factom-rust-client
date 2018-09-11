@@ -347,4 +347,14 @@ impl Walletd{
                                     .to_json())
     }
 
+
+    pub fn delete_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("tx-name".to_string(), json!(tx_name));
+        self.api_call(ApiRequest::method("delete-transaction")
+                                    .parameters(params)
+                                    .to_json())
+    }
+
+
 }
