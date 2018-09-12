@@ -401,4 +401,15 @@ impl Walletd{
                                     .to_json())
     }
 
+    
+    pub fn sub_fee(self, tx_name: &str, address: &str)-> impl Future<Item=Response, Error=FetchError>{
+        let mut params = HashMap::new();
+        params.insert("tx-name".to_string(), json!(tx_name));
+        params.insert("address".to_string(), json!(address));
+        self.api_call(ApiRequest::method("sub-fee")
+                                    .parameters(params)
+                                    .to_json())
+    }
+
+
 }
