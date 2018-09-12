@@ -411,5 +411,11 @@ impl Walletd{
                                     .to_json())
     }
 
+    pub fn tmp_transactions(self)-> impl Future<Item=Response, Error=FetchError>{
+        self.api_call(ApiRequest::method("tmp-transactions")
+                                .to_json())
+    } 
+
+
 
 }
