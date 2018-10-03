@@ -416,6 +416,36 @@ impl Walletd{
                                 .to_json())
     } 
 
+    pub fn transactions<T>(self, filter: SearchBy )-> impl Future<Item=Response, Error=FetchError>{
+         
+        let mut params = HashMap::new();
+
+        match filter {
+            SearchBy::Txid(txid) => {
+                                params.insert("txid".to_string(), json!(txid));
+                                }
+            SearchBy::Address(address) => {
+                                params.insert("address".to_string(), json!(address));
+                                }
+            SearchBy::Range((start, end)) => {
+                                let mut range = HashMap::new();
+                                range.insert("start", json!(start));
+                                range.insert("end", json!(end));
+                                params.insert("range".to_string(),json!(range));
+                                }
+        };          
+        self.api_call(ApiRequest::method("transactions")
+                                    .parameters(params)
+                                    .to_json())
+    } 
 
 
+
+}
+
+// Transactions function different search options available
+pub enum SearchBy{
+    Range((u32, u32)),
+    Txid(&'static str),
+    Address(&'static str)
 }
