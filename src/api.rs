@@ -440,6 +440,16 @@ impl Walletd{
     } 
 
 
+    pub fn wallet_backup(self)-> impl Future<Item=Response, Error=FetchError>{
+        self.api_call(ApiRequest::method("wallet-backup")
+                                .to_json())
+    } 
+
+    pub fn wallet_balances(self)-> impl Future<Item=Response, Error=FetchError>{
+        self.api_call(ApiRequest::method("wallet-balances")
+                                .to_json())
+    } 
+
 
 }
 
