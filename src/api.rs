@@ -1,6 +1,17 @@
 use super::*;
 
+
+pub fn str_to_hex(utf8: &str) -> String {
+  let strs: Vec<String> = utf8.as_bytes()
+                                .iter()
+                                .map(|b| format!("{:02X}", b))
+                                .collect();
+  strs.join("")
+}
+
 impl Factomd{
+
+    
     pub fn ablock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("height".to_string(), json!(height));
@@ -102,9 +113,11 @@ impl Factomd{
     pub fn entry_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("keymr".to_string(), json!(keymr));
-        self.api_call(ApiRequest::method("entry-block")
+        let json = ApiRequest::method("entry-block")
                                 .parameters(params)
-                                .to_json())
+                                .to_json();
+        dbg!(&json);
+        self.api_call(json)
     }
 
     pub fn entry_credit_balance(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
@@ -310,15 +323,22 @@ impl Walletd{
 
     pub fn compose_chain(self, extids: Vec<&str>, content: &str, ecpub: &str)
                                                 -> impl Future<Item=Response, Error=FetchError>{
+        
         let mut params = HashMap::new();
+        let hex_content = str_to_hex(content);
+        let mut hex_extids = Vec::new();
+        for extid in extids{
+            hex_extids.push(str_to_hex(extid));
+        }
         let chain = json!({
             "firstentry": {
-                "extids": extids,
-                "content": content
+                "extids": hex_extids,
+                "content": hex_content
             }
         });
         params.insert("chain".to_string(), chain);
         params.insert("ecpub".to_string(), json!(ecpub));
+        dbg!(&params);
         self.api_call(ApiRequest::method("compose-chain")
                                     .parameters(params)
                                     .to_json())
@@ -327,10 +347,14 @@ impl Walletd{
     pub fn compose_entry(self, chainid: &str, extids: Vec<&str>, content: &str, ecpub: &str)
                                                 -> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
+        let mut hex_extids = Vec::new();
+        for extid in extids {
+            hex_extids.push(str_to_hex(extid));
+        }
         let entry = json!({
         "chainid": chainid,
-        "extids": extids,
-        "content": content
+        "extids": hex_extids,
+        "content": str_to_hex(content)
         });
         params.insert("entry".to_string(), entry);
         params.insert("ecpub".to_string(), json!(ecpub));
@@ -356,6 +380,11 @@ impl Walletd{
                                     .to_json())
     }
 
+    pub fn generate_ec_address(self)-> impl Future<Item=Response, Error=FetchError>{
+        self.api_call(ApiRequest::method("generate-ec-address")
+                                .to_json())
+    }
+
     pub fn generate_factoid_address(self)-> impl Future<Item=Response, Error=FetchError>{
         self.api_call(ApiRequest::method("generate-factoid-address")
                                 .to_json())
@@ -369,14 +398,17 @@ impl Walletd{
 
     pub fn import_addresses(self, addresses: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
-        let mut secrets: HashMap<&str, &str> = HashMap::new();
+        let mut secrets: Vec<HashMap<&str, &str>> = Vec::new();
         for address in addresses{
-            secrets.insert("secret", address);
+            let mut tmp = HashMap::new();
+            tmp.insert("secret", address);
+            secrets.push(tmp);
         }
         params.insert("addresses".to_string(), json!(secrets));
-        self.api_call(ApiRequest::method("import-addresses")
+        let json = ApiRequest::method("import-addresses")
                                     .parameters(params)
-                                    .to_json())
+                                    .to_json();
+        self.api_call(json)
     }
 
     pub fn new_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
@@ -416,7 +448,7 @@ impl Walletd{
                                 .to_json())
     } 
 
-    pub fn transactions<T>(self, filter: SearchBy )-> impl Future<Item=Response, Error=FetchError>{
+    pub fn transactions(self, filter: SearchBy )-> impl Future<Item=Response, Error=FetchError>{
          
         let mut params = HashMap::new();
 
@@ -427,7 +459,7 @@ impl Walletd{
             SearchBy::Address(address) => {
                                 params.insert("address".to_string(), json!(address));
                                 }
-            SearchBy::Range((start, end)) => {
+            SearchBy::Range(start, end) => {
                                 let mut range = HashMap::new();
                                 range.insert("start", json!(start));
                                 range.insert("end", json!(end));
@@ -455,7 +487,7 @@ impl Walletd{
 
 // Transactions function different search options available
 pub enum SearchBy{
-    Range((u32, u32)),
+    Range(u32, u32),
     Txid(&'static str),
     Address(&'static str)
 }
