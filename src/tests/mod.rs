@@ -1,17 +1,51 @@
 use super::*; 
+use std::iter;
+use rand::{Rng, thread_rng};
+use rand::distributions::Alphanumeric;
+ 
+
+//const EC_TXID: &str = "f04279998823bfa545dc9feb7bd2de77f57a2e226686309b19c4c721bf7cfcc2";
+
+const EC_ADDRESS: &str = "EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx";
+const FCT_PRIV_ADDRESS: &str = "Fs3E9gV6DXsYzf7Fqx1fVBQPQXV695eP3k5XbmHEZVRLkMdD9qCK";
+const FCT_PUB_ADDRESS: &str = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
+const FCT_PUB_ADDRESS2: &str = "FA3Jto7SVF4o9VBNcgWWZ74ReSmi5x1aAweXf11mM2RrAfsHsNAq";
+const TXID: &str = "21fc64855771f2ee12da2a85b1aa0108007ed3a566425f3eaec7c8c7d2db6c6d";
+const CHAINID: &str = "9dec48601fba6ddb4bcea12066ba0f2b2467f89c788c5a243eb253c3de0f815b";
+const ENTRYHASH: &str = "6ecd7c6c40d0e9dbb52457343e083d4306c5b4cd2d6e623ba67cf9d18b39faa7";
+const DBLOCK_KEYMR: &str = "5b372f4622c682c984dc922983d0c769db33c376d107c74e8023446029592011";
+const ABLOCK_KEYMR: &str = "9f9b2d68e7f018a272e9331765ac8d353c7f58c6f18685405b5286353b58daee";
+const FBLOCK_KEYMR: &str = "aaaf4db6c1f5b716df0d63dcf9605f599d9e41eb635d8ba3e9ddfbe697ec426c";
+const EBLOCK_KEYMR: &str = "1df118c1293858d1111762d6a0df92b12231c72deb14b53bfffc09b867db1f3b";
+const ECBLOCK_KEYMR: &str = "9b9e5b67b17f2e2d3d8405ea5fc227f6bf61fcc8c2422b36b11a7fce97018521";
+
+const HOST: &str ="192.168.121.131";
 
 
 
+fn random_string(len: usize)-> String {
+    let mut rng = thread_rng();
+    iter::repeat(())
+            .map(|()| rng.sample(Alphanumeric))
+            .take(len)
+            .collect()
+}
 
 
-// Daemon
+
+fn walletd()-> Walletd{
+    let mut walletd = Walletd::new();
+    walletd.host(HOST);
+    walletd
+}
 
 fn factomd()-> Factomd{
     let mut factomd = Factomd::new();
-    factomd.port(443);
-    factomd.https();
+    factomd.host(HOST);
     factomd
 }
+
+
 
 fn get_result<F, R, E>(fut: F)-> Result<R, E>
     where
@@ -25,15 +59,19 @@ fn get_result<F, R, E>(fut: F)-> Result<R, E>
 
 fn error_check(response: Response){
     let result = response.result;
-    if let Outcome::error(err) = result{
+    if let Outcome::error(err) = &result{
+        // Prints json responses using `cargo test -- --nocapture`
+        // dbg!(&result);
         panic!("{:?}", err)
     }
 }
 
+// Daemon
+
 #[test]
 fn ablock_by_height() {
     let query = factomd()
-                .ablock_by_height(14460)
+                .ablock_by_height(2)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
     error_check(response);  
@@ -41,7 +79,7 @@ fn ablock_by_height() {
 
 #[test]
 fn ack() {
-    let hash = "ca541bbf22bd1e4cb1c16d08694bc1a6a1db4a8ad2cc0452db704966c8de7b6f";
+    let hash = ENTRYHASH;
     let tx_type = "f";
     let query = factomd()
                 .ack(hash, tx_type, None)
@@ -52,7 +90,7 @@ fn ack() {
 
 #[test]
 fn admin_block() {
-    let keymr = "bb36d9a75ab887c21a365cc3464806e769f88b50326a55bf97e4b7190975bf65";
+    let keymr = ABLOCK_KEYMR;
     let query = factomd()
                 .admin_block(keymr)
                 .map(|response| response).map_err(|err| err);
@@ -62,7 +100,7 @@ fn admin_block() {
 
 #[test]
 fn chain_head() {
-    let chainid = "fbf1bb7ffa4ec0bbb0f7dc18cbeb47514102c2eb38fd1f985be3254156b28677";
+    let chainid = CHAINID;
     let query = factomd()
                 .chain_head(chainid)
                 .map(|response| response).map_err(|err| err);
@@ -82,7 +120,7 @@ fn current_minute() {
 #[test]
 fn dblock_by_height() {
     let query = factomd()
-                .dblock_by_height(14460)
+                .dblock_by_height(2)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
     error_check(response);  
@@ -90,7 +128,7 @@ fn dblock_by_height() {
 
 #[test]
 fn directory_block() {
-    let keymr = "ba82854fae10bf41c95a1f97368a8ae7876d4f957246fc773c0b2f700db1c6b0";
+    let keymr = DBLOCK_KEYMR;
     let query = factomd()
                 .directory_block(keymr)
                 .map(|response| response).map_err(|err| err);
@@ -110,7 +148,7 @@ fn directory_block_head() {
 #[test]
 fn ecblock_by_height() {
     let query = factomd()
-                .ecblock_by_height(14460)
+                .ecblock_by_height(2)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
     error_check(response);  
@@ -119,7 +157,7 @@ fn ecblock_by_height() {
 
 #[test]
 fn entry() {
-    let hash = "885acfbdfa2a7b51e6c7562384929984dbcfae9a6d0e489b7a7593c26e429738";
+    let hash = ENTRYHASH;
     let query = factomd().entry(hash)
                             .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -128,7 +166,7 @@ fn entry() {
 
 #[test]
 fn entryblock() {
-    let keymr = "9b56d2fc48759d74d8430c87f792146951acd85486cec7bad3f4e5cb3a3e6008";
+    let keymr = EBLOCK_KEYMR;
     let query = factomd()
                 .entry_block(keymr)
                 .map(|response| response).map_err(|err| err);
@@ -138,7 +176,7 @@ fn entryblock() {
 
 #[test]
 fn entry_credit_balance() {
-    let address = "EC3MAHiZyfuEb5fZP2fSp2gXMv8WemhQEUFXyQ2f2HjSkYx7xY1S";
+    let address = EC_ADDRESS;
     let query = factomd()
                 .entry_credit_balance(address)
                 .map(|response| response).map_err(|err| err);
@@ -148,7 +186,7 @@ fn entry_credit_balance() {
 
 #[test]
 fn entry_credit_block() {
-    let keymr = "2050b16701f29238d6b99bcf3fb0ca55d6d884139601f06691fc370cda659d60";
+    let keymr = ECBLOCK_KEYMR;
     let query = factomd()
                 .entry_credit_block(keymr)
                 .map(|response| response).map_err(|err| err);
@@ -167,7 +205,7 @@ fn entry_credit_rate() {
 
 #[test]
 fn factoid_balance() {
-    let address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
+    let address = FCT_PUB_ADDRESS;
     let query = factomd()
                 .factoid_balance(address)
                 .map(|response| response).map_err(|err| err);
@@ -177,7 +215,7 @@ fn factoid_balance() {
 
 #[test]
 fn factoid_block() {
-    let keymr = "1df843ee64f4b139047617a2df1007ea4470fabd097ddf87acabc39813f71480";
+    let keymr = FBLOCK_KEYMR;
     let query = factomd()
                 .factoid_block(keymr)
                 .map(|response| response).map_err(|err| err);
@@ -198,7 +236,7 @@ fn factoid_submit() {
 #[test]
 fn fblock_by_height() {
     let query = factomd()
-                .fblock_by_height(14460)
+                .fblock_by_height(1)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
     error_check(response);  
@@ -216,7 +254,7 @@ fn heights() {
 
 #[test]
 fn multiple_ec_balances() {
-    let addresses: Vec<&str> = vec!["EC293AbTn3VScgC2m86xTh2kFKAMNnkgoLdXgywpPa66Jacom5ya"];
+    let addresses: Vec<&str> = vec![EC_ADDRESS];
     let query = factomd().multiple_ec_balances(addresses)
                             .map(|response| response).map_err(|err| err);
     let result = get_result(query);
@@ -227,7 +265,7 @@ fn multiple_ec_balances() {
 
 #[test]
 fn multiple_fct_balances() {
-    let addresses: Vec<&str> = vec!["FA3uMAv9htC5y5u3ayzxNQKZNDpgrJVf49kJSKdVNxcYoNBbSLXc"];
+    let addresses: Vec<&str> = vec![FCT_PUB_ADDRESS];
     let query = factomd().multiple_fct_balances(addresses)
                             .map(|response| response).map_err(|err| err);
     let result = get_result(query);
@@ -256,7 +294,7 @@ fn pending_transactions() {
 
 
 #[test]
-fn properties() {
+fn factomd_properties() {
     let query = factomd().properties()
                             .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -265,7 +303,7 @@ fn properties() {
 
 #[test]
 fn raw_data() {
-    let hash = "8cd3ba08e4bc9e581050f075fae9a4d97e56f6bd5fe17c39e7c228c54139f359";
+    let hash = ENTRYHASH;
     let query = factomd().raw_data(hash)
                             .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -274,7 +312,7 @@ fn raw_data() {
 
 #[test]
 fn receipt() {
-    let hash = "8cd3ba08e4bc9e581050f075fae9a4d97e56f6bd5fe17c39e7c228c54139f359";
+    let hash = ENTRYHASH;
     let query = factomd().receipt(hash)
                             .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -283,7 +321,7 @@ fn receipt() {
 
 #[test]
 fn transaction() {
-    let hash = "9542f6695fdf02ab8e7adfc058dbb566919f85fbd37ff7e83e8bb459f6f8310c";
+    let hash = TXID;
     let query = factomd().transaction(hash)
                             .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
