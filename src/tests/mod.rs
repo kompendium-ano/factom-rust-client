@@ -2,10 +2,8 @@ use super::*;
 use std::iter;
 use rand::{Rng, thread_rng};
 use rand::distributions::Alphanumeric;
- 
 
-//const EC_TXID: &str = "f04279998823bfa545dc9feb7bd2de77f57a2e226686309b19c4c721bf7cfcc2";
-
+const HOST: &str ="localhost";
 const EC_ADDRESS: &str = "EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx";
 const FCT_PRIV_ADDRESS: &str = "Fs3E9gV6DXsYzf7Fqx1fVBQPQXV695eP3k5XbmHEZVRLkMdD9qCK";
 const FCT_PUB_ADDRESS: &str = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
@@ -19,9 +17,6 @@ const FBLOCK_KEYMR: &str = "aaaf4db6c1f5b716df0d63dcf9605f599d9e41eb635d8ba3e9dd
 const EBLOCK_KEYMR: &str = "1df118c1293858d1111762d6a0df92b12231c72deb14b53bfffc09b867db1f3b";
 const ECBLOCK_KEYMR: &str = "9b9e5b67b17f2e2d3d8405ea5fc227f6bf61fcc8c2422b36b11a7fce97018521";
 
-const HOST: &str ="192.168.121.131";
-
-
 
 fn random_string(len: usize)-> String {
     let mut rng = thread_rng();
@@ -30,8 +25,6 @@ fn random_string(len: usize)-> String {
             .take(len)
             .collect()
 }
-
-
 
 fn walletd()-> Walletd{
     let mut walletd = Walletd::new();
@@ -44,8 +37,6 @@ fn factomd()-> Factomd{
     factomd.host(HOST);
     factomd
 }
-
-
 
 fn get_result<F, R, E>(fut: F)-> Result<R, E>
     where
@@ -67,7 +58,6 @@ fn error_check(response: Response){
 }
 
 // Daemon
-
 #[test]
 fn ablock_by_height() {
     let query = factomd()
@@ -251,7 +241,6 @@ fn heights() {
     error_check(response);   
 }
 
-
 #[test]
 fn multiple_ec_balances() {
     let addresses: Vec<&str> = vec![EC_ADDRESS];
@@ -261,7 +250,6 @@ fn multiple_ec_balances() {
     let response = result.unwrap();
     error_check(response);   
 }
-
 
 #[test]
 fn multiple_fct_balances() {
@@ -282,7 +270,6 @@ fn pending_entries() {
     error_check(response);   
 }
 
-
 #[test]
 fn pending_transactions() {
     let query = factomd().pending_transactions(None)
@@ -291,7 +278,6 @@ fn pending_transactions() {
     let response = result.unwrap();
     error_check(response);   
 }
-
 
 #[test]
 fn factomd_properties() {
@@ -328,3 +314,215 @@ fn transaction() {
     error_check(response);  
 }
 
+// Walletd
+#[test]
+fn address() {
+    let query = walletd()
+                .address(FCT_PUB_ADDRESS)
+                .map(|response| response).map_err(|err| err);
+    let response = get_result(query).unwrap();
+    error_check(response);  
+}
+
+#[test]
+fn all_addresses() {
+    let query = walletd()
+                .all_addresses()
+                .map(|response| response).map_err(|err| err);
+    let response = get_result(query).unwrap();
+    error_check(response);  
+}
+
+#[test]
+fn compose_chain() {
+    let extids = vec!("Cargo Test", "test harness");
+    let content = "Here be the content";
+    let query = walletd()
+                .compose_chain(extids, content, EC_ADDRESS)
+                .map(|response| response).map_err(|err| err);
+    let response = get_result(query).unwrap();
+    error_check(response);  
+}
+
+#[test]
+fn compose_entry() {
+    let extids = vec!("entry testing");
+    let content = "Even more content";
+    let query = walletd()
+                .compose_entry(CHAINID ,extids, content, EC_ADDRESS)
+                .map(|response| response).map_err(|err| err);
+    let response = get_result(query).unwrap();
+    error_check(response);  
+}
+
+#[test]
+fn full_transaction(){
+    let txname = random_string(8);
+    let new_response = get_result(walletd().new_transaction(&txname)
+                .map(|res| res)
+                .map_err(|err| err)).unwrap();
+    error_check(new_response);
+
+    let input_response = get_result(walletd()
+                                        .add_input(&txname, FCT_PUB_ADDRESS, 2_000_000)
+                                        .map(|res| res)
+                                        .map_err(|err| err))
+                                        .unwrap();
+    error_check(input_response);
+
+    let output_response = get_result(walletd()
+                                        .add_output(&txname, FCT_PUB_ADDRESS2, 2_000_000)
+                                        .map(|res| res)
+                                        .map_err(|err| err))
+                                        .unwrap();
+    error_check(output_response);
+
+    let subfee_response = get_result(walletd()
+                                        .sub_fee(&txname, FCT_PUB_ADDRESS2)
+                                        .map(|res| res)
+                                        .map_err(|err| err))
+                                        .unwrap();
+
+    error_check(subfee_response);
+
+    let sign_response = get_result(walletd()
+                                        .sign_transaction(&txname)
+                                        .map(|res| res)
+                                        .map_err(|err| err))
+                                        .unwrap();
+    error_check(sign_response);
+
+    let query = walletd()
+                .compose_transaction(&txname)
+                .map(|response| response).map_err(|err| err);
+    let response = get_result(query).unwrap();
+    error_check(response);  
+
+}
+
+#[test]
+fn delete_transaction() {
+    let txname = random_string(8);
+    get_result(walletd().new_transaction(&txname)
+                .map(|res| res)
+                .map_err(|err| err)).unwrap();
+    let query = walletd()
+                .delete_transaction(&txname)
+                .map(|response| response).map_err(|err| err);
+    let response = get_result(query).unwrap();
+    error_check(response);  
+}
+
+#[test]
+fn generate_ec_address() {
+    let query = walletd()
+                .generate_ec_address()
+                .map(|response| response).map_err(|err| err);
+    let response = get_result(query).unwrap();
+    error_check(response);  
+}
+
+#[test]
+fn generate_factoid_address() {
+    let query = walletd()
+                .generate_factoid_address()
+                .map(|response| response).map_err(|err| err);
+    let response = get_result(query).unwrap();
+    error_check(response);  
+}
+
+#[test]
+fn get_height() {
+    let query = walletd()
+                .get_height()
+                .map(|response| response).map_err(|err| err);
+    let response = get_result(query).unwrap();
+    error_check(response);  
+}
+
+#[test]
+fn import_addresses() {
+    let ts = FCT_PRIV_ADDRESS;
+    let query = walletd()
+                .import_addresses(vec!(ts))
+                .map(|response| response).map_err(|err| err);
+    let response = get_result(query).unwrap();
+    error_check(response);  
+}
+
+#[test]
+fn new_transaction() {
+    let txname = random_string(8);
+    let query = walletd()
+                .new_transaction(&txname)
+                .map(|response| response).map_err(|err| err);
+    let response = get_result(query).unwrap();
+    error_check(response);  
+}
+
+#[test]
+fn walletd_properties() {
+    let query = walletd()
+                .properties()
+                .map(|response| response).map_err(|err| err);
+    let response = get_result(query).unwrap();
+    error_check(response);  
+}
+
+
+#[test]
+fn tmp_transactions() {
+    let query = walletd()
+                .tmp_transactions()
+                .map(|response| response).map_err(|err| err);
+    let response = get_result(query).unwrap();
+    error_check(response);  
+}
+
+#[test]
+fn transactions_range() {
+    let tx = api::SearchBy::Range(1,2);
+    let query = walletd()
+                .transactions(tx)
+                .map(|response| response).map_err(|err| err);
+    let response = get_result(query).unwrap();
+    error_check(response);  
+}
+
+#[test]
+fn transactions_address() {
+    let tx = api::SearchBy::Address(FCT_PUB_ADDRESS);
+    let query = walletd()
+                .transactions(tx)
+                .map(|response| response).map_err(|err| err);
+    let response = get_result(query).unwrap();
+    error_check(response);  
+}
+
+#[test]
+fn transactions_txid() {
+    let tx = api::SearchBy::Txid(TXID);
+    let query = walletd()
+                .transactions(tx)
+                .map(|response| response).map_err(|err| err);
+    let response = get_result(query).unwrap();
+    error_check(response);  
+}
+
+#[test]
+fn wallet_backup() {
+    let query = walletd()
+                .wallet_backup()
+                .map(|response| response).map_err(|err| err);
+    let response = get_result(query).unwrap();
+    error_check(response);  
+}
+
+#[test]
+fn wallet_balances() {
+    let query = walletd()
+                .wallet_balances()
+                .map(|response| response).map_err(|err| err);
+    let response = get_result(query).unwrap();
+    error_check(response);  
+}
