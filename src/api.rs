@@ -506,6 +506,13 @@ Note: If the input hash is non-existent, the returned fields will be as follows:
 impl Walletd{
 
 /**
+When adding entry credit outputs, the amount given is in factoshis, not entry credits. This means math is required to determine the correct amount of factoshis to pay to get X EC.
+
+(ECRate * ECTotalOutput)
+
+In our case, the rate is 1000, meaning 1000 entry credits per factoid. We added 10 entry credits, so we need 1,000 * 10 = 10,000 factoshis
+
+To get the ECRate search in the search bar above for “entry-credit-rate”
 
 */
     pub fn add_ec_output(self, txname: &str, address: &str, amount: u64)
@@ -520,6 +527,11 @@ impl Walletd{
     }
 
 /**
+Addfee is a shortcut and safeguard for adding the required additional factoshis to covert the fee. The fee is displayed in the returned transaction after each step, but addfee should be used instead of manually adding the additional input. This will help to prevent overpaying.
+
+Addfee will complain if your inputs and outputs do not match up. For example, in the steps above we added the inputs first. This was done intentionally to show a case of overpaying. Obviously, no one wants to overpay for a transaction, so addfee has returned an error and the message: ‘Inputs and outputs don’t add up’. This is because we have 2,000,000,000 factoshis as input and only 1,000,000,000 + 10,000 as output. Let’s correct the input by doing 'add-input’, and putting 1000010000 as the amount for the address. It will overwrite the previous input.
+
+Run the addfee again, and the feepaid and feerequired will match up
 
 */
     pub fn add_fee(self, txname: &str, address: &str)
@@ -533,6 +545,9 @@ impl Walletd{
     }
 
 /**
+Adds an input to the transaction from the given address. The public address is given, and the wallet must have the private key associated with the address to successfully sign the transaction.
+
+The input is measured in factoshis, so to send ten factoids, you must input 1,000,000,000 factoshis (without commas in JSON)
 
 */
     pub fn add_input(self, txname: &str, address: &str, amount: u64)
@@ -547,6 +562,9 @@ impl Walletd{
     }
 
 /**
+Adds a factoid address output to the transaction. Keep in mind the output is done in factoshis. 1 factoid is 1,000,000,000 factoshis.
+
+So to send ten factoids, you must send 1,000,000,000 factoshis (no commas in JSON).
 
 */
     pub fn add_output(self, txname: &str, address: &str, amount: u64)
@@ -561,6 +579,7 @@ impl Walletd{
     }
 
 /**
+Retrieve the public and private parts of a Factoid or Entry Credit address stored in the wallet.
 
 */
     pub fn address(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
@@ -572,6 +591,7 @@ impl Walletd{
     }
 
 /**
+Retrieve all of the Factoid and Entry Credit addresses stored in the wallet.
 
 */  
     pub fn all_addresses(self)-> impl Future<Item=Response, Error=FetchError>{
@@ -580,6 +600,9 @@ impl Walletd{
     }
 
 /**
+This method, compose-chain, will return the appropriate API calls to create a chain in factom. You must first call the commit-chain, then the reveal-chain API calls. To be safe, wait a few seconds after calling commit.
+
+Note: The firstentry fields are automatically hex encoded for the server to process.
 
 */
     pub fn compose_chain(self, extids: Vec<&str>, content: &str, ecpub: &str)
@@ -606,6 +629,9 @@ impl Walletd{
     }
 
 /**
+This method, compose-entry, will return the appropriate API calls to create an entry in factom. You must first call the commit-entry, then the reveal-entry API calls. To be safe, wait a few seconds after calling commit.
+
+Note: The entry fields are automatically hex encoded for the server to process.
 
 */
     pub fn compose_entry(self, chainid: &str, extids: Vec<&str>, content: &str, ecpub: &str)
@@ -628,6 +654,7 @@ impl Walletd{
     }
 
 /**
+Compose transaction marshals the transaction into a hex encoded string. The string can be inputted into the factomd API factoid-submit to be sent to the network.
 
 */
     pub fn compose_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
@@ -639,6 +666,7 @@ impl Walletd{
     }
 
 /**
+Deletes a working transaction in the wallet. The full transaction will be returned, and then deleted.
 
 */
     pub fn delete_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
@@ -650,6 +678,7 @@ impl Walletd{
     }
 
 /**
+Create a new Entry Credit Address and store it in the wallet.
 
 */
     pub fn generate_ec_address(self)-> impl Future<Item=Response, Error=FetchError>{
@@ -658,6 +687,7 @@ impl Walletd{
     }
 
 /**
+Create a new Entry Credit Address and store it in the wallet.
 
 */
     pub fn generate_factoid_address(self)-> impl Future<Item=Response, Error=FetchError>{
@@ -666,6 +696,7 @@ impl Walletd{
     }
 
 /**
+Get the current hight of blocks that have been cached by the wallet while syncing.
 
 */
     pub fn get_height(self)-> impl Future<Item=Response, Error=FetchError>{
@@ -674,6 +705,7 @@ impl Walletd{
     }
 
 /**
+Import Factoid and/or Entry Credit address secret keys into the wallet.
 
 */
     pub fn import_addresses(self, addresses: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
@@ -692,6 +724,9 @@ impl Walletd{
     }
 
 /**
+This will create a new transaction. The txid is in flux until the final transaction is signed. Until then, it should not be used or recorded.
+
+When dealing with transactions all factoids are represented in factoshis. 1 factoid is 1e8 factoshis, meaning you can never send anything less than 0 to a transaction (0.5).
 
 */
     pub fn new_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
@@ -703,6 +738,7 @@ impl Walletd{
     }
 
 /**
+Retrieve current properties of factom-walletd, including the wallet and wallet API versions.
 
 */
     pub fn properties(self)-> impl Future<Item=Response, Error=FetchError>{
@@ -711,6 +747,7 @@ impl Walletd{
     }
 
 /**
+Signs the transaction. It is now ready to be executed.
 
 */
     pub fn sign_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
@@ -722,6 +759,9 @@ impl Walletd{
     }
 
 /**
+When paying from a transaction, you can also make the receiving transaction pay for it. Using sub fee, you can use the receiving address in the parameters, and the fee will be deducted from their output amount.
+
+This allows a wallet to send all it’s factoids, by making the input and output the remaining balance, then using sub fee on the output address.
 
 */  
     pub fn sub_fee(self, tx_name: &str, address: &str)-> impl Future<Item=Response, Error=FetchError>{
@@ -734,6 +774,7 @@ impl Walletd{
     }
 
 /**
+Lists all the current working transactions in the wallet. These are transactions that are not yet sent.
 
 */
     pub fn tmp_transactions(self)-> impl Future<Item=Response, Error=FetchError>{
@@ -742,7 +783,18 @@ impl Walletd{
     } 
 
 /**
+There are a few ways to search for a transaction
 
+### Using a Range
+This will retrieve all transactions within a given block height range.
+
+### By TxID
+This will retrieve a transaction by the given TxID. This call is the fastest way to retrieve a transaction, but it will not display the height of the transaction. If a height is in the response, it will be 0. To retrieve the height of a transaction, use the 'By Address’ method
+
+This call in the backend actually pushes the request to factomd. For a more informative response, it is advised to use the factomd transaction method
+
+### By Address
+Retrieves all transactions that involve a particular address.
 */
     pub fn transactions(self, filter: SearchBy )-> impl Future<Item=Response, Error=FetchError>{
          
@@ -768,6 +820,7 @@ impl Walletd{
     } 
 
 /**
+Return the wallet seed and all addresses in the wallet for backup and offline storage.
 
 */
     pub fn wallet_backup(self)-> impl Future<Item=Response, Error=FetchError>{
@@ -776,6 +829,19 @@ impl Walletd{
     } 
 
 /**
+The wallet-balances API is used to query the acknowledged and saved balances for all addresses in the currently running factom-walletd. The saved balance is the last saved to the database and the acknowledged or “ack” balance is the balance after processing any in-flight transactions known to the Factom node responding to the API call. The factoid address balance will be returned in factoshis (a factoshi is 10^8 factoids) not factoids(FCT) and the entry credit balance will be returned in entry credits.
+
+    * If walletd and factomd are not both running this call will not work.
+
+    * If factomd is not loaded up all the way to last saved block it will return: “result”:{“Factomd Error”:“Factomd is not fully booted, please wait and try again.”}
+
+    * If an address is not in the correct format the call will return: “result”:{“Factomd Error”:”There was an error decoding an address”}
+
+    * If an address does not have a public and private address known to the wallet it will not be included in the balance.
+
+    * "fctaccountbalances" are the total of all factoid account balances returned in factoshis.
+
+    * "ecaccountbalances" are the total of all entry credit account balances returned in entry credits.
 
 */
     pub fn wallet_balances(self)-> impl Future<Item=Response, Error=FetchError>{
