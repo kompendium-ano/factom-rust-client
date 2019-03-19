@@ -1,16 +1,14 @@
 #![allow(dead_code, non_camel_case_types)]
 use std::collections::HashMap;
 use serde::{Serialize, Deserialize};
-use hyper::{Client, Uri};
 use hyper::rt::{Future, Stream};
-use hyper::{Method, Request, Body};
+use hyper::{Method, Request, Body, Client, Uri};
 use http::header::HeaderValue;
 use hyper_tls::HttpsConnector;
 use serde_json::{Value, json};
 
-
 mod tests;
-mod api;
+pub mod api;
 
 const JSONRPC : &str = "2.0";
 const ID: u32 = 0;
@@ -25,7 +23,7 @@ enum Outcome{
 }
 
 #[derive(Deserialize, Debug, PartialEq)]
-struct Response{
+pub struct Response{
     jsonrpc: String,
     id: u32,
     #[serde(flatten)]
@@ -33,7 +31,7 @@ struct Response{
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct ApiRequest{
+pub struct ApiRequest{
     jsonrpc: String,
     id: u32,
     method: String,
@@ -67,7 +65,7 @@ impl ApiRequest {
 }
 
 #[derive(Debug)]
-enum FetchError {
+pub enum FetchError {
     Http(hyper::Error),
     Json(serde_json::Error),
 }
@@ -168,7 +166,7 @@ impl Walletd {
 }
 
 
-struct Factomd {
+pub struct Factomd {
     scheme: &'static str,
     host: &'static str,
     port: u16,
