@@ -1,11 +1,11 @@
 #![allow(dead_code, non_camel_case_types)]
 use std::collections::HashMap;
-use serde::{Serialize, Deserialize};
-use hyper::rt::{Future, Stream};
-use hyper::{Method, Request, Body, Client, Uri};
 use http::header::HeaderValue;
-use hyper_tls::HttpsConnector;
 use serde_json::{Value, json};
+use hyper_tls::HttpsConnector;
+use serde::{Serialize, Deserialize};
+pub use hyper::rt::{self, Future, Stream};
+use hyper::{Method, Request, Body, Client, Uri};
 
 mod tests;
 pub mod api;
@@ -20,17 +20,34 @@ const JSONRPC : &str = "2.0";
 const ID: u32 = 0;
 
 #[derive(Debug, Deserialize, PartialEq, Clone)]
-enum Outcome{
+pub enum Outcome{
     result(Value),
     error(HashMap<String, Value>)
 }
 
 #[derive(Deserialize, Debug, PartialEq)]
 pub struct Response{
-    jsonrpc: String,
-    id: u32,
+    pub jsonrpc: String,
+    pub id: u32,
     #[serde(flatten)]
-    result: Outcome
+    pub result: Outcome
+}
+
+impl Response {
+    // check for error
+    pub fn is_error(self)-> bool {
+        match self.result {
+            Outcome::error(_) => true,
+            Outcome::result(_) => false
+        }
+    }
+    //inverse method
+    pub fn success(self)-> bool {
+        match self.result {
+            Outcome::error(_) => false,
+            Outcome::result(_) => true
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -93,7 +110,7 @@ pub struct Factom{
 }
 
 impl Factom {
-    fn new()->Factom{
+    pub fn new()->Factom{
         let mut tmp_struct = Factom {
             scheme: DEFAULT_SCHEME,
             host: HOST,
@@ -105,36 +122,35 @@ impl Factom {
             uri: Uri::default(),
             wallet_uri: Uri::default()
         };
-        tmp_struct.build();
-        tmp_struct
+        tmp_struct.build()
     }
 
-    fn build(&mut self)-> Self{
+    pub fn build(&mut self)-> Self{
         self.uri = self.build_uri(self.port);
         self.wallet_uri = self.build_uri(self.wallet_port);
         self.clone()
     }
 
-    fn https(&mut self)-> Self{
+    pub fn https(&mut self)-> Self{
         self.scheme = "https";
         self.clone()
     }
 
-    fn host(&mut self, host: &'static str)-> Self{ 
+    pub fn host(&mut self, host: &'static str)-> Self{ 
         self.host = host;
         self.clone()
     }
 
-    fn port(&mut self, port: u16)-> Self{
+    pub fn port(&mut self, port: u16)-> Self{
         self.port = port;
         self.clone()
     }
-    fn api_version(&mut self, version: u8)-> Self{
+    pub fn api_version(&mut self, version: u8)-> Self{
         self.api_version = version;
         self.clone()
     }
 
-    fn json_rpc_version(&mut self, version: &'static str)-> Self{
+    pub fn json_rpc_version(&mut self, version: &'static str)-> Self{
         self.json_rpc_version = version;
         self.clone()
     }
@@ -189,6 +205,17 @@ impl Factom {
                             })
     }
 }
+
+// Retrieves future synchronously, blocks until Result is returned
+pub fn fetch<F, R, E>(fut: F)-> Result<R, E>
+    where
+        F: Send + 'static + Future<Item = R, Error = E>,
+        R: Send + 'static,
+        E: Send + 'static,
+    {
+        let mut runtime = tokio::runtime::Runtime::new().expect("Unable to create a tokio runtime");
+        runtime.block_on(fut)
+    }
 
 
 
