@@ -80,7 +80,7 @@ impl From<serde_json::Error> for FetchError {
     }
 }
 #[derive(Clone)]
-struct Factom{
+pub struct Factom{
     scheme: &'static str,
     host: &'static str,
     wallet_host: &'static str,
