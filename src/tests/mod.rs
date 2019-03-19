@@ -32,16 +32,6 @@ fn factom()-> Factom{
             .build()
 }
 
-fn get_result<F, R, E>(fut: F)-> Result<R, E>
-    where
-        F: Send + 'static + Future<Item = R, Error = E>,
-        R: Send + 'static,
-        E: Send + 'static,
-    {
-        let mut runtime = tokio::runtime::Runtime::new().expect("Unable to create a tokio runtime");
-        runtime.block_on(fut)
-    }
-
 fn error_check(response: Response){
     let result = response.result;
     if let Outcome::error(err) = &result{
@@ -54,8 +44,9 @@ fn error_check(response: Response){
 fn ablock_by_height() {
     let query = factom()
                 .ablock_by_height(2)
-                .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+                .map(|response| response)
+                .map_err(|err| err);
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -66,7 +57,7 @@ fn ack() {
     let query = factom()
                 .ack(hash, tx_type, None)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -76,7 +67,7 @@ fn admin_block() {
     let query = factom()
                 .admin_block(keymr)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -86,7 +77,7 @@ fn chain_head() {
     let query = factom()
                 .chain_head(chainid)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -95,7 +86,7 @@ fn current_minute() {
     let query = factom()
                 .current_minute()
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -104,7 +95,7 @@ fn dblock_by_height() {
     let query = factom()
                 .dblock_by_height(2)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -114,7 +105,7 @@ fn directory_block() {
     let query = factom()
                 .directory_block(keymr)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -123,7 +114,7 @@ fn directory_block_head() {
     let query = factom()
                 .directory_block_head()
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -132,7 +123,7 @@ fn ecblock_by_height() {
     let query = factom()
                 .ecblock_by_height(2)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -142,7 +133,7 @@ fn entry() {
     let hash = ENTRYHASH;
     let query = factom().entry(hash)
                             .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -152,7 +143,7 @@ fn entryblock() {
     let query = factom()
                 .entry_block(keymr)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -162,7 +153,7 @@ fn entry_credit_balance() {
     let query = factom()
                 .entry_credit_balance(address)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -172,7 +163,7 @@ fn entry_credit_block() {
     let query = factom()
                 .entry_credit_block(keymr)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -181,7 +172,7 @@ fn entry_credit_rate() {
     let query = factom()
                 .entry_credit_rate()
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -191,7 +182,7 @@ fn factoid_balance() {
     let query = factom()
                 .factoid_balance(address)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -201,7 +192,7 @@ fn factoid_block() {
     let query = factom()
                 .factoid_block(keymr)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -211,7 +202,7 @@ fn factoid_submit() {
     let query = factom()
                 .factoid_submit(tx)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -220,7 +211,7 @@ fn fblock_by_height() {
     let query = factom()
                 .fblock_by_height(1)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -228,7 +219,7 @@ fn fblock_by_height() {
 fn heights() {
     let query = factom().heights()
                             .map(|response| response).map_err(|err| err);
-    let result = get_result(query);
+    let result = fetch(query);
     let response = result.unwrap();
     error_check(response);   
 }
@@ -238,7 +229,7 @@ fn multiple_ec_balances() {
     let addresses: Vec<&str> = vec![EC_ADDRESS];
     let query = factom().multiple_ec_balances(addresses)
                             .map(|response| response).map_err(|err| err);
-    let result = get_result(query);
+    let result = fetch(query);
     let response = result.unwrap();
     error_check(response);   
 }
@@ -248,7 +239,7 @@ fn multiple_fct_balances() {
     let addresses: Vec<&str> = vec![FCT_PUB_ADDRESS];
     let query = factom().multiple_fct_balances(addresses)
                             .map(|response| response).map_err(|err| err);
-    let result = get_result(query);
+    let result = fetch(query);
     let response = result.unwrap();
     error_check(response);   
 }
@@ -257,7 +248,7 @@ fn multiple_fct_balances() {
 fn pending_entries() {
     let query = factom().pending_entries()
                             .map(|response| response).map_err(|err| err);
-    let result = get_result(query);
+    let result = fetch(query);
     let response = result.unwrap();
     error_check(response);   
 }
@@ -266,7 +257,7 @@ fn pending_entries() {
 fn pending_transactions() {
     let query = factom().pending_transactions(None)
                             .map(|response| response).map_err(|err| err);
-    let result = get_result(query);
+    let result = fetch(query);
     let response = result.unwrap();
     error_check(response);   
 }
@@ -275,7 +266,7 @@ fn pending_transactions() {
 fn factomd_properties() {
     let query = factom().properties()
                             .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);   
 }
 
@@ -284,7 +275,7 @@ fn raw_data() {
     let hash = ENTRYHASH;
     let query = factom().raw_data(hash)
                             .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);   
 }
 
@@ -293,7 +284,7 @@ fn receipt() {
     let hash = ENTRYHASH;
     let query = factom().receipt(hash)
                             .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -302,7 +293,7 @@ fn transaction() {
     let hash = TXID;
     let query = factom().transaction(hash)
                             .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -312,7 +303,7 @@ fn address() {
     let query = factom()
                 .address(FCT_PUB_ADDRESS)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -321,7 +312,7 @@ fn all_addresses() {
     let query = factom()
                 .all_addresses()
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -332,7 +323,7 @@ fn compose_chain() {
     let query = factom()
                 .compose_chain(extids, content, EC_ADDRESS)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -343,33 +334,33 @@ fn compose_entry() {
     let query = factom()
                 .compose_entry(CHAINID ,extids, content, EC_ADDRESS)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
 #[test]
 fn full_transaction(){
     let txname = random_string(8);
-    let new_response = get_result(factom().new_transaction(&txname)
+    let new_response = fetch(factom().new_transaction(&txname)
                 .map(|res| res)
                 .map_err(|err| err)).unwrap();
     error_check(new_response);
 
-    let input_response = get_result(factom()
+    let input_response = fetch(factom()
                                         .add_input(&txname, FCT_PUB_ADDRESS, 2_000_000)
                                         .map(|res| res)
                                         .map_err(|err| err))
                                         .unwrap();
     error_check(input_response);
 
-    let output_response = get_result(factom()
+    let output_response = fetch(factom()
                                         .add_output(&txname, FCT_PUB_ADDRESS2, 2_000_000)
                                         .map(|res| res)
                                         .map_err(|err| err))
                                         .unwrap();
     error_check(output_response);
 
-    let subfee_response = get_result(factom()
+    let subfee_response = fetch(factom()
                                         .sub_fee(&txname, FCT_PUB_ADDRESS2)
                                         .map(|res| res)
                                         .map_err(|err| err))
@@ -377,7 +368,7 @@ fn full_transaction(){
 
     error_check(subfee_response);
 
-    let sign_response = get_result(factom()
+    let sign_response = fetch(factom()
                                         .sign_transaction(&txname)
                                         .map(|res| res)
                                         .map_err(|err| err))
@@ -387,7 +378,7 @@ fn full_transaction(){
     let query = factom()
                 .compose_transaction(&txname)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 
 }
@@ -395,13 +386,13 @@ fn full_transaction(){
 #[test]
 fn delete_transaction() {
     let txname = random_string(8);
-    get_result(factom().new_transaction(&txname)
+    fetch(factom().new_transaction(&txname)
                 .map(|res| res)
                 .map_err(|err| err)).unwrap();
     let query = factom()
                 .delete_transaction(&txname)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -410,7 +401,7 @@ fn generate_ec_address() {
     let query = factom()
                 .generate_ec_address()
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -419,7 +410,7 @@ fn generate_factoid_address() {
     let query = factom()
                 .generate_factoid_address()
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -428,17 +419,17 @@ fn get_height() {
     let query = factom()
                 .get_height()
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
 #[test]
 fn import_addresses() {
-    let ts = FCT_PRIV_ADDRESS;
+    let addresses = vec!(FCT_PRIV_ADDRESS);
     let query = factom()
-                .import_addresses(vec!(ts))
+                .import_addresses(addresses)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -448,7 +439,7 @@ fn new_transaction() {
     let query = factom()
                 .new_transaction(&txname)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -457,7 +448,7 @@ fn walletd_properties() {
     let query = factom()
                 .properties()
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -467,7 +458,7 @@ fn tmp_transactions() {
     let query = factom()
                 .tmp_transactions()
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -477,7 +468,7 @@ fn transactions_range() {
     let query = factom()
                 .transactions(tx)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -487,7 +478,7 @@ fn transactions_address() {
     let query = factom()
                 .transactions(tx)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -497,7 +488,7 @@ fn transactions_txid() {
     let query = factom()
                 .transactions(tx)
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -506,7 +497,7 @@ fn wallet_backup() {
     let query = factom()
                 .wallet_backup()
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
 
@@ -515,6 +506,6 @@ fn wallet_balances() {
     let query = factom()
                 .wallet_balances()
                 .map(|response| response).map_err(|err| err);
-    let response = get_result(query).unwrap();
+    let response = fetch(query).unwrap();
     error_check(response);  
 }
