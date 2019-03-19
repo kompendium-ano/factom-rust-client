@@ -3,7 +3,7 @@ use std::iter;
 use rand::{Rng, thread_rng};
 use rand::distributions::Alphanumeric;
 
-const HOST: &str ="localhost";
+const HOST: &str ="192.168.121.131";
 const EC_ADDRESS: &str = "EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx";
 const FCT_PRIV_ADDRESS: &str = "Fs3E9gV6DXsYzf7Fqx1fVBQPQXV695eP3k5XbmHEZVRLkMdD9qCK";
 const FCT_PUB_ADDRESS: &str = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
@@ -26,16 +26,10 @@ fn random_string(len: usize)-> String {
             .collect()
 }
 
-fn walletd()-> Walletd{
-    let mut walletd = Walletd::new();
-    walletd.host(HOST);
-    walletd
-}
-
-fn factomd()-> Factomd{
-    let mut factomd = Factomd::new();
-    factomd.host(HOST);
-    factomd
+fn factom()-> Factom{
+    Factom::new()
+            .host(HOST)
+            .build()
 }
 
 fn get_result<F, R, E>(fut: F)-> Result<R, E>
@@ -58,7 +52,7 @@ fn error_check(response: Response){
 // Daemon
 #[test]
 fn ablock_by_height() {
-    let query = factomd()
+    let query = factom()
                 .ablock_by_height(2)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -69,7 +63,7 @@ fn ablock_by_height() {
 fn ack() {
     let hash = ENTRYHASH;
     let tx_type = "f";
-    let query = factomd()
+    let query = factom()
                 .ack(hash, tx_type, None)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -79,7 +73,7 @@ fn ack() {
 #[test]
 fn admin_block() {
     let keymr = ABLOCK_KEYMR;
-    let query = factomd()
+    let query = factom()
                 .admin_block(keymr)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -89,7 +83,7 @@ fn admin_block() {
 #[test]
 fn chain_head() {
     let chainid = CHAINID;
-    let query = factomd()
+    let query = factom()
                 .chain_head(chainid)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -98,7 +92,7 @@ fn chain_head() {
 
 #[test]
 fn current_minute() {
-    let query = factomd()
+    let query = factom()
                 .current_minute()
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -107,7 +101,7 @@ fn current_minute() {
 
 #[test]
 fn dblock_by_height() {
-    let query = factomd()
+    let query = factom()
                 .dblock_by_height(2)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -117,7 +111,7 @@ fn dblock_by_height() {
 #[test]
 fn directory_block() {
     let keymr = DBLOCK_KEYMR;
-    let query = factomd()
+    let query = factom()
                 .directory_block(keymr)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -126,7 +120,7 @@ fn directory_block() {
 
 #[test]
 fn directory_block_head() {
-    let query = factomd()
+    let query = factom()
                 .directory_block_head()
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -135,7 +129,7 @@ fn directory_block_head() {
 
 #[test]
 fn ecblock_by_height() {
-    let query = factomd()
+    let query = factom()
                 .ecblock_by_height(2)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -146,7 +140,7 @@ fn ecblock_by_height() {
 #[test]
 fn entry() {
     let hash = ENTRYHASH;
-    let query = factomd().entry(hash)
+    let query = factom().entry(hash)
                             .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
     error_check(response);  
@@ -155,7 +149,7 @@ fn entry() {
 #[test]
 fn entryblock() {
     let keymr = EBLOCK_KEYMR;
-    let query = factomd()
+    let query = factom()
                 .entry_block(keymr)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -165,7 +159,7 @@ fn entryblock() {
 #[test]
 fn entry_credit_balance() {
     let address = EC_ADDRESS;
-    let query = factomd()
+    let query = factom()
                 .entry_credit_balance(address)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -175,7 +169,7 @@ fn entry_credit_balance() {
 #[test]
 fn entry_credit_block() {
     let keymr = ECBLOCK_KEYMR;
-    let query = factomd()
+    let query = factom()
                 .entry_credit_block(keymr)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -184,7 +178,7 @@ fn entry_credit_block() {
 
 #[test]
 fn entry_credit_rate() {
-    let query = factomd()
+    let query = factom()
                 .entry_credit_rate()
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -194,7 +188,7 @@ fn entry_credit_rate() {
 #[test]
 fn factoid_balance() {
     let address = FCT_PUB_ADDRESS;
-    let query = factomd()
+    let query = factom()
                 .factoid_balance(address)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -204,7 +198,7 @@ fn factoid_balance() {
 #[test]
 fn factoid_block() {
     let keymr = FBLOCK_KEYMR;
-    let query = factomd()
+    let query = factom()
                 .factoid_block(keymr)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -214,7 +208,7 @@ fn factoid_block() {
 #[test]
 fn factoid_submit() {
     let tx = "0201565d109233010100b0a0e100646f3e8750c550e4582eca5047546ffef89c13a175985e320232bacac81cc428afd7c200ce7b98bfdae90f942bc1fe88c3dd44d8f4c81f4eeb88a5602da05abc82ffdb5301718b5edd2914acc2e4677f336c1a32736e5e9bde13663e6413894f57ec272e28dc1908f98b79df30005a99df3c5caf362722e56eb0e394d20d61d34ff66c079afad1d09eee21dcd4ddaafbb65aacea4d5c1afcd086377d77172f15b3aa32250a";
-    let query = factomd()
+    let query = factom()
                 .factoid_submit(tx)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -223,7 +217,7 @@ fn factoid_submit() {
 
 #[test]
 fn fblock_by_height() {
-    let query = factomd()
+    let query = factom()
                 .fblock_by_height(1)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -232,7 +226,7 @@ fn fblock_by_height() {
 
 #[test]
 fn heights() {
-    let query = factomd().heights()
+    let query = factom().heights()
                             .map(|response| response).map_err(|err| err);
     let result = get_result(query);
     let response = result.unwrap();
@@ -242,7 +236,7 @@ fn heights() {
 #[test]
 fn multiple_ec_balances() {
     let addresses: Vec<&str> = vec![EC_ADDRESS];
-    let query = factomd().multiple_ec_balances(addresses)
+    let query = factom().multiple_ec_balances(addresses)
                             .map(|response| response).map_err(|err| err);
     let result = get_result(query);
     let response = result.unwrap();
@@ -252,7 +246,7 @@ fn multiple_ec_balances() {
 #[test]
 fn multiple_fct_balances() {
     let addresses: Vec<&str> = vec![FCT_PUB_ADDRESS];
-    let query = factomd().multiple_fct_balances(addresses)
+    let query = factom().multiple_fct_balances(addresses)
                             .map(|response| response).map_err(|err| err);
     let result = get_result(query);
     let response = result.unwrap();
@@ -261,7 +255,7 @@ fn multiple_fct_balances() {
 
 #[test]
 fn pending_entries() {
-    let query = factomd().pending_entries()
+    let query = factom().pending_entries()
                             .map(|response| response).map_err(|err| err);
     let result = get_result(query);
     let response = result.unwrap();
@@ -270,7 +264,7 @@ fn pending_entries() {
 
 #[test]
 fn pending_transactions() {
-    let query = factomd().pending_transactions(None)
+    let query = factom().pending_transactions(None)
                             .map(|response| response).map_err(|err| err);
     let result = get_result(query);
     let response = result.unwrap();
@@ -279,7 +273,7 @@ fn pending_transactions() {
 
 #[test]
 fn factomd_properties() {
-    let query = factomd().properties()
+    let query = factom().properties()
                             .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
     error_check(response);   
@@ -288,7 +282,7 @@ fn factomd_properties() {
 #[test]
 fn raw_data() {
     let hash = ENTRYHASH;
-    let query = factomd().raw_data(hash)
+    let query = factom().raw_data(hash)
                             .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
     error_check(response);   
@@ -297,7 +291,7 @@ fn raw_data() {
 #[test]
 fn receipt() {
     let hash = ENTRYHASH;
-    let query = factomd().receipt(hash)
+    let query = factom().receipt(hash)
                             .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
     error_check(response);  
@@ -306,7 +300,7 @@ fn receipt() {
 #[test]
 fn transaction() {
     let hash = TXID;
-    let query = factomd().transaction(hash)
+    let query = factom().transaction(hash)
                             .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
     error_check(response);  
@@ -315,7 +309,7 @@ fn transaction() {
 // Walletd
 #[test]
 fn address() {
-    let query = walletd()
+    let query = factom()
                 .address(FCT_PUB_ADDRESS)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -324,7 +318,7 @@ fn address() {
 
 #[test]
 fn all_addresses() {
-    let query = walletd()
+    let query = factom()
                 .all_addresses()
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -335,7 +329,7 @@ fn all_addresses() {
 fn compose_chain() {
     let extids = vec!("Cargo Test", "test harness");
     let content = "Here be the content";
-    let query = walletd()
+    let query = factom()
                 .compose_chain(extids, content, EC_ADDRESS)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -346,7 +340,7 @@ fn compose_chain() {
 fn compose_entry() {
     let extids = vec!("entry testing");
     let content = "Even more content";
-    let query = walletd()
+    let query = factom()
                 .compose_entry(CHAINID ,extids, content, EC_ADDRESS)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -356,26 +350,26 @@ fn compose_entry() {
 #[test]
 fn full_transaction(){
     let txname = random_string(8);
-    let new_response = get_result(walletd().new_transaction(&txname)
+    let new_response = get_result(factom().new_transaction(&txname)
                 .map(|res| res)
                 .map_err(|err| err)).unwrap();
     error_check(new_response);
 
-    let input_response = get_result(walletd()
+    let input_response = get_result(factom()
                                         .add_input(&txname, FCT_PUB_ADDRESS, 2_000_000)
                                         .map(|res| res)
                                         .map_err(|err| err))
                                         .unwrap();
     error_check(input_response);
 
-    let output_response = get_result(walletd()
+    let output_response = get_result(factom()
                                         .add_output(&txname, FCT_PUB_ADDRESS2, 2_000_000)
                                         .map(|res| res)
                                         .map_err(|err| err))
                                         .unwrap();
     error_check(output_response);
 
-    let subfee_response = get_result(walletd()
+    let subfee_response = get_result(factom()
                                         .sub_fee(&txname, FCT_PUB_ADDRESS2)
                                         .map(|res| res)
                                         .map_err(|err| err))
@@ -383,14 +377,14 @@ fn full_transaction(){
 
     error_check(subfee_response);
 
-    let sign_response = get_result(walletd()
+    let sign_response = get_result(factom()
                                         .sign_transaction(&txname)
                                         .map(|res| res)
                                         .map_err(|err| err))
                                         .unwrap();
     error_check(sign_response);
 
-    let query = walletd()
+    let query = factom()
                 .compose_transaction(&txname)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -401,10 +395,10 @@ fn full_transaction(){
 #[test]
 fn delete_transaction() {
     let txname = random_string(8);
-    get_result(walletd().new_transaction(&txname)
+    get_result(factom().new_transaction(&txname)
                 .map(|res| res)
                 .map_err(|err| err)).unwrap();
-    let query = walletd()
+    let query = factom()
                 .delete_transaction(&txname)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -413,7 +407,7 @@ fn delete_transaction() {
 
 #[test]
 fn generate_ec_address() {
-    let query = walletd()
+    let query = factom()
                 .generate_ec_address()
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -422,7 +416,7 @@ fn generate_ec_address() {
 
 #[test]
 fn generate_factoid_address() {
-    let query = walletd()
+    let query = factom()
                 .generate_factoid_address()
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -431,7 +425,7 @@ fn generate_factoid_address() {
 
 #[test]
 fn get_height() {
-    let query = walletd()
+    let query = factom()
                 .get_height()
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -441,7 +435,7 @@ fn get_height() {
 #[test]
 fn import_addresses() {
     let ts = FCT_PRIV_ADDRESS;
-    let query = walletd()
+    let query = factom()
                 .import_addresses(vec!(ts))
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -451,7 +445,7 @@ fn import_addresses() {
 #[test]
 fn new_transaction() {
     let txname = random_string(8);
-    let query = walletd()
+    let query = factom()
                 .new_transaction(&txname)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -460,7 +454,7 @@ fn new_transaction() {
 
 #[test]
 fn walletd_properties() {
-    let query = walletd()
+    let query = factom()
                 .properties()
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -470,7 +464,7 @@ fn walletd_properties() {
 
 #[test]
 fn tmp_transactions() {
-    let query = walletd()
+    let query = factom()
                 .tmp_transactions()
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -480,7 +474,7 @@ fn tmp_transactions() {
 #[test]
 fn transactions_range() {
     let tx = api::SearchBy::Range(1,2);
-    let query = walletd()
+    let query = factom()
                 .transactions(tx)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -490,7 +484,7 @@ fn transactions_range() {
 #[test]
 fn transactions_address() {
     let tx = api::SearchBy::Address(FCT_PUB_ADDRESS);
-    let query = walletd()
+    let query = factom()
                 .transactions(tx)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -500,7 +494,7 @@ fn transactions_address() {
 #[test]
 fn transactions_txid() {
     let tx = api::SearchBy::Txid(TXID);
-    let query = walletd()
+    let query = factom()
                 .transactions(tx)
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -509,7 +503,7 @@ fn transactions_txid() {
 
 #[test]
 fn wallet_backup() {
-    let query = walletd()
+    let query = factom()
                 .wallet_backup()
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
@@ -518,7 +512,7 @@ fn wallet_backup() {
 
 #[test]
 fn wallet_balances() {
-    let query = walletd()
+    let query = factom()
                 .wallet_balances()
                 .map(|response| response).map_err(|err| err);
     let response = get_result(query).unwrap();
