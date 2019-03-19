@@ -9,7 +9,8 @@ pub fn str_to_hex(utf8: &str) -> String {
   strs.join("")
 }
 
-impl Factomd{
+// Daemon
+impl Factom{
 /**
 Retrieve administrative blocks for any given height.
 
@@ -20,9 +21,7 @@ The ABEntries are detailed [here](https://github.com/FactomProject/FactomDocs/bl
     pub fn ablock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("height".to_string(), json!(height));
-        self.api_call(ApiRequest::method("ablock-by-height")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("ablock-by-height", params)
     }
 
 /**
@@ -68,9 +67,7 @@ Why f? It is short for 000000000000000000000000000000000000000000000000000000000
         if let Some(tx) = full_transaction{
             params.insert("fulltransaction".to_string(), json!(tx));
         }
-        self.api_call(ApiRequest::method("ack")
-                                    .parameters(params)
-                                    .to_json())
+        self.api_call("ack", params)
     }
 
 /**
@@ -79,9 +76,7 @@ Retrieve a specified admin block given its merkle root key.
     pub fn admin_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("keymr".to_string(), json!(keymr));
-        self.api_call(ApiRequest::method("admin-block")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("admin-block", params)
     }
 
 /**
@@ -90,9 +85,7 @@ Return the keymr of the head of the chain for a chain ID (the unique hash create
     pub fn chain_head(self, chainid: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("chainid".to_string(), json!(chainid));
-        self.api_call(ApiRequest::method("chain-head")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("chain-head", params)
     }
 
 /**
@@ -108,9 +101,7 @@ It is possible to be unable to send a commit, if the commit already exists (if y
     pub fn commit_chain(self, message: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("message".to_string(), json!(message));
-        self.api_call(ApiRequest::method("commit-chain")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("commit-chain", params)
     }
 
 /**
@@ -126,9 +117,7 @@ It is possible to be unable to send a commit, if the commit already exists (if y
     pub fn commit_entry(self, message: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("message".to_string(), json!(message));
-        self.api_call(ApiRequest::method("commit-entry")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("commit-entry", params)
     }
 
 /**
@@ -156,8 +145,7 @@ The current-minute API call returns:
 
 */
     pub fn current_minute(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.api_call(ApiRequest::method("current-minute")
-                                .to_json())
+        self.api_call("current-minute", HashMap::new())
     }
 
 /**
@@ -166,9 +154,7 @@ Retrieve a directory block given only its height.
     pub fn dblock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("height".to_string(), json!(height));
-        self.api_call(ApiRequest::method("dblock-by-height")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("dblock-by-height", params)
     }
 
 
@@ -178,17 +164,14 @@ Every directory block has a KeyMR (Key Merkle Root), which can be used to retrie
     pub fn directory_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("keymr".to_string(), json!(keymr));
-        self.api_call(ApiRequest::method("directory-block")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("directory-block", params)
     }
 
 /**
 The directory block head is the last known directory block by factom, or in other words, the most recently recorded block. This can be used to grab the latest block and the information required to traverse the entire blockchain. 
 */
     pub fn directory_block_head(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.api_call(ApiRequest::method("directory-block-head")
-                                .to_json())
+        self.api_call("directory-block-head", HashMap::new())
     }
 
 /**
@@ -197,9 +180,7 @@ Retrieve the entry credit block for any given height. These blocks contain entry
     pub fn ecblock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("height".to_string(), json!(height));
-        self.api_call(ApiRequest::method("ecblock-by-height")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("ecblock-by-height", params)
     }
 
 /**
@@ -208,9 +189,7 @@ Get an Entry from factomd specified by the Entry Hash.
     pub fn entry(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("hash".to_string(), json!(hash));
-        self.api_call(ApiRequest::method("entry")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("entry", params)
     }
 
 /**
@@ -220,10 +199,7 @@ Retrieve a specified entry block given its merkle root key. The entry block cont
     pub fn entry_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("keymr".to_string(), json!(keymr));
-        let json = ApiRequest::method("entry-block")
-                                .parameters(params)
-                                .to_json();
-        self.api_call(json)
+        self.api_call("entry-block", params)
     }
 
 /**
@@ -233,9 +209,7 @@ Return its current balance for a specific entry credit address.
     pub fn entry_credit_balance(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("address".to_string(), json!(address));
-        self.api_call(ApiRequest::method("entry-credit-balance")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("entry-credit-balance", params)
     }
 
 /**
@@ -245,9 +219,7 @@ Retrieve a specified entrycredit block given its merkle root key. The numbers ar
     pub fn entry_credit_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("keymr".to_string(), json!(keymr));
-        self.api_call(ApiRequest::method("entrycredit-block")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("entrycredit-block", params)
     }
 
 /**
@@ -255,8 +227,7 @@ Returns the number of Factoshis (Factoids *10^-8) that purchase a single Entry C
 
 */
     pub fn entry_credit_rate(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.api_call(ApiRequest::method("entry-credit-rate")
-                                .to_json())
+        self.api_call("entry-credit-rate", HashMap::new())
     }
 
 /**
@@ -266,9 +237,7 @@ This call returns the number of Factoshis (Factoids *10^-8) that are currently a
     pub fn factoid_balance(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("address".to_string(), json!(address));
-        self.api_call(ApiRequest::method("factoid-balance")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("factoid-balance", params)
     }
 
 /**
@@ -278,9 +247,7 @@ Retrieve a specified factoid block given its merkle root key.
     pub fn factoid_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("keymr".to_string(), json!(keymr));
-        self.api_call(ApiRequest::method("factoid-block")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("factoid-block", params)
     }
 
 /**
@@ -292,9 +259,7 @@ The factoid-submit API takes a specifically formatted message encoded in hex tha
     pub fn factoid_submit(self, transaction: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("transaction".to_string(), json!(transaction));
-        self.api_call(ApiRequest::method("factoid-submit")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("factoid-submit", params)
     }
 
 /**
@@ -304,9 +269,7 @@ Retrieve the factoid block for any given height. These blocks contain factoid tr
     pub fn fblock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("height".to_string(), json!(height));
-        self.api_call(ApiRequest::method("fblock-by-height")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("fblock-by-height", params)
     }
 
 /**
@@ -321,8 +284,7 @@ A fully synced node should show the same number for all, (except between minute 
 
 */
     pub fn heights(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.api_call(ApiRequest::method("heights")
-                                .to_json())
+        self.api_call("heights", HashMap::new())
     }
 
 /**
@@ -350,9 +312,7 @@ The multiple-ec-balances API is used to query the acknowledged and saved balance
     pub fn multiple_ec_balances(self, addresses: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("addresses".to_string(), json!(addresses));
-        self.api_call(ApiRequest::method("multiple-ec-balances")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("multiple-ec-balances", params)
     }
 
 /**
@@ -380,9 +340,7 @@ The multiple-fct-balances API is used to query the acknowledged and saved balanc
     pub fn multiple_fct_balances(self, addresses: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("addresses".to_string(), json!(addresses));
-        self.api_call(ApiRequest::method("multiple-fct-balances")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("multiple-fct-balances", params)
     }
 
 /**
@@ -390,8 +348,7 @@ Returns an array of the entries that have been submitted but have not been recor
 
 */
     pub fn pending_entries(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.api_call(ApiRequest::method("pending-entries")
-                                .to_json())
+        self.api_call("pending-entries", HashMap::new())
     }
 
 /**
@@ -403,9 +360,7 @@ Returns an array of factoid transactions that have not yet been recorded in the 
         if let Some(add) = address {
             params.insert("address".to_string(), json!(add));
         }
-        self.api_call(ApiRequest::method("pending-transactions")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("pending-transactions", params)
     }
 
 /**
@@ -413,8 +368,7 @@ Retrieve current properties of the Factom system, including the software and the
 
 */
     pub fn properties(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.api_call(ApiRequest::method("properties")
-                                .to_json())
+        self.api_call("properties", HashMap::new())
     }
 
 /**
@@ -424,9 +378,7 @@ Retrieve an entry or transaction in raw format, the data is a hex encoded string
     pub fn raw_data(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("hash".to_string(), json!(hash));
-        self.api_call(ApiRequest::method("raw-data")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("raw-data", params)
     }
 
 /**
@@ -436,9 +388,7 @@ Retrieve a receipt providing cryptographically verifiable proof that information
     pub fn receipt(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("hash".to_string(), json!(hash));
-        self.api_call(ApiRequest::method("receipt")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("receipt", params)
     }
 
 /**
@@ -451,9 +401,7 @@ The compose-chain api call has two api calls in its response: commit-chain and r
     pub fn reveal_chain(self, entry: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("entry".to_string(), json!(entry));
-        self.api_call(ApiRequest::method("reveal-chain")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("reveal-chain", params)
     }
 
 /**
@@ -466,9 +414,7 @@ The compose-entry api call has two api calls in it’s response: commit-entry an
     pub fn reveal_entry(self, entry: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("entry".to_string(), json!(entry));
-        self.api_call(ApiRequest::method("reveal-entry")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("reveal-entry", params)
     }
 
 /**
@@ -498,13 +444,12 @@ If the input hash is non-existent, the returned fields will be as follows:
     pub fn transaction(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("hash".to_string(), json!(hash));
-        self.api_call(ApiRequest::method("transaction")
-                                .parameters(params)
-                                .to_json())
+        self.api_call("transaction", params)
     }
 }
 
-impl Walletd{
+// Wallet functions
+impl Factom{
 
 /**
 When adding entry credit outputs, the amount given is in factoshis, not entry credits. This means math is required to determine the correct amount of factoshis to pay to get X EC.
@@ -522,9 +467,7 @@ To get the ECRate search in the search bar above for “entry-credit-rate”
         params.insert("tx-name".to_string(), json!(txname));
         params.insert("address".to_string(), json!(address));
         params.insert("amount".to_string(), json!(amount));
-        self.api_call(ApiRequest::method("add-ec-output")
-                                    .parameters(params)
-                                    .to_json())
+        self.walletd_api_call("add-ec-output", params)
     }
 
 /**
@@ -540,9 +483,7 @@ Run the addfee again, and the feepaid and feerequired will match up
         let mut params = HashMap::new();
         params.insert("tx-name".to_string(), json!(txname));
         params.insert("address".to_string(), json!(address));
-        self.api_call(ApiRequest::method("add-fee")
-                                    .parameters(params)
-                                    .to_json())
+        self.walletd_api_call("add-fee", params)
     }
 
 /**
@@ -557,9 +498,7 @@ The input is measured in factoshis, so to send ten factoids, you must input 1,00
         params.insert("tx-name".to_string(), json!(txname));
         params.insert("address".to_string(), json!(address));
         params.insert("amount".to_string(), json!(amount));
-        self.api_call(ApiRequest::method("add-input")
-                                    .parameters(params)
-                                    .to_json())
+        self.walletd_api_call("add-input", params)
     }
 
 /**
@@ -574,9 +513,7 @@ So to send ten factoids, you must send 1,000,000,000 factoshis (no commas in JSO
         params.insert("tx-name".to_string(), json!(txname));
         params.insert("address".to_string(), json!(address));
         params.insert("amount".to_string(), json!(amount));
-        self.api_call(ApiRequest::method("add-output")
-                                    .parameters(params)
-                                    .to_json())
+        self.walletd_api_call("add-output", params)
     }
 
 /**
@@ -586,9 +523,7 @@ Retrieve the public and private parts of a Factoid or Entry Credit address store
     pub fn address(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("address".to_string(), json!(address));
-        self.api_call(ApiRequest::method("address")
-                                .parameters(params)
-                                .to_json())
+        self.walletd_api_call("address", params)
     }
 
 /**
@@ -596,8 +531,7 @@ Retrieve all of the Factoid and Entry Credit addresses stored in the wallet.
 
 */  
     pub fn all_addresses(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.api_call(ApiRequest::method("all-addresses")
-                                .to_json())
+        self.walletd_api_call("all-addresses", HashMap::new())
     }
 
 /**
@@ -624,9 +558,7 @@ Note: The firstentry fields are automatically hex encoded for the server to proc
         params.insert("chain".to_string(), chain);
         params.insert("ecpub".to_string(), json!(ecpub));
         dbg!(&params);
-        self.api_call(ApiRequest::method("compose-chain")
-                                    .parameters(params)
-                                    .to_json())
+        self.walletd_api_call("compose-chain", params)
     }
 
 /**
@@ -649,9 +581,7 @@ Note: The entry fields are automatically hex encoded for the server to process.
         });
         params.insert("entry".to_string(), entry);
         params.insert("ecpub".to_string(), json!(ecpub));
-        self.api_call(ApiRequest::method("compose-entry")
-                                    .parameters(params)
-                                    .to_json())
+        self.walletd_api_call("compose-entry", params)
     }
 
 /**
@@ -661,9 +591,7 @@ Compose transaction marshals the transaction into a hex encoded string. The stri
     pub fn compose_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("tx-name".to_string(), json!(tx_name));
-        self.api_call(ApiRequest::method("compose-transaction")
-                                    .parameters(params)
-                                    .to_json())
+        self.walletd_api_call("compose-transaction", params)
     }
 
 /**
@@ -673,9 +601,7 @@ Deletes a working transaction in the wallet. The full transaction will be return
     pub fn delete_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("tx-name".to_string(), json!(tx_name));
-        self.api_call(ApiRequest::method("delete-transaction")
-                                    .parameters(params)
-                                    .to_json())
+        self.walletd_api_call("delete-transaction", params)
     }
 
 /**
@@ -683,8 +609,7 @@ Create a new Entry Credit Address and store it in the wallet.
 
 */
     pub fn generate_ec_address(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.api_call(ApiRequest::method("generate-ec-address")
-                                .to_json())
+        self.walletd_api_call("generate-ec-address", HashMap::new())
     }
 
 /**
@@ -692,8 +617,7 @@ Create a new Entry Credit Address and store it in the wallet.
 
 */
     pub fn generate_factoid_address(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.api_call(ApiRequest::method("generate-factoid-address")
-                                .to_json())
+        self.walletd_api_call("generate-factoid-address", HashMap::new())
     }
 
 /**
@@ -701,8 +625,7 @@ Get the current hight of blocks that have been cached by the wallet while syncin
 
 */
     pub fn get_height(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.api_call(ApiRequest::method("get-height")
-                                .to_json())
+        self.walletd_api_call("get-height", HashMap::new())
     }
 
 /**
@@ -718,10 +641,7 @@ Import Factoid and/or Entry Credit address secret keys into the wallet.
             secrets.push(tmp);
         }
         params.insert("addresses".to_string(), json!(secrets));
-        let json = ApiRequest::method("import-addresses")
-                                    .parameters(params)
-                                    .to_json();
-        self.api_call(json)
+        self.walletd_api_call("import-addresses", params)
     }
 
 /**
@@ -733,18 +653,15 @@ When dealing with transactions all factoids are represented in factoshis. 1 fact
     pub fn new_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("tx-name".to_string(), json!(tx_name));
-        self.api_call(ApiRequest::method("new-transaction")
-                                    .parameters(params)
-                                    .to_json())
+        self.walletd_api_call("new-transaction", params)
     }
 
 /**
 Retrieve current properties of factom-walletd, including the wallet and wallet API versions.
 
 */
-    pub fn properties(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.api_call(ApiRequest::method("properties")
-                                .to_json())
+    pub fn walletd_properties(self)-> impl Future<Item=Response, Error=FetchError>{
+        self.walletd_api_call("properties", HashMap::new())
     }
 
 /**
@@ -754,9 +671,7 @@ Signs the transaction. It is now ready to be executed.
     pub fn sign_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("tx-name".to_string(), json!(tx_name));
-        self.api_call(ApiRequest::method("sign-transaction")
-                                    .parameters(params)
-                                    .to_json())
+        self.walletd_api_call("sign-transaction", params)
     }
 
 /**
@@ -769,9 +684,7 @@ This allows a wallet to send all it’s factoids, by making the input and output
         let mut params = HashMap::new();
         params.insert("tx-name".to_string(), json!(tx_name));
         params.insert("address".to_string(), json!(address));
-        self.api_call(ApiRequest::method("sub-fee")
-                                    .parameters(params)
-                                    .to_json())
+        self.walletd_api_call("sub-fee", params)
     }
 
 /**
@@ -779,8 +692,7 @@ Lists all the current working transactions in the wallet. These are transactions
 
 */
     pub fn tmp_transactions(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.api_call(ApiRequest::method("tmp-transactions")
-                                .to_json())
+        self.walletd_api_call("tmp-transactions", HashMap::new())
     } 
 
 /**
@@ -815,9 +727,7 @@ Retrieves all transactions that involve a particular address.
                                 params.insert("range".to_string(),json!(range));
                                 }
         };          
-        self.api_call(ApiRequest::method("transactions")
-                                    .parameters(params)
-                                    .to_json())
+        self.walletd_api_call("transactions", params)
     } 
 
 /**
@@ -825,8 +735,7 @@ Return the wallet seed and all addresses in the wallet for backup and offline st
 
 */
     pub fn wallet_backup(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.api_call(ApiRequest::method("wallet-backup")
-                                .to_json())
+        self.walletd_api_call("wallet-backup", HashMap::new())
     } 
 
 /**
@@ -846,8 +755,7 @@ The wallet-balances API is used to query the acknowledged and saved balances for
 
 */
     pub fn wallet_balances(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.api_call(ApiRequest::method("wallet-balances")
-                                .to_json())
+        self.walletd_api_call("wallet-balances", HashMap::new())
     } 
 }
 
