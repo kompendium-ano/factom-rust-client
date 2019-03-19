@@ -15,7 +15,7 @@ Retrieve administrative blocks for any given height.
 
 The admin block contains data related to the identities within the factom system and the decisions the system makes as it builds the block chain. The ‘abentries’ (admin block entries) in the JSON response can be of various types, the most common is a directory block signature (DBSig). A majority of the federated servers sign every directory block, meaning every block after m5 will contain 5 DBSigs in each admin block.
 
-The ABEntries are detailed here: https://github.com/FactomProject/FactomDocs/blob/master/factomDataStructureDetails.md#adminid-bytes
+The ABEntries are detailed [here](https://github.com/FactomProject/FactomDocs/blob/master/factomDataStructureDetails.md#adminid-bytes)
 */
     pub fn ablock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
@@ -28,17 +28,16 @@ The ABEntries are detailed here: https://github.com/FactomProject/FactomDocs/blo
 /**
 This api call is used to find the status of a transaction, whether it be a factoid, reveal entry, or commit entry. When using this, you must specify the type of the transaction by giving the chainid field 1 of 3 values:
 
-    f for factoid transactions
-    c for entry credit transactions (commit entry/chain)
-    ################################################################ for reveal entry/chain
-        Where # is the ChainID of the entry
+* f for factoid transactions
+* c for entry credit transactions (commit entry/chain)
+* <ChainID> for reveal entry/chain
 
 The status types returned are as follows:
 
-    “Unknown” : Not found anywhere
-    “NotConfirmed” : Found on local node, but not in network (Holding Map)
-    “TransactionACK” : Found in network, but not written to the blockchain yet (ProcessList)
-    “DBlockConfirmed” : Found in Blockchain
+* “Unknown” : Not found anywhere
+* “NotConfirmed” : Found on local node, but not in network (Holding Map)
+* “TransactionACK” : Found in network, but not written to the blockchain yet (ProcessList)
+* “DBlockConfirmed” : Found in Blockchain
 
 You may also provide the full marshaled transaction, instead of a hash, and it will be hashed for you.
 
@@ -49,9 +48,6 @@ Requesting an entry requires you to specify if the hash you provide is a commit 
 
 For commit/reveal acks, the response has 2 sections, one for the commit, one for the reveal. If you provide the entryhash and chainid, both will be filled (if found). If you only provide the commit txid and c as the chainid, then only the commitdata is guaranteed to come back with data. The committxid and entryhash fields correspond to the commitdata and entrydata objects.
 
-Extra notes:
-Why c? It is short for 000000000000000000000000000000000000000000000000000000000000000c, which is the chainid for all entry credit blocks. All commits are placed in the entry credit block (assuming they are valid and are properly paid for)
-
 ### Factoid Transactions
 
 The hash field for a factoid transaction is equivalent to txid. To indicate the hash is a factoid transaction, put f in the chainid field and the txid in the hash field.
@@ -59,6 +55,9 @@ The hash field for a factoid transaction is equivalent to txid. To indicate the 
 The response will look different than entry related ack calls.
 
 ##### Extra notes:
+
+Why c? It is short for 000000000000000000000000000000000000000000000000000000000000000c, which is the chainid for all entry credit blocks. All commits are placed in the entry credit block (assuming they are valid and are properly paid for)
+
 Why f? It is short for 000000000000000000000000000000000000000000000000000000000000000f, which is the chainid for all factoid blocks. All factoid transactions are placed in the factoid (assuming they are valid)
 */
     pub fn ack(self, hash: &str, chainid: &str, full_transaction: Option<&str>)
@@ -135,25 +134,25 @@ It is possible to be unable to send a commit, if the commit already exists (if y
 /**
 The current-minute API call returns:
 
-    leaderheight returns the current block height.
+* `leaderheight` returns the current block height.
 
-    directoryblockheight returns the last saved height.
+* `directoryblockheight` returns the last saved height.
 
-    minute returns the current minute number for the open entry block.
+* `minute` returns the current minute number for the open entry block.
 
-    currentblockstarttime returns the start time for the current block.
+* `currentblockstarttime` returns the start time for the current block.
 
-    currentminutestarttime returns the start time for the current minute.
+* `currentminutestarttime` returns the start time for the current minute.
 
-    currenttime returns the current nodes understanding of current time.
+* `currenttime` returns the current nodes understanding of current time.
 
-    directoryblockinseconds returns the number of seconds per block.
+* `directoryblockinseconds` returns the number of seconds per block.
 
-    stalldetected returns if factomd thinks it has stalled.
+* `stalldetected` returns if factomd thinks it has stalled.
 
-    faulttimeout returns the number of seconds before leader node is faulted for failing to provide a necessary message.
+* `faulttimeout` returns the number of seconds before leader node is faulted for failing to provide a necessary message.
 
-    roundtimeout returns the number of seconds between rounds of an election during a fault.
+* `roundtimeout` returns the number of seconds between rounds of an election during a fault.
 
 */
     pub fn current_minute(self)-> impl Future<Item=Response, Error=FetchError>{
@@ -313,10 +312,10 @@ Retrieve the factoid block for any given height. These blocks contain factoid tr
 /**
 Returns various heights that allows you to view the state of the blockchain. The heights returned provide a lot of information regarding the state of factomd, but not all are needed by most applications. The heights also indicate the most recent block, which could not be complete, and still being built. The heights mean as follows:
 
-    * directoryblockheight : The current directory block height of the local factomd node.
-    * leaderheight : The current block being worked on by the leaders in the network. This block is not yet complete, but all transactions submitted will go into this block (depending on network conditions, the transaction may be delayed into the next block)
-    * entryblockheight : The height at which the factomd node has all the entry blocks. Directory blocks are obtained first, entry blocks could be lagging behind the directory block when syncing.
-    * entryheight : The height at which the local factomd node has all the entries. If you added entries at a block height above this, they will not be able to be retrieved by the local factomd until it syncs further.
+* directoryblockheight : The current directory block height of the local factomd node.
+* leaderheight : The current block being worked on by the leaders in the network. This block is not yet complete, but all transactions submitted will go into this block (depending on network conditions, the transaction may be delayed into the next block)
+* entryblockheight : The height at which the factomd node has all the entry blocks. Directory blocks are obtained first, entry blocks could be lagging behind the directory block when syncing.
+* entryheight : The height at which the local factomd node has all the entries. If you added entries at a block height above this, they will not be able to be retrieved by the local factomd until it syncs further.
 
 A fully synced node should show the same number for all, (except between minute 0 and 1, when leaderheight will be 1 block ahead.)
 
@@ -329,23 +328,23 @@ A fully synced node should show the same number for all, (except between minute 
 /**
 The multiple-ec-balances API is used to query the acknowledged and saved balances for a list of entry credit addresses.
 
-    * currentheight is the current height that factomd was loading.
-    * lastsavedheight is the height last saved to the database.
+* currentheight is the current height that factomd was loading.
+* lastsavedheight is the height last saved to the database.
 
-    * In balances it returns "ack", "saved" and "err".
-        * ack is the balance after processing any in-flight transactions known to the Factom node responding to the API call
-        * saved is the last saved to the database
-        * err is just used to display any error that might have happened during the request. If it is "" that means there was no error.
+* In balances it returns "ack", "saved" and "err".
+    * ack is the balance after processing any in-flight transactions known to the Factom node responding to the API call
+    * saved is the last saved to the database
+    * err is just used to display any error that might have happened during the request. If it is empty that means there was no error.
 
-    * If the syntax of the parameters is off e.g. missing a quote, a comma, or a square bracket, it will return: {“jsonrpc”:“2.0”,“id”:null,“error”:{“code”:-32600,“message”:“Invalid Request”}}
+* If the syntax of the parameters is off e.g. missing a quote, a comma, or a square bracket, it will return: `{“jsonrpc”:“2.0”,“id”:null,“error”:{“code”:-32600,“message”:“Invalid Request”}}`
 
-    * If the parameters are labeled incorrectly the call will return: “{“code”:-32602,“message”:“Invalid params”,“data”:“ERROR! Invalid params passed in, expected 'addresses’”}”
+* If the parameters are labeled incorrectly the call will return: `{“code”:-32602,“message”:“Invalid params”,“data”:“ERROR! Invalid params passed in, expected addresses”}`
 
-    * If factomd is not loaded up all the way to the last saved block it will return: {“currentheight”:0,“lastsavedheight”:0,“balances”:[{“ack”:0,“saved”:0,“err”:“Not fully booted”}]}
+* If factomd is not loaded up all the way to the last saved block it will return: `{“currentheight”:0,“lastsavedheight”:0,“balances”:[{“ack”:0,“saved”:0,“err”:“Not fully booted”}]}`
 
-    * If the list of addresses contains an incorrectly formatted address the call will return: {“currentheight”:0,“lastsavedheight”:0,“balances”:[{“ack”:0,“saved”:0,“err”:“Error decoding address”}]}
+* If the list of addresses contains an incorrectly formatted address the call will return: `{“currentheight”:0,“lastsavedheight”:0,“balances”:[{“ack”:0,“saved”:0,“err”:“Error decoding address”}]}`
 
-    * If an address in the list is valid but has never been part of a transaction the call will return: “balances”:[{“ack”:0,“saved”:0,“err”:“Address has not had a transaction”}]“
+* If an address in the list is valid but has never been part of a transaction the call will return: `“balances”:[{“ack”:0,“saved”:0,“err”:“Address has not had a transaction”}]`
 
 */
     pub fn multiple_ec_balances(self, addresses: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
@@ -359,23 +358,23 @@ The multiple-ec-balances API is used to query the acknowledged and saved balance
 /**
 The multiple-fct-balances API is used to query the acknowledged and saved balances in factoshis (a factoshi is 10^8 factoids) not factoids(FCT) for a list of FCT addresses.
 
-    * currentheight is the current height that factomd was loading.
-    * lastsavedheight is the height last saved to the database.
+* currentheight is the current height that factomd was loading.
+* lastsavedheight is the height last saved to the database.
 
-    * In balances it returns "ack", "saved" and "err".
-        * ack is the balance after processing any in-flight transactions known to the Factom node responding to the API call
-        * saved is the last saved to the database
-        * err is just used to display any error that might have happened during the request. If it is "" that means there was no error.
+* In balances it returns "ack", "saved" and "err".
+    * ack is the balance after processing any in-flight transactions known to the Factom node responding to the API call
+    * saved is the last saved to the database
+    * err is just used to display any error that might have happened during the request. If it is "" that means there was no error.
 
-    * If the syntax of the parameters is off e.g. missing a quote, a comma, or a square bracket, it will return: {"jsonrpc”:“2.0”,“id”:null,“error”:{“code”:-32600,“message”:“Invalid Request”}}
+* If the syntax of the parameters is off e.g. missing a quote, a comma, or a square bracket, it will return: `{”jsonrpc”:“2.0”,“id”:null,“error”:{“code”:-32600,“message”:“Invalid Request”}}`
 
-    * If the parameters are labeled incorrectly the call will return: “{“code”:-32602,“message”:“Invalid params”,“data”:“ERROR! Invalid params passed in, expected 'addresses’”}”
+* If the parameters are labeled incorrectly the call will return: `{“code”:-32602,“message”:“Invalid params”,“data”:“ERROR! Invalid params passed in, expected 'addresses’”}`
 
-    * If factomd is not loaded up all the way to the last saved block it will return: {“currentheight”:0,“lastsavedheight”:0,“balances”:[{“ack”:0,“saved”:0,“err”:“Not fully booted”}]}
+* If factomd is not loaded up all the way to the last saved block it will return: `{“currentheight”:0,“lastsavedheight”:0,“balances”:[{“ack”:0,“saved”:0,“err”:“Not fully booted”}]}`
 
-    * If the list of addresses contains an incorrectly formatted address the call will return: {“currentheight”:0,“lastsavedheight”:0,“balances”:[{“ack”:0,“saved”:0,“err”:“Error decoding address”}]}
+* If the list of addresses contains an incorrectly formatted address the call will return: `{“currentheight”:0,“lastsavedheight”:0,“balances”:[{“ack”:0,“saved”:0,“err”:“Error decoding address”}]}`
 
-    * If an address in the list is valid but has never been part of a transaction it will return: “balances”:[{“ack”:0,“saved”:0,“err”:“Address has not had a transaction”}]“
+* If an address in the list is valid but has never been part of a transaction it will return: `“balances”:[{“ack”:0,“saved”:0,“err”:“Address has not had a transaction”}]`
 
 */
     pub fn multiple_fct_balances(self, addresses: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
@@ -477,21 +476,23 @@ Retrieve details of a factoid transaction using a transaction’s hash (or corre
 
 Note that information regarding the
 
-    * directory block height,
-    * directory block keymr, and
-    * transaction block keymr
+* directory block height,
+* directory block keymr, and
+* transaction block keymr
 
 are also included.
 
 The "blockheight” parameter in the response will always be 0 when using this call, refer to “includedindirectoryblockheight” if you need the height.
 
-Note: This call will also accept an entry hash as input, in which case the returned data concerns the entry. The returned fields and their format are shown in the 2nd Example Response at right.
+### Notes 
 
-Note: If the input hash is non-existent, the returned fields will be as follows:
+This call will also accept an entry hash as input, in which case the returned data concerns the entry. The returned fields and their format are shown in the 2nd Example Response at right.
 
-    * “includedintransactionblock”:“”
-    * “includedindirectoryblock”:“”
-    * “includedindirectoryblockheight”:-1
+If the input hash is non-existent, the returned fields will be as follows:
+
+* “includedintransactionblock”:“”
+* “includedindirectoryblock”:“”
+* “includedindirectoryblockheight”:-1
 
 */
     pub fn transaction(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
@@ -831,17 +832,17 @@ Return the wallet seed and all addresses in the wallet for backup and offline st
 /**
 The wallet-balances API is used to query the acknowledged and saved balances for all addresses in the currently running factom-walletd. The saved balance is the last saved to the database and the acknowledged or “ack” balance is the balance after processing any in-flight transactions known to the Factom node responding to the API call. The factoid address balance will be returned in factoshis (a factoshi is 10^8 factoids) not factoids(FCT) and the entry credit balance will be returned in entry credits.
 
-    * If walletd and factomd are not both running this call will not work.
+* If walletd and factomd are not both running this call will not work.
 
-    * If factomd is not loaded up all the way to last saved block it will return: “result”:{“Factomd Error”:“Factomd is not fully booted, please wait and try again.”}
+* If factomd is not loaded up all the way to last saved block it will return: “result”:{“Factomd Error”:“Factomd is not fully booted, please wait and try again.”}
 
-    * If an address is not in the correct format the call will return: “result”:{“Factomd Error”:”There was an error decoding an address”}
+* If an address is not in the correct format the call will return: “result”:{“Factomd Error”:”There was an error decoding an address”}
 
-    * If an address does not have a public and private address known to the wallet it will not be included in the balance.
+* If an address does not have a public and private address known to the wallet it will not be included in the balance.
 
-    * "fctaccountbalances" are the total of all factoid account balances returned in factoshis.
+* "fctaccountbalances" are the total of all factoid account balances returned in factoshis.
 
-    * "ecaccountbalances" are the total of all entry credit account balances returned in entry credits.
+* "ecaccountbalances" are the total of all entry credit account balances returned in entry credits.
 
 */
     pub fn wallet_balances(self)-> impl Future<Item=Response, Error=FetchError>{
