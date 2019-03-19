@@ -214,8 +214,6 @@ impl Factomd {
     fn uri(self)-> Uri{
         let authority = [self.host, ":", &self.port.to_string()].concat();
         let path = ["/v", &self.api_version.to_string()].concat();
-        // dbg!(&authority);
-        // dbg!(&Fpath);
         Uri::builder()
             .scheme(self.scheme)
             .authority(authority.as_str())
@@ -225,7 +223,6 @@ impl Factomd {
     }
 
     fn api_call(self, json_str: String)->  impl Future<Item=Response, Error=FetchError> {
-        // dbg!(&json_str);
         let mut req = Request::new(Body::from(json_str));
         *req.method_mut() = Method::POST;
         *req.uri_mut() = self.uri();
@@ -243,7 +240,6 @@ impl Factomd {
             .and_then(|res| {res.into_body().concat2()})
             .from_err::<FetchError>()
             .and_then(|json| {
-                            // dbg!(&json);
                             let output: Response = serde_json::from_slice(&json)?;
                             Ok(output)
                             })

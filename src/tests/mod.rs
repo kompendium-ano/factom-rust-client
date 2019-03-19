@@ -51,8 +51,6 @@ fn get_result<F, R, E>(fut: F)-> Result<R, E>
 fn error_check(response: Response){
     let result = response.result;
     if let Outcome::error(err) = &result{
-        // Prints json responses using `cargo test -- --nocapture`
-        // dbg!(&result);
         panic!("{:?}", err)
     }
 }
