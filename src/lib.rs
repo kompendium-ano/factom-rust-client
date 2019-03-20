@@ -7,8 +7,8 @@ use serde::{Serialize, Deserialize};
 pub use hyper::rt::{self, Future, Stream};
 use hyper::{Method, Request, Body, Client, Uri};
 
-mod tests;
 pub mod api;
+mod tests;
 
 const HOST: &str = "localhost";
 const WALLET_HOST: &str = "localhost";
@@ -34,7 +34,6 @@ pub struct Response{
 }
 
 impl Response {
-
     //inverse method
     pub fn success(self)-> bool {
         match self.result {
