@@ -34,13 +34,7 @@ pub struct Response{
 }
 
 impl Response {
-    // check for error
-    pub fn error(self)-> bool {
-        match self.result {
-            Outcome::error(_) => true,
-            Outcome::result(_) => false
-        }
-    }
+
     //inverse method
     pub fn success(self)-> bool {
         match self.result {
