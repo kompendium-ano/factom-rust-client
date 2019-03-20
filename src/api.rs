@@ -1,16 +1,5 @@
 use super::*;
 
-
-
-
-pub fn str_to_hex(utf8: &str) -> String {
-  let strs: Vec<String> = utf8.as_bytes()
-                                .iter()
-                                .map(|b| format!("{:02X}", b))
-                                .collect();
-  strs.join("")
-}
-
 // Daemon
 impl Factom{
 
@@ -1256,4 +1245,12 @@ pub enum SearchBy{
     Range(u32, u32),
     Txid(&'static str),
     Address(&'static str)
+}
+
+pub fn str_to_hex(utf8: &str) -> String {
+  let strs: Vec<String> = utf8.as_bytes()
+                                .iter()
+                                .map(|b| format!("{:02X}", b))
+                                .collect();
+  strs.join("")
 }
