@@ -35,7 +35,7 @@ pub struct Response{
 
 impl Response {
     // check for error
-    pub fn is_error(self)-> bool {
+    pub fn error(self)-> bool {
         match self.result {
             Outcome::error(_) => true,
             Outcome::result(_) => false
