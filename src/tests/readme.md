@@ -1,5 +1,7 @@
 # Factom client test environment
 
+To run through tests a custom blockchain with prior entries and credits is needed, which is included in the tests/env folder. The .factom folder there containing the database needs to be moved to ~/.factom beforehand and the daemon needs additional parameters as specified below. The current blocktime is set at 100 seconds in factomd.conf and can be modified as needed.
+
 #### Installing command line binaries
 ```bash
 wget https://github.com/FactomProject/distribution/releases/download/v6.1.0/factom-amd64.deb 
@@ -7,15 +9,13 @@ dpkg -i factom-amd64.deb
 rm factom-amd64.deb
 ```
 
-
-
-
 #### Starting custom factomd testnet
 ```bash
 factomd -network=CUSTOM -customnet="cargo-test" -exclusive=true
 ```
 
-##### Commands used creating test environment
+##### Commands used in creating test environment
+For replication purposes
 ```bash
 
 factom-cli importaddress Fs3E9gV6DXsYzf7Fqx1fVBQPQXV695eP3k5XbmHEZVRLkMdD9qCK
