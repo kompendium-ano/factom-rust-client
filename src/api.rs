@@ -2,7 +2,6 @@ use super::*;
 
 // Daemon
 impl Factom{
-
 /*!
 The public facing API handler containing all method calls
 Individual method examples all use a blocking fetch call for demonstration purposes here.
@@ -19,10 +18,8 @@ let query = factom.properties()
                         .map(|result| println!("{:?}", result))
                         .map_err(|err| panic!("{:?}", err));
  rt::run(query);
-
+```
  */
-
-
 
 /**
 Retrieve administrative blocks for any given height.
@@ -31,7 +28,7 @@ The admin block contains data related to the identities within the factom system
 
 The ABEntries are detailed [here](https://github.com/FactomProject/FactomDocs/blob/master/factomDataStructureDetails.md#adminid-bytes)
 
-#Example
+# Example
 ```
 use factom::*;  
 
@@ -84,7 +81,7 @@ Why c? It is short for 000000000000000000000000000000000000000000000000000000000
 
 Why f? It is short for 000000000000000000000000000000000000000000000000000000000000000f, which is the chainid for all factoid blocks. All factoid transactions are placed in the factoid (assuming they are valid)
 
-#Example
+# Example
 ```
 use factom::*;
 
@@ -112,7 +109,7 @@ assert!(response.success());
 
 /**
 Retrieve a specified admin block given its merkle root key.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -133,7 +130,7 @@ assert!(response.success());
 
 /**
 Return the keymr of the head of the chain for a chain ID (the unique hash created when the chain was created).
-#Example
+# Example
 ```
 use factom::*;
 
@@ -208,7 +205,7 @@ The current-minute API call returns:
 * `faulttimeout` returns the number of seconds before leader node is faulted for failing to provide a necessary message.
 
 * `roundtimeout` returns the number of seconds between rounds of an election during a fault.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -226,7 +223,7 @@ assert!(response.success());
 
 /**
 Retrieve a directory block given only its height.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -247,7 +244,7 @@ assert!(response.success());
 
 /**
 Every directory block has a KeyMR (Key Merkle Root), which can be used to retrieve it. The response will contain information that can be used to navigate through all transactions (entry and factoid) within that block. The header of the directory block will contain information regarding the previous directory block’s keyMR, directory block height, and the timestamp. 
-#Example
+# Example
 ```
 use factom::*;
 
@@ -268,7 +265,7 @@ assert!(response.success());
 
 /**
 The directory block head is the last known directory block by factom, or in other words, the most recently recorded block. This can be used to grab the latest block and the information required to traverse the entire blockchain. 
-#Example
+# Example
 ```
 use factom::*;
 
@@ -286,7 +283,7 @@ assert!(response.success());
 
 /**
 Retrieve the entry credit block for any given height. These blocks contain entry credit transaction information.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -306,7 +303,7 @@ assert!(response.success());
 
 /**
 Get an Entry from factomd specified by the Entry Hash.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -326,7 +323,7 @@ assert!(response.success());
 
 /**
 Retrieve a specified entry block given its merkle root key. The entry block contains 0 to many entries
-#Example
+# Example
 ```
 use factom::*;
 
@@ -348,7 +345,7 @@ assert!(response.success());
 
 /**
 Return its current balance for a specific entry credit address.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -369,7 +366,7 @@ assert!(response.success());
 
 /**
 Retrieve a specified entrycredit block given its merkle root key. The numbers are minute markers.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -390,7 +387,7 @@ assert!(response.success());
 
 /**
 Returns the number of Factoshis (Factoids *10^-8) that purchase a single Entry Credit. The minimum factoid fees are also determined by this rate, along with how complex the factoid transaction is.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -408,7 +405,7 @@ assert!(response.success());
 
 /**
 This call returns the number of Factoshis (Factoids *10^-8) that are currently available at the address specified.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -429,7 +426,7 @@ assert!(response.success());
 
 /**
 Retrieve a specified factoid block given its merkle root key.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -452,7 +449,7 @@ assert!(response.success());
 Submit a factoid transaction. The transaction hex encoded string is documented here: [Github Documentation](https://github.com/FactomProject/FactomDocs/blob/master/factomDataStructureDetails.md#factoid-transaction)
 
 The factoid-submit API takes a specifically formatted message encoded in hex that includes signatures. If you have a factom-walletd instance running, you can construct this factoid-submit API call with compose-transaction which takes easier to construct arguments.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -473,7 +470,7 @@ assert!(response.success());
 
 /**
 Retrieve the factoid block for any given height. These blocks contain factoid transaction information.
-#Example
+# Example
 ```
 use factom::*;
 let factom = Factom::from_host("192.168.121.131");
@@ -499,7 +496,7 @@ Returns various heights that allows you to view the state of the blockchain. The
 * entryheight : The height at which the local factomd node has all the entries. If you added entries at a block height above this, they will not be able to be retrieved by the local factomd until it syncs further.
 
 A fully synced node should show the same number for all, (except between minute 0 and 1, when leaderheight will be 1 block ahead.)
-#Example
+# Example
 ```
 use factom::*;
 
@@ -535,7 +532,7 @@ The multiple-ec-balances API is used to query the acknowledged and saved balance
 * If the list of addresses contains an incorrectly formatted address the call will return: `{“currentheight”:0,“lastsavedheight”:0,“balances”:[{“ack”:0,“saved”:0,“err”:“Error decoding address”}]}`
 
 * If an address in the list is valid but has never been part of a transaction the call will return: `“balances”:[{“ack”:0,“saved”:0,“err”:“Address has not had a transaction”}]`
-#Example
+# Example
 ```
 use factom::*;
 
@@ -574,7 +571,7 @@ The multiple-fct-balances API is used to query the acknowledged and saved balanc
 * If the list of addresses contains an incorrectly formatted address the call will return: `{“currentheight”:0,“lastsavedheight”:0,“balances”:[{“ack”:0,“saved”:0,“err”:“Error decoding address”}]}`
 
 * If an address in the list is valid but has never been part of a transaction it will return: `“balances”:[{“ack”:0,“saved”:0,“err”:“Address has not had a transaction”}]`
-#Example
+# Example
 ```
 use factom::*;
 
@@ -595,7 +592,7 @@ assert!(response.success());
 
 /**
 Returns an array of the entries that have been submitted but have not been recorded into the blockchain.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -613,7 +610,7 @@ assert!(response.success());
 
 /**
 Returns an array of factoid transactions that have not yet been recorded in the blockchain, but are known to the system.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -635,7 +632,7 @@ assert!(response.success());
 
 /**
 Retrieve current properties of the Factom system, including the software and the API versions.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -652,7 +649,7 @@ assert!(response.success());
 
 /**
 Retrieve an entry or transaction in raw format, the data is a hex encoded string. 
-#Example
+# Example
 ```
 use factom::*;
 
@@ -672,7 +669,7 @@ assert!(response.success());
 
 /**
 Retrieve a receipt providing cryptographically verifiable proof that information was recorded in the factom blockchain and that this was subsequently anchored in the bitcoin blockchain.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -740,7 +737,7 @@ If the input hash is non-existent, the returned fields will be as follows:
 * “includedintransactionblock”:“”
 * “includedindirectoryblock”:“”
 * “includedindirectoryblockheight”:-1
-#Example
+# Example
 ```
 use factom::*;
 
@@ -849,7 +846,7 @@ Retrieve all of the Factoid and Entry Credit addresses stored in the wallet.
 This method, compose-chain, will return the appropriate API calls to create a chain in factom. You must first call the commit-chain, then the reveal-chain API calls. To be safe, wait a few seconds after calling commit.
 
 Note: The firstentry fields are automatically hex encoded for the server to process.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -889,7 +886,7 @@ assert!(response.success());
 This method, compose-entry, will return the appropriate API calls to create an entry in factom. You must first call the commit-entry, then the reveal-entry API calls. To be safe, wait a few seconds after calling commit.
 
 Note: The entry fields are automatically hex encoded for the server to process.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -924,7 +921,7 @@ assert!(response.success());
 
 /**
 Compose transaction marshals the transaction into a hex encoded string. The string can be inputted into the factomd API factoid-submit to be sent to the network.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -938,7 +935,7 @@ use factom::*;
 
 /**
 Deletes a working transaction in the wallet. The full transaction will be returned, and then deleted.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -963,7 +960,7 @@ assert!(response.success());
 
 /**
 Create a new Entry Credit Address and store it in the wallet.
-#Example
+# Example
 ```
 use factom::*;
 let factom = Factom::from_host("192.168.121.131");
@@ -980,7 +977,7 @@ assert!(response.success());
 
 /**
 Create a new Entry Credit Address and store it in the wallet.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -998,7 +995,7 @@ assert!(response.success());
 
 /**
 Get the current hight of blocks that have been cached by the wallet while syncing.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -1016,7 +1013,7 @@ assert!(response.success());
 
 /**
 Import Factoid and/or Entry Credit address secret keys into the wallet.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -1045,7 +1042,7 @@ assert!(response.success());
 This will create a new transaction. The txid is in flux until the final transaction is signed. Until then, it should not be used or recorded.
 
 When dealing with transactions all factoids are represented in factoshis. 1 factoid is 1e8 factoshis, meaning you can never send anything less than 0 to a transaction (0.5).
-#Example
+# Example
 ```
 use factom::*;
 
@@ -1068,7 +1065,7 @@ fetch(handler.delete_transaction(txname).map(|_| ())).map_err(|_| ()).unwrap();
 
 /**
 Retrieve current properties of factom-walletd, including the wallet and wallet API versions.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -1109,7 +1106,7 @@ This allows a wallet to send all it’s factoids, by making the input and output
 
 /**
 Lists all the current working transactions in the wallet. These are transactions that are not yet sent.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -1138,7 +1135,7 @@ This call in the backend actually pushes the request to factomd. For a more info
 
 ### By Address
 Retrieves all transactions that involve a particular address.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -1191,7 +1188,7 @@ assert!(id_response.success());
 
 /**
 Return the wallet seed and all addresses in the wallet for backup and offline storage.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -1221,7 +1218,7 @@ The wallet-balances API is used to query the acknowledged and saved balances for
 * "fctaccountbalances" are the total of all factoid account balances returned in factoshis.
 
 * "ecaccountbalances" are the total of all entry credit account balances returned in entry credits.
-#Example
+# Example
 ```
 use factom::*;
 
@@ -1233,6 +1230,7 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
+
     pub fn wallet_balances(self)-> impl Future<Item=Response, Error=FetchError>{
         self.walletd_call("wallet-balances", HashMap::new())
     } 
