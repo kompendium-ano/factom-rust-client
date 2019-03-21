@@ -62,6 +62,11 @@ impl ApiRequest {
         self
     }
 
+    fn id(&mut self, id: u32)-> &mut Self{
+        self.id = id;
+        self
+    }
+
     fn to_json(&self)-> String{
         serde_json::to_string(&self).expect("error parsing json")
     }
@@ -88,14 +93,16 @@ impl From<serde_json::Error> for FetchError {
 #[derive(Clone, Default)]
 pub struct Factom{
     uri: &'static str,
-    wallet_uri: &'static str 
+    wallet_uri: &'static str,
+    id: u32
 }
 
 impl Factom {
     pub fn new()->Factom{
         Factom {
             uri: FACTOMD_URI,
-            wallet_uri: WALLET_URI
+            wallet_uri: WALLET_URI,
+            id: ID
         }
     }
 
@@ -103,6 +110,7 @@ impl Factom {
         Factom {
             uri: to_static_str(format!("http://{}:8088/v{}", host, API_VERSION)),
             wallet_uri: to_static_str(format!("http://{}:8089/v{}", host, API_VERSION)),
+            id: ID
         }
     }
 
@@ -110,8 +118,17 @@ impl Factom {
         Factom {
             uri: to_static_str(format!("https://{}:8088/v{}", host, API_VERSION)),
             wallet_uri: to_static_str(format!("https://{}:8089/v{}", host, API_VERSION)),
+            id: ID
         }
     }
+
+    pub fn set_id(self, id: u32)-> Factom{
+        Factom{
+            id,
+            uri: self.uri,
+            wallet_uri: self.wallet_uri
+        }
+    }   
 
     fn call(self, method: &str, params: HashMap<String, Value>)
                         ->  impl Future<Item=Response, Error=FetchError> {
@@ -126,9 +143,10 @@ impl Factom {
     }
 
     fn inner_api_call(self, method: &str, params: HashMap<String, Value>, uri: &str)
-                        ->  impl Future<Item=Response, Error=FetchError> {
+                                        ->  impl Future<Item=Response, Error=FetchError> {
         let json_str = ApiRequest::method(method)
                                     .parameters(params)
+                                    .id(self.id)
                                     .to_json();
         let mut req = Request::new(Body::from(json_str));
         *req.method_mut() = Method::POST;
