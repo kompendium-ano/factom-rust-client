@@ -3,7 +3,7 @@ use std::iter;
 use rand::{Rng, thread_rng};
 use rand::distributions::Alphanumeric;
 
-const HOST: &str ="192.168.121.131";
+const HOST: &str ="localhost";
 const EC_ADDRESS: &str = "EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx";
 const FCT_PRIV_ADDRESS: &str = "Fs3E9gV6DXsYzf7Fqx1fVBQPQXV695eP3k5XbmHEZVRLkMdD9qCK";
 const FCT_PUB_ADDRESS: &str = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
