@@ -1161,7 +1161,7 @@ assert!(add_response.success());
 
 let txid = "21fc64855771f2ee12da2a85b1aa0108007ed3a566425f3eaec7c8c7d2db6c6d";
 let id_tx = api::SearchBy::Txid(txid);
-leet id_query = factom
+let id_query = factom
                 .transactions(id_tx)
                 .map(|response| response).map_err(|err| err);
 let id_response = fetch(id_query).unwrap();
