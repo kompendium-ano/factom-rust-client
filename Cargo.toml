@@ -1,8 +1,14 @@
 [package]
 name = "factom"
-version = "0.1.0"
+version = "1.0.1"
 authors = ["MitchellBerry <mitchellberry+public@protonmail.com>"]
 edition = "2018"
+repository = "https://github.com/MitchellBerry/Factom-Client"
+homepage = "https://github.com/MitchellBerry/Factom-Client"
+license = "Apache-2.0"
+readme = "README.md"
+maintenance = { status = "passively-maintained" }
+description = "Factom API client"
 
 [dependencies]
 rand = "0.6.5"
