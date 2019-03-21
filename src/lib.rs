@@ -195,7 +195,7 @@ impl Factom {
     Will default to 0 if not set.
     # Example
     ```
-    use factom:Factom;
+    use factom::Factom;
 
     let api = Factom::new()
 
