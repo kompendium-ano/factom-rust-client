@@ -9,13 +9,16 @@ dpkg -i factom-amd64.deb
 rm factom-amd64.deb
 ```
 
-#### Starting custom factomd testnet
+#### Start custom factomd testnet and walletd
 ```bash
 factomd -network=CUSTOM -customnet="cargo-test" -exclusive=true
+# Open wallet daeom in seperate shell
+factom-walletd
 ```
 
-##### Commands used in creating test environment
-For replication purposes
+
+#### CLI commands used in creating test environment
+For replication purposes only, not necessary to call.
 ```bash
 
 factom-cli importaddress Fs3E9gV6DXsYzf7Fqx1fVBQPQXV695eP3k5XbmHEZVRLkMdD9qCK
