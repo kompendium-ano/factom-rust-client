@@ -27,9 +27,7 @@ fn random_string(len: usize)-> String {
 }
 
 fn factom()-> Factom{
-    Factom::new()
-            .host(HOST)
-            .build()
+    Factom::from_host(HOST)
 }
 
 fn error_check(response: Response){

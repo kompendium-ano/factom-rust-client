@@ -5,16 +5,13 @@ use serde_json::{Value, json};
 use hyper_tls::HttpsConnector;
 use serde::{Serialize, Deserialize};
 pub use hyper::rt::{self, Future, Stream};
-use hyper::{Method, Request, Body, Client, Uri};
+use hyper::{Method, Request, Body, Client};
 
 pub mod api;
 mod tests;
 
-const HOST: &str = "localhost";
-const WALLET_HOST: &str = "localhost";
-const DAEMON_PORT: u16 = 8088;
-const WALLET_PORT: u16 = 8089;
-const DEFAULT_SCHEME: &str = "http";
+const WALLET_URI: &str = "http://localhost:8088/v2";
+const FACTOMD_URI: &str = "http://localhost:8089/v2";
 const API_VERSION: u8 = 2;
 const JSONRPC : &str = "2.0";
 const ID: u32 = 0;
@@ -34,7 +31,6 @@ pub struct Response{
 }
 
 impl Response {
-    //inverse method
     pub fn success(self)-> bool {
         match self.result {
             Outcome::error(_) => false,
@@ -89,96 +85,54 @@ impl From<serde_json::Error> for FetchError {
         FetchError::Json(err)
     }
 }
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Factom{
-    scheme: &'static str,
-    host: &'static str,
-    wallet_host: &'static str,
-    port: u16,
-    wallet_port: u16,
-    api_version: u8,
-    json_rpc_version: &'static str,
-    uri: Uri,
-    wallet_uri: Uri
+    uri: &'static str,
+    wallet_uri: &'static str 
 }
 
 impl Factom {
     pub fn new()->Factom{
-        let mut tmp_struct = Factom {
-            scheme: DEFAULT_SCHEME,
-            host: HOST,
-            wallet_host: WALLET_HOST,
-            port: DAEMON_PORT,
-            wallet_port: WALLET_PORT,
-            api_version: API_VERSION,
-            json_rpc_version: JSONRPC,
-            uri: Uri::default(),
-            wallet_uri: Uri::default()
-        };
-        tmp_struct.build()
+        Factom {
+            uri: FACTOMD_URI,
+            wallet_uri: WALLET_URI
+        }
     }
 
-    pub fn build(&mut self)-> Self{
-        self.uri = self.build_uri(self.port);
-        self.wallet_uri = self.build_uri(self.wallet_port);
-        self.clone()
+    pub fn from_host(host: &str)->Factom{
+        Factom {
+            uri: to_static_str(format!("http://{}:8088/v{}", host, API_VERSION)),
+            wallet_uri: to_static_str(format!("http://{}:8089/v{}", host, API_VERSION)),
+        }
     }
 
-    pub fn https(&mut self)-> Self{
-        self.scheme = "https";
-        self.clone()
+    pub fn from_https_host(host: &str)->Factom{
+        Factom {
+            uri: to_static_str(format!("https://{}:8088/v{}", host, API_VERSION)),
+            wallet_uri: to_static_str(format!("https://{}:8089/v{}", host, API_VERSION)),
+        }
     }
 
-    pub fn host(&mut self, host: &'static str)-> Self{ 
-        self.host = host;
-        self.clone()
-    }
-
-    pub fn port(&mut self, port: u16)-> Self{
-        self.port = port;
-        self.clone()
-    }
-    pub fn api_version(&mut self, version: u8)-> Self{
-        self.api_version = version;
-        self.clone()
-    }
-
-    pub fn json_rpc_version(&mut self, version: &'static str)-> Self{
-        self.json_rpc_version = version;
-        self.clone()
-    }
-
-    fn build_uri(&self, port: u16)-> Uri{
-        let authority = [self.host, ":", &port.to_string()].concat();
-        let path = ["/v", &self.api_version.to_string()].concat();
-        Uri::builder()
-            .scheme(self.scheme)
-            .authority(authority.as_str())
-            .path_and_query(path.as_str())
-            .build()
-            .expect("Unable to build URI from Factomd struct")
-    }
-
-    fn api_call(self, method: &str, params: HashMap<String, Value>,)
+    fn call(self, method: &str, params: HashMap<String, Value>)
                         ->  impl Future<Item=Response, Error=FetchError> {
-            let uri = self.uri.clone();
+            let uri = self.uri;
             self.inner_api_call(method, params, uri)
     }
 
-    fn walletd_api_call(self, method: &str, params: HashMap<String, Value>,)
+    fn walletd_call(self, method: &str, params: HashMap<String, Value>)
                         ->  impl Future<Item=Response, Error=FetchError>{
-            let uri = self.wallet_uri.clone();
+            let uri = self.wallet_uri;
             self.inner_api_call(method, params, uri)
     }
 
-    fn inner_api_call(self, method: &str, params: HashMap<String, Value>, uri: Uri)
+    fn inner_api_call(self, method: &str, params: HashMap<String, Value>, uri: &str)
                         ->  impl Future<Item=Response, Error=FetchError> {
         let json_str = ApiRequest::method(method)
                                     .parameters(params)
                                     .to_json();
         let mut req = Request::new(Body::from(json_str));
         *req.method_mut() = Method::POST;
-        *req.uri_mut() = uri;
+        *req.uri_mut() = uri.parse().unwrap_or_else(|_| panic!("Unable to parse URI: {}", uri));
         req.headers_mut().insert(
             hyper::header::CONTENT_TYPE,
             HeaderValue::from_static("application/json")
@@ -193,8 +147,8 @@ impl Factom {
             .and_then(|res| {res.into_body().concat2()})
             .from_err::<FetchError>()
             .and_then(|json| {
-                            let output: Response = serde_json::from_slice(&json)?;
-                            Ok(output)
+                                let output: Response = serde_json::from_slice(&json)?;
+                                Ok(output)
                             })
     }
 }
@@ -210,6 +164,8 @@ pub fn fetch<F, R, E>(fut: F)-> Result<R, E>
         runtime.block_on(fut)
     }
 
-
+fn to_static_str(s: String) -> &'static str {
+    Box::leak(s.into_boxed_str())
+}
 
 

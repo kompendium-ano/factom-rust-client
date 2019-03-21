@@ -14,9 +14,7 @@ Committing or revealing entries require the result of the compose methods and wi
  ```
  use factom::{Factom, Future, rt};
  
-let factom = Factom::new()
-                        .host("192.168.121.131")
-                        .build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom.properties()
                         .map(|result| println!("{:?}", result))
                         .map_err(|err| panic!("{:?}", err));
@@ -37,7 +35,7 @@ The ABEntries are detailed [here](https://github.com/FactomProject/FactomDocs/bl
 ```
 use factom::*;  
 
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
                 .ablock_by_height(2)
                 .map(|response| response).map_err(|err| err);
@@ -48,7 +46,7 @@ assert!(response.success());
     pub fn ablock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("height".to_string(), json!(height));
-        self.api_call("ablock-by-height", params)
+        self.call("ablock-by-height", params)
     }
 
 /**
@@ -92,7 +90,7 @@ use factom::*;
 
 let hash = "6ecd7c6c40d0e9dbb52457343e083d4306c5b4cd2d6e623ba67cf9d18b39faa7";
 let tx_type = "f";
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .ack(hash, tx_type, None)
             .map(|response| response).map_err(|err| err);
@@ -109,7 +107,7 @@ assert!(response.success());
         if let Some(tx) = full_transaction{
             params.insert("fulltransaction".to_string(), json!(tx));
         }
-        self.api_call("ack", params)
+        self.call("ack", params)
     }
 
 /**
@@ -119,7 +117,7 @@ Retrieve a specified admin block given its merkle root key.
 use factom::*;
 
 let keymr = "9f9b2d68e7f018a272e9331765ac8d353c7f58c6f18685405b5286353b58daee";
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .admin_block(keymr)
             .map(|response| response).map_err(|err| err);
@@ -130,7 +128,7 @@ assert!(response.success());
     pub fn admin_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("keymr".to_string(), json!(keymr));
-        self.api_call("admin-block", params)
+        self.call("admin-block", params)
     }
 
 /**
@@ -140,7 +138,7 @@ Return the keymr of the head of the chain for a chain ID (the unique hash create
 use factom::*;
 
 let chainid = "9dec48601fba6ddb4bcea12066ba0f2b2467f89c788c5a243eb253c3de0f815b";
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .chain_head(chainid)
             .map(|response| response).map_err(|err| err);
@@ -151,7 +149,7 @@ assert!(response.success());
     pub fn chain_head(self, chainid: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("chainid".to_string(), json!(chainid));
-        self.api_call("chain-head", params)
+        self.call("chain-head", params)
     }
 
 /**
@@ -168,7 +166,7 @@ It is possible to be unable to send a commit, if the commit already exists (if y
     pub fn commit_chain(self, message: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("message".to_string(), json!(message));
-        self.api_call("commit-chain", params)
+        self.call("commit-chain", params)
     }
 
 /**
@@ -185,7 +183,7 @@ It is possible to be unable to send a commit, if the commit already exists (if y
     pub fn commit_entry(self, message: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("message".to_string(), json!(message));
-        self.api_call("commit-entry", params)
+        self.call("commit-entry", params)
     }
 
 /**
@@ -214,7 +212,7 @@ The current-minute API call returns:
 ```
 use factom::*;
 
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .current_minute()
             .map(|response| response).map_err(|err| err);
@@ -223,7 +221,7 @@ assert!(response.success());
 ```
 */
     pub fn current_minute(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.api_call("current-minute", HashMap::new())
+        self.call("current-minute", HashMap::new())
     }
 
 /**
@@ -232,7 +230,7 @@ Retrieve a directory block given only its height.
 ```
 use factom::*;
 
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .dblock_by_height(2)
             .map(|response| response).map_err(|err| err);
@@ -243,7 +241,7 @@ assert!(response.success());
     pub fn dblock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("height".to_string(), json!(height));
-        self.api_call("dblock-by-height", params)
+        self.call("dblock-by-height", params)
     }
 
 
@@ -254,7 +252,7 @@ Every directory block has a KeyMR (Key Merkle Root), which can be used to retrie
 use factom::*;
 
 let keymr = "5b372f4622c682c984dc922983d0c769db33c376d107c74e8023446029592011";
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .directory_block(keymr)
             .map(|response| response).map_err(|err| err);
@@ -265,7 +263,7 @@ assert!(response.success());
     pub fn directory_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("keymr".to_string(), json!(keymr));
-        self.api_call("directory-block", params)
+        self.call("directory-block", params)
     }
 
 /**
@@ -274,7 +272,7 @@ The directory block head is the last known directory block by factom, or in othe
 ```
 use factom::*;
 
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .directory_block_head()
             .map(|response| response).map_err(|err| err);
@@ -283,7 +281,7 @@ assert!(response.success());
 ```
 */
     pub fn directory_block_head(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.api_call("directory-block-head", HashMap::new())
+        self.call("directory-block-head", HashMap::new())
     }
 
 /**
@@ -292,7 +290,7 @@ Retrieve the entry credit block for any given height. These blocks contain entry
 ```
 use factom::*;
 
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .ecblock_by_height(2)
             .map(|response| response).map_err(|err| err);
@@ -303,7 +301,7 @@ assert!(response.success());
     pub fn ecblock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("height".to_string(), json!(height));
-        self.api_call("ecblock-by-height", params)
+        self.call("ecblock-by-height", params)
     }
 
 /**
@@ -313,7 +311,7 @@ Get an Entry from factomd specified by the Entry Hash.
 use factom::*;
 
 let hash = "6ecd7c6c40d0e9dbb52457343e083d4306c5b4cd2d6e623ba67cf9d18b39faa7";
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom.entry(hash)
                         .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
@@ -323,7 +321,7 @@ assert!(response.success());
     pub fn entry(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("hash".to_string(), json!(hash));
-        self.api_call("entry", params)
+        self.call("entry", params)
     }
 
 /**
@@ -333,7 +331,7 @@ Retrieve a specified entry block given its merkle root key. The entry block cont
 use factom::*;
 
 let keymr = "1df118c1293858d1111762d6a0df92b12231c72deb14b53bfffc09b867db1f3b";
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .entry_block(keymr)
             .map(|response| response).map_err(|err| err);
@@ -345,7 +343,7 @@ assert!(response.success());
     pub fn entry_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("keymr".to_string(), json!(keymr));
-        self.api_call("entry-block", params)
+        self.call("entry-block", params)
     }
 
 /**
@@ -355,7 +353,7 @@ Return its current balance for a specific entry credit address.
 use factom::*;
 
 let address = "EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx";
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .entry_credit_balance(address)
             .map(|response| response).map_err(|err| err);
@@ -366,7 +364,7 @@ assert!(response.success());
     pub fn entry_credit_balance(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("address".to_string(), json!(address));
-        self.api_call("entry-credit-balance", params)
+        self.call("entry-credit-balance", params)
     }
 
 /**
@@ -376,7 +374,7 @@ Retrieve a specified entrycredit block given its merkle root key. The numbers ar
 use factom::*;
 
 let keymr = "9b9e5b67b17f2e2d3d8405ea5fc227f6bf61fcc8c2422b36b11a7fce97018521";
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .entry_credit_block(keymr)
             .map(|response| response).map_err(|err| err);
@@ -387,7 +385,7 @@ assert!(response.success());
     pub fn entry_credit_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("keymr".to_string(), json!(keymr));
-        self.api_call("entrycredit-block", params)
+        self.call("entrycredit-block", params)
     }
 
 /**
@@ -396,7 +394,7 @@ Returns the number of Factoshis (Factoids *10^-8) that purchase a single Entry C
 ```
 use factom::*;
 
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .entry_credit_rate()
             .map(|response| response).map_err(|err| err);
@@ -405,7 +403,7 @@ assert!(response.success());
 ```
 */
     pub fn entry_credit_rate(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.api_call("entry-credit-rate", HashMap::new())
+        self.call("entry-credit-rate", HashMap::new())
     }
 
 /**
@@ -415,7 +413,7 @@ This call returns the number of Factoshis (Factoids *10^-8) that are currently a
 use factom::*;
 
 let address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .factoid_balance(address)
             .map(|response| response).map_err(|err| err);
@@ -426,7 +424,7 @@ assert!(response.success());
     pub fn factoid_balance(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("address".to_string(), json!(address));
-        self.api_call("factoid-balance", params)
+        self.call("factoid-balance", params)
     }
 
 /**
@@ -436,7 +434,7 @@ Retrieve a specified factoid block given its merkle root key.
 use factom::*;
 
 let keymr = "aaaf4db6c1f5b716df0d63dcf9605f599d9e41eb635d8ba3e9ddfbe697ec426c";
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .factoid_block(keymr)
             .map(|response| response).map_err(|err| err);
@@ -447,7 +445,7 @@ assert!(response.success());
     pub fn factoid_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("keymr".to_string(), json!(keymr));
-        self.api_call("factoid-block", params)
+        self.call("factoid-block", params)
     }
 
 /**
@@ -459,7 +457,7 @@ The factoid-submit API takes a specifically formatted message encoded in hex tha
 use factom::*;
 
 let tx = "0201565d109233010100b0a0e100646f3e8750c550e4582eca5047546ffef89c13a175985e320232bacac81cc428afd7c200ce7b98bfdae90f942bc1fe88c3dd44d8f4c81f4eeb88a5602da05abc82ffdb5301718b5edd2914acc2e4677f336c1a32736e5e9bde13663e6413894f57ec272e28dc1908f98b79df30005a99df3c5caf362722e56eb0e394d20d61d34ff66c079afad1d09eee21dcd4ddaafbb65aacea4d5c1afcd086377d77172f15b3aa32250a";
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .factoid_submit(tx)
             .map(|response| response).map_err(|err| err);
@@ -470,7 +468,7 @@ assert!(response.success());
     pub fn factoid_submit(self, transaction: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("transaction".to_string(), json!(transaction));
-        self.api_call("factoid-submit", params)
+        self.call("factoid-submit", params)
     }
 
 /**
@@ -478,7 +476,7 @@ Retrieve the factoid block for any given height. These blocks contain factoid tr
 #Example
 ```
 use factom::*;
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .fblock_by_height(1)
             .map(|response| response).map_err(|err| err);
@@ -489,7 +487,7 @@ assert!(response.success());
     pub fn fblock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("height".to_string(), json!(height));
-        self.api_call("fblock-by-height", params)
+        self.call("fblock-by-height", params)
     }
 
 /**
@@ -505,7 +503,7 @@ A fully synced node should show the same number for all, (except between minute 
 ```
 use factom::*;
 
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom.heights()
                         .map(|response| response).map_err(|err| err);
 let result = fetch(query);
@@ -514,7 +512,7 @@ assert!(response.success());
 ```
 */
     pub fn heights(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.api_call("heights", HashMap::new())
+        self.call("heights", HashMap::new())
     }
 
 /**
@@ -542,7 +540,7 @@ The multiple-ec-balances API is used to query the acknowledged and saved balance
 use factom::*;
 
 let addresses: Vec<&str> = vec!["EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx"];
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom.multiple_ec_balances(addresses)
                         .map(|response| response).map_err(|err| err);
 let result = fetch(query);
@@ -553,7 +551,7 @@ assert!(response.success());
     pub fn multiple_ec_balances(self, addresses: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("addresses".to_string(), json!(addresses));
-        self.api_call("multiple-ec-balances", params)
+        self.call("multiple-ec-balances", params)
     }
 
 /**
@@ -581,7 +579,7 @@ The multiple-fct-balances API is used to query the acknowledged and saved balanc
 use factom::*;
 
 let addresses: Vec<&str> = vec!["FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q"];
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom.multiple_fct_balances(addresses)
                         .map(|response| response).map_err(|err| err);
 let result = fetch(query);
@@ -592,7 +590,7 @@ assert!(response.success());
     pub fn multiple_fct_balances(self, addresses: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("addresses".to_string(), json!(addresses));
-        self.api_call("multiple-fct-balances", params)
+        self.call("multiple-fct-balances", params)
     }
 
 /**
@@ -601,7 +599,7 @@ Returns an array of the entries that have been submitted but have not been recor
 ```
 use factom::*;
 
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom.pending_entries()
                         .map(|response| response).map_err(|err| err);
 let result = fetch(query);
@@ -610,7 +608,7 @@ assert!(response.success());
 ```
 */
     pub fn pending_entries(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.api_call("pending-entries", HashMap::new())
+        self.call("pending-entries", HashMap::new())
     }
 
 /**
@@ -619,7 +617,7 @@ Returns an array of factoid transactions that have not yet been recorded in the 
 ```
 use factom::*;
 
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom.pending_transactions(None)
                         .map(|response| response).map_err(|err| err);
 let result = fetch(query);
@@ -632,7 +630,7 @@ assert!(response.success());
         if let Some(add) = address {
             params.insert("address".to_string(), json!(add));
         }
-        self.api_call("pending-transactions", params)
+        self.call("pending-transactions", params)
     }
 
 /**
@@ -641,7 +639,7 @@ Retrieve current properties of the Factom system, including the software and the
 ```
 use factom::*;
 
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom.properties()
                         .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
@@ -649,7 +647,7 @@ assert!(response.success());
 ```
 */
     pub fn properties(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.api_call("properties", HashMap::new())
+        self.call("properties", HashMap::new())
     }
 
 /**
@@ -659,7 +657,7 @@ Retrieve an entry or transaction in raw format, the data is a hex encoded string
 use factom::*;
 
 let hash = "6ecd7c6c40d0e9dbb52457343e083d4306c5b4cd2d6e623ba67cf9d18b39faa7";
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom.raw_data(hash)
                         .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
@@ -669,7 +667,7 @@ assert!(response.success());
     pub fn raw_data(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("hash".to_string(), json!(hash));
-        self.api_call("raw-data", params)
+        self.call("raw-data", params)
     }
 
 /**
@@ -679,7 +677,7 @@ Retrieve a receipt providing cryptographically verifiable proof that information
 use factom::*;
 
 let hash = "6ecd7c6c40d0e9dbb52457343e083d4306c5b4cd2d6e623ba67cf9d18b39faa7";
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom.receipt(hash)
                         .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
@@ -689,7 +687,7 @@ assert!(response.success());
     pub fn receipt(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("hash".to_string(), json!(hash));
-        self.api_call("receipt", params)
+        self.call("receipt", params)
     }
 
 /**
@@ -703,7 +701,7 @@ The compose-chain api call has two api calls in its response: commit-chain and r
     pub fn reveal_chain(self, entry: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("entry".to_string(), json!(entry));
-        self.api_call("reveal-chain", params)
+        self.call("reveal-chain", params)
     }
 
 /**
@@ -717,7 +715,7 @@ The compose-entry api call has two api calls in it’s response: commit-entry an
     pub fn reveal_entry(self, entry: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("entry".to_string(), json!(entry));
-        self.api_call("reveal-entry", params)
+        self.call("reveal-entry", params)
     }
 
 /**
@@ -747,7 +745,7 @@ If the input hash is non-existent, the returned fields will be as follows:
 use factom::*;
 
 let hash = "21fc64855771f2ee12da2a85b1aa0108007ed3a566425f3eaec7c8c7d2db6c6d";
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom.transaction(hash)
                         .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
@@ -757,7 +755,7 @@ assert!(response.success());
     pub fn transaction(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("hash".to_string(), json!(hash));
-        self.api_call("transaction", params)
+        self.call("transaction", params)
     }
 }
 
@@ -780,7 +778,7 @@ To get the ECRate search in the search bar above for “entry-credit-rate”
         params.insert("tx-name".to_string(), json!(txname));
         params.insert("address".to_string(), json!(address));
         params.insert("amount".to_string(), json!(amount));
-        self.walletd_api_call("add-ec-output", params)
+        self.walletd_call("add-ec-output", params)
     }
 
 /**
@@ -795,7 +793,7 @@ Run the addfee again, and the feepaid and feerequired will match up
         let mut params = HashMap::new();
         params.insert("tx-name".to_string(), json!(txname));
         params.insert("address".to_string(), json!(address));
-        self.walletd_api_call("add-fee", params)
+        self.walletd_call("add-fee", params)
     }
 
 /**
@@ -810,7 +808,7 @@ The input is measured in factoshis, so to send ten factoids, you must input 1,00
         params.insert("tx-name".to_string(), json!(txname));
         params.insert("address".to_string(), json!(address));
         params.insert("amount".to_string(), json!(amount));
-        self.walletd_api_call("add-input", params)
+        self.walletd_call("add-input", params)
     }
 
 /**
@@ -825,7 +823,7 @@ So to send ten factoids, you must send 1,000,000,000 factoshis (no commas in JSO
         params.insert("tx-name".to_string(), json!(txname));
         params.insert("address".to_string(), json!(address));
         params.insert("amount".to_string(), json!(amount));
-        self.walletd_api_call("add-output", params)
+        self.walletd_call("add-output", params)
     }
 
 /**
@@ -836,7 +834,7 @@ Retrieve the public and private parts of a Factoid or Entry Credit address store
     pub fn address(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("address".to_string(), json!(address));
-        self.walletd_api_call("address", params)
+        self.walletd_call("address", params)
     }
 
 /**
@@ -844,7 +842,7 @@ Retrieve all of the Factoid and Entry Credit addresses stored in the wallet.
 
 */  
     pub fn all_addresses(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.walletd_api_call("all-addresses", HashMap::new())
+        self.walletd_call("all-addresses", HashMap::new())
     }
 
 /**
@@ -858,7 +856,7 @@ use factom::*;
 let ec_address = "EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx";
 let extids = vec!("Cargo Test", "test harness");
 let content = "Here be the content";
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .compose_chain(extids, content, ec_address)
             .map(|response| response).map_err(|err| err);
@@ -884,7 +882,7 @@ assert!(response.success());
         params.insert("chain".to_string(), chain);
         params.insert("ecpub".to_string(), json!(ecpub));
         dbg!(&params);
-        self.walletd_api_call("compose-chain", params)
+        self.walletd_call("compose-chain", params)
     }
 
 /**
@@ -899,7 +897,7 @@ let chainid = "9dec48601fba6ddb4bcea12066ba0f2b2467f89c788c5a243eb253c3de0f815b"
 let ec_address = "EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx";
 let extids = vec!("Cargo Test", "test harness");
 let content = "Here be the content";
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .compose_entry(chainid, extids, content, ec_address)
             .map(|response| response).map_err(|err| err);
@@ -921,7 +919,7 @@ assert!(response.success());
         });
         params.insert("entry".to_string(), entry);
         params.insert("ecpub".to_string(), json!(ecpub));
-        self.walletd_api_call("compose-entry", params)
+        self.walletd_call("compose-entry", params)
     }
 
 /**
@@ -935,7 +933,7 @@ use factom::*;
     pub fn compose_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("tx-name".to_string(), json!(tx_name));
-        self.walletd_api_call("compose-transaction", params)
+        self.walletd_call("compose-transaction", params)
     }
 
 /**
@@ -945,7 +943,7 @@ Deletes a working transaction in the wallet. The full transaction will be return
 use factom::*;
 
 let txname = "test-tx";
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let handler = factom.clone();
 fetch(handler.new_transaction(txname)
             .map(|res| res)
@@ -960,7 +958,7 @@ assert!(response.success());
     pub fn delete_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("tx-name".to_string(), json!(tx_name));
-        self.walletd_api_call("delete-transaction", params)
+        self.walletd_call("delete-transaction", params)
     }
 
 /**
@@ -968,7 +966,7 @@ Create a new Entry Credit Address and store it in the wallet.
 #Example
 ```
 use factom::*;
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .generate_ec_address()
             .map(|response| response).map_err(|err| err);
@@ -977,7 +975,7 @@ assert!(response.success());
 ```
 */
     pub fn generate_ec_address(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.walletd_api_call("generate-ec-address", HashMap::new())
+        self.walletd_call("generate-ec-address", HashMap::new())
     }
 
 /**
@@ -986,7 +984,7 @@ Create a new Entry Credit Address and store it in the wallet.
 ```
 use factom::*;
 
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .generate_factoid_address()
             .map(|response| response).map_err(|err| err);
@@ -995,7 +993,7 @@ assert!(response.success());
 ```
 */
     pub fn generate_factoid_address(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.walletd_api_call("generate-factoid-address", HashMap::new())
+        self.walletd_call("generate-factoid-address", HashMap::new())
     }
 
 /**
@@ -1004,7 +1002,7 @@ Get the current hight of blocks that have been cached by the wallet while syncin
 ```
 use factom::*;
 
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .get_height()
             .map(|response| response).map_err(|err| err);
@@ -1013,7 +1011,7 @@ assert!(response.success());
 ```
 */
     pub fn get_height(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.walletd_api_call("get-height", HashMap::new())
+        self.walletd_call("get-height", HashMap::new())
     }
 
 /**
@@ -1023,7 +1021,7 @@ Import Factoid and/or Entry Credit address secret keys into the wallet.
 use factom::*;
 
 let addresses = vec!("Fs3E9gV6DXsYzf7Fqx1fVBQPQXV695eP3k5XbmHEZVRLkMdD9qCK");
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .import_addresses(addresses)
             .map(|response| response).map_err(|err| err);
@@ -1040,7 +1038,7 @@ assert!(response.success());
             secrets.push(tmp);
         }
         params.insert("addresses".to_string(), json!(secrets));
-        self.walletd_api_call("import-addresses", params)
+        self.walletd_call("import-addresses", params)
     }
 
 /**
@@ -1052,7 +1050,7 @@ When dealing with transactions all factoids are represented in factoshis. 1 fact
 use factom::*;
 
 let txname = "new-tx-test";
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let handler = factom.clone();
 let query = factom
             .new_transaction(txname)
@@ -1065,7 +1063,7 @@ fetch(handler.delete_transaction(txname).map(|_| ())).map_err(|_| ()).unwrap();
     pub fn new_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("tx-name".to_string(), json!(tx_name));
-        self.walletd_api_call("new-transaction", params)
+        self.walletd_call("new-transaction", params)
     }
 
 /**
@@ -1074,7 +1072,7 @@ Retrieve current properties of factom-walletd, including the wallet and wallet A
 ```
 use factom::*;
 
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .properties()
             .map(|response| response).map_err(|err| err);
@@ -1083,7 +1081,7 @@ assert!(response.success());
 ```
 */
     pub fn walletd_properties(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.walletd_api_call("properties", HashMap::new())
+        self.walletd_call("properties", HashMap::new())
     }
 
 /**
@@ -1093,7 +1091,7 @@ Signs the transaction. It is now ready to be executed.
     pub fn sign_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
         let mut params = HashMap::new();
         params.insert("tx-name".to_string(), json!(tx_name));
-        self.walletd_api_call("sign-transaction", params)
+        self.walletd_call("sign-transaction", params)
     }
 
 /**
@@ -1106,7 +1104,7 @@ This allows a wallet to send all it’s factoids, by making the input and output
         let mut params = HashMap::new();
         params.insert("tx-name".to_string(), json!(tx_name));
         params.insert("address".to_string(), json!(address));
-        self.walletd_api_call("sub-fee", params)
+        self.walletd_call("sub-fee", params)
     }
 
 /**
@@ -1115,7 +1113,7 @@ Lists all the current working transactions in the wallet. These are transactions
 ```
 use factom::*;
 
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .tmp_transactions()
             .map(|response| response).map_err(|err| err);
@@ -1124,7 +1122,7 @@ assert!(response.success());
 ```
 */
     pub fn tmp_transactions(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.walletd_api_call("tmp-transactions", HashMap::new())
+        self.walletd_call("tmp-transactions", HashMap::new())
     } 
 
 /**
@@ -1146,7 +1144,7 @@ use factom::*;
 
 
 let tx = api::SearchBy::Range(1,2);
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .transactions(tx)
             .map(|response| response).map_err(|err| err);
@@ -1155,17 +1153,17 @@ assert!(response.success());
 
 let address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
 let add_tx = api::SearchBy::Address(address);
-let add_query = Factom::new().host("192.168.121.131").build()
-                        .transactions(add_tx)
-                        .map(|response| response).map_err(|err| err);
+let add_query = factom
+                .transactions(add_tx)
+                .map(|response| response).map_err(|err| err);
 let add_response = fetch(add_query).unwrap();
 assert!(add_response.success());  
 
 let txid = "21fc64855771f2ee12da2a85b1aa0108007ed3a566425f3eaec7c8c7d2db6c6d";
 let id_tx = api::SearchBy::Txid(txid);
-let id_query = Factom::new().host("192.168.121.131").build()
-                                .transactions(id_tx)
-                                .map(|response| response).map_err(|err| err);
+leet id_query = factom
+                .transactions(id_tx)
+                .map(|response| response).map_err(|err| err);
 let id_response = fetch(id_query).unwrap();
 assert!(id_response.success());  
 ```
@@ -1188,7 +1186,7 @@ assert!(id_response.success());
                                 params.insert("range".to_string(),json!(range));
                                 }
         };          
-        self.walletd_api_call("transactions", params)
+        self.walletd_call("transactions", params)
     } 
 
 /**
@@ -1197,7 +1195,7 @@ Return the wallet seed and all addresses in the wallet for backup and offline st
 ```
 use factom::*;
 
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .wallet_backup()
             .map(|response| response).map_err(|err| err);
@@ -1206,7 +1204,7 @@ assert!(response.success());
 ```
 */
     pub fn wallet_backup(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.walletd_api_call("wallet-backup", HashMap::new())
+        self.walletd_call("wallet-backup", HashMap::new())
     } 
 
 /**
@@ -1227,7 +1225,7 @@ The wallet-balances API is used to query the acknowledged and saved balances for
 ```
 use factom::*;
 
-let factom = Factom::new().host("192.168.121.131").build();
+let factom = Factom::from_host("192.168.121.131");
 let query = factom
             .wallet_balances()
             .map(|response| response).map_err(|err| err);
@@ -1236,7 +1234,7 @@ assert!(response.success());
 ```
 */
     pub fn wallet_balances(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.walletd_api_call("wallet-balances", HashMap::new())
+        self.walletd_call("wallet-balances", HashMap::new())
     } 
 }
 
