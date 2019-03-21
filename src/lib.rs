@@ -1,4 +1,11 @@
 #![allow(dead_code, non_camel_case_types)]
+
+/// 
+pub mod api;
+pub mod errors;
+mod tests;
+
+use errors::{FetchError, FactomError};
 use std::collections::HashMap;
 use http::header::HeaderValue;
 use serde_json::{Value, json};
@@ -7,16 +14,13 @@ use serde::{Serialize, Deserialize};
 pub use hyper::rt::{self, Future, Stream};
 use hyper::{Method, Request, Body, Client};
 
-pub mod api;
-mod tests;
-
 const WALLET_URI: &str = "http://localhost:8088/v2";
 const FACTOMD_URI: &str = "http://localhost:8089/v2";
 const API_VERSION: u8 = 2;
 const JSONRPC : &str = "2.0";
 const ID: u32 = 0;
 
-#[derive(Debug, Deserialize, PartialEq, Clone)]
+#[derive(Debug, Deserialize, PartialEq)]
 pub enum Outcome{
     result(Value),
     error(HashMap<String, Value>)
@@ -31,15 +35,65 @@ pub struct Response{
 }
 
 impl Response {
+    /**
+    Returns a boolean indicating whether the server sucessfully processed the request
+    # Example
+    ```
+    use factom::*;
+
+    let factom = Factom::from_host("192.168.121.131");
+    let query = factom.properties()
+                        .map(|response| response)
+                        .map_err(|err| err);
+    let response = fetch(query).unwrap();
+    if response.success(){
+        // it's working
+    };
+    ```
+    */
+
     pub fn success(self)-> bool {
         match self.result {
-            Outcome::error(_) => false,
-            Outcome::result(_) => true
+            Outcome::result(_) => true,
+            Outcome::error(_) => false
+        }
+    }
+
+    /**
+    Returns a Result type containing either the successful API call result or a FactomError enum
+    # Example
+    ```
+    use factom::*;
+    use errors::FactomError;
+
+    let factom = Factom::from_host("192.168.121.131");
+    let query = factom.factoid_block("Not_a_valid_keymr")
+                        .map(|response| response)
+                        .map_err(|err| err);
+    let response = fetch(query).unwrap();
+    let result = response.get_result();
+    assert!(result == Err(FactomError::InvalidParams))
+    ```
+    */
+    pub fn get_result(self)-> Result<Value, FactomError>{
+        match self.result {
+            Outcome::result(res) => Ok(res),
+            Outcome::error(err) => {
+                match err["code"].as_i64().unwrap() {
+                    -32700 => Err(FactomError::ParseError),
+                    -32600 => Err(FactomError::InvalidRequest),
+                    -32602 => Err(FactomError::InvalidParams),
+                    -32603 => Err(FactomError::InternalError),
+                    -32601 => Err(FactomError::MethodNotFound),
+                    -32011 => Err(FactomError::RepeatedCommit),
+                    _ => Err(FactomError::UndefinedError)
+                }
+            }
         }
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Debug)]
 pub struct ApiRequest{
     jsonrpc: String,
     id: u32,
@@ -73,31 +127,25 @@ impl ApiRequest {
 
 }
 
-#[derive(Debug)]
-pub enum FetchError {
-    Http(hyper::Error),
-    Json(serde_json::Error),
-}
 
-impl From<hyper::Error> for FetchError {
-    fn from(err: hyper::Error) -> FetchError {
-        FetchError::Http(err)
-    }
-}
-
-impl From<serde_json::Error> for FetchError {
-    fn from(err: serde_json::Error) -> FetchError {
-        FetchError::Json(err)
-    }
-}
-#[derive(Clone, Default)]
+#[derive(Clone, Copy, Default)]
 pub struct Factom{
-    uri: &'static str,
-    wallet_uri: &'static str,
+    uri: &'static str,    wallet_uri: &'static str,
     id: u32
 }
 
 impl Factom {
+    /**
+    Creates a Factom struct containing the default paths for both factomd and factom-walletd
+    Requests will go to "http://localhost:8088/v2" and "http://localhost:8089/v2" respectively.
+    Is used to construct queries which can be passed to a runtime or fetched synchronously.
+    # Example
+    ```
+    use factom::Factom;
+
+    let api = Factom::new();
+    ```
+    */
     pub fn new()->Factom{
         Factom {
             uri: FACTOMD_URI,
@@ -106,6 +154,16 @@ impl Factom {
         }
     }
 
+    /**
+    Constructs a new  Factom struct for a specific host. All other default parmaeters stay the same
+    # Example
+    ```
+    use factom::Factom;
+
+    let api = Factom::from_host("192.168.42.42");
+    // factomd uri => "http://192.168.42.42:8088/v2"
+    ```
+    */
     pub fn from_host(host: &str)->Factom{
         Factom {
             uri: to_static_str(format!("http://{}:8088/v{}", host, API_VERSION)),
@@ -114,6 +172,16 @@ impl Factom {
         }
     }
 
+    /**
+    Same as from_host but with tls implemented. All other default parmaeters stay the same
+    # Example
+    ```
+    use factom::Factom;
+
+    let api = Factom::from_https_host("https://api.factomd.net/v2");
+    // factomd uri => "https://api.factomd.net/v2"
+    ```
+    */
     pub fn from_https_host(host: &str)->Factom{
         Factom {
             uri: to_static_str(format!("https://{}:8088/v{}", host, API_VERSION)),
@@ -122,6 +190,21 @@ impl Factom {
         }
     }
 
+    /**
+    Sets the ID parameter used in asynchronous JSON-RPC calls a returns a copy of the Factom struct
+    Will default to 0 if not set.
+    # Example
+    ```
+    use factom:Factom;
+
+    let api = Factom::new()
+
+    let query = api.properties()
+                    .id(1888)
+                    .map(|res| res)
+                    .map_err(|rr| err);
+    ```
+    */
     pub fn set_id(self, id: u32)-> Factom{
         Factom{
             id,
