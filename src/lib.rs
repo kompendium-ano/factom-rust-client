@@ -5,13 +5,15 @@ pub mod api;
 pub mod errors;
 mod tests;
 
-use errors::{FetchError, FactomError};
 use std::collections::HashMap;
 use http::header::HeaderValue;
 use serde_json::{Value, json};
 use hyper_tls::HttpsConnector;
 use serde::{Serialize, Deserialize};
-pub use hyper::rt::{self, Future, Stream};
+pub use hyper::rt::{Future, Stream};
+pub use tokio::runtime::Runtime;
+pub use tokio::prelude::*;
+pub use errors::{FetchError, FactomError};
 use hyper::{Method, Request, Body, Client};
 
 const WALLET_URI: &str = "http://localhost:8088/v2";
@@ -237,7 +239,7 @@ impl Factom {
         req.headers_mut().insert(
             hyper::header::CONTENT_TYPE,
             HeaderValue::from_static("application/json")
-            );
+        );
 
         // https connector
         let https = HttpsConnector::new(4).expect("TLS initialization failed");
@@ -254,14 +256,14 @@ impl Factom {
     }
 }
 
-// Retrieves future synchronously, blocks until Result is returned
+// Retrieves future, blocks until Result is returned
 pub fn fetch<F, R, E>(fut: F)-> Result<R, E>
     where
         F: Send + 'static + Future<Item = R, Error = E>,
         R: Send + 'static,
         E: Send + 'static,
     {
-        let mut runtime = tokio::runtime::Runtime::new().expect("Unable to create a tokio runtime");
+        let mut runtime = Runtime::new().expect("Unable to create a tokio runtime");
         runtime.block_on(fut)
     }
 
