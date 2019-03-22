@@ -1,6 +1,5 @@
 /target
+/src/tests/env
 **/*.rs.bk
 Cargo.lock
 launch.json
-src/lib.rs
-src/tests/mod.rs
