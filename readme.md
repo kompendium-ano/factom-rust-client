@@ -11,7 +11,7 @@ Asynchronous rust client for the Factom API.
 Add to cargo.toml:
 ```toml
 [dependencies]
-factom = 1.0.1
+factom = "1.0.1"
 ```
 
 ## Quickstart
