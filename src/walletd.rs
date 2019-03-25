@@ -384,7 +384,7 @@ Retrieves all transactions that involve a particular address.
 use factom::*;
 
 
-let tx = api::SearchBy::Range(1,2);
+let tx = utils::SearchBy::Range(1,2);
 let factom = Factom::new();
 let query = factom
             .transactions(tx)
@@ -393,7 +393,7 @@ let response = fetch(query).unwrap();
 assert!(response.success()); 
 
 let address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
-let add_tx = api::SearchBy::Address(address);
+let add_tx = utils::SearchBy::Address(address);
 let add_query = factom
                 .transactions(add_tx)
                 .map(|response| response).map_err(|err| err);
@@ -401,7 +401,7 @@ let add_response = fetch(add_query).unwrap();
 assert!(add_response.success());  
 
 let txid = "21fc64855771f2ee12da2a85b1aa0108007ed3a566425f3eaec7c8c7d2db6c6d";
-let id_tx = api::SearchBy::Txid(txid);
+let id_tx = utils::SearchBy::Txid(txid);
 let id_query = factom
                 .transactions(id_tx)
                 .map(|response| response).map_err(|err| err);
