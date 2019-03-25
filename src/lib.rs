@@ -42,7 +42,7 @@ impl Response {
     ```
     use factom::*;
 
-    let factom = Factom::from_host("192.168.121.131");
+    let factom = Factom::from_host("192.168.121.133");
     let query = factom.properties()
                         .map(|response| response)
                         .map_err(|err| err);
@@ -67,7 +67,7 @@ impl Response {
     use factom::*;
     use errors::FactomError;
 
-    let factom = Factom::from_host("192.168.121.131");
+    let factom = Factom::from_host("192.168.121.133");
     let query = factom.factoid_block("Not_a_valid_keymr")
                         .map(|response| response)
                         .map_err(|err| err);
@@ -127,6 +127,18 @@ impl ApiRequest {
     }
 
 }
+
+// struct Query<F: ?Sized>(Future<Item=Response, Error=FetchError>);
+
+// impl Query<F>{
+//     // Retrieves future, blocks until Result is returned
+//     pub fn fetch(self)-> Result<Response, FetchError>
+    
+//         {
+//             let mut runtime = Runtime::new().expect("Unable to create a tokio runtime");
+//             runtime.block_on(self.fut)
+//         }
+// }
 
 #[derive(Clone, Copy, Default)]
 pub struct Factom{
@@ -199,12 +211,11 @@ impl Factom {
     ```
     use factom::Factom;
 
-    let api = Factom::new()
-
+    let api = Factom::new();
     let query = api.properties()
-                    .id(1888)
+                    .set_id(1888)
                     .map(|res| res)
-                    .map_err(|rr| err);
+                    .map_err(|err| err);
     ```
     */
     pub fn set_id(self, id: u32)-> Factom{
