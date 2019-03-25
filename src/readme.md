@@ -21,7 +21,7 @@ use factom::{Factom, fetch};
 
 let api = Factom::new();
 let query = api.properties();
-let response = fetch(query).expect("Error fetching query");
+let response = fetch(query).expect("Error occurred fetching query");
 dbg!(response);
 /*
 Response {
@@ -44,25 +44,32 @@ Response {
 ```
 
 ## Usage
+
 ```rust
 use factom::*;
 ```
-##### Synchronous call from local network
+
+##### Synchronous call from remote host
 ```rust
 let api = Factom::from_host("192.168.27.42");
-let blockheight = 8;
-let query = api.dblock_by_height(blockheight);
+let query = api.dblock_by_height(8);
+// Fetch is a synchronous call that retreives a result from the query future.
 let response = fetch(query).unwrap();
 ```
 
 ##### Asynchronous requests using futures
 ```rust
+
 let api = Factom::new()
-// Print heights if directory block is higher than 8
 let heights = api.heights()
                     .map(|response| {
-                        if Ok(response)["dblock"].as_u64() > 8 {
+                        let leaderheight = Ok(response)["leaderheight"].as_u64();
+                        let dblock = Ok(response)["dblock"].as_u64();
+                        if leaderheight == dblock {
                             dbg!(response.result);
+                        }
+                        else {
+                            println!("Factomd still syncing");
                         })
                     .map_err(|err| dbg!(err));
 
