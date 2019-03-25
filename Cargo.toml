@@ -6,7 +6,7 @@ edition = "2018"
 repository = "https://github.com/MitchellBerry/Factom-Client"
 homepage = "https://github.com/MitchellBerry/Factom-Client"
 license = "Apache-2.0"
-readme = "README.md"
+readme = "readme.md"
 maintenance = { status = "passively-maintained" }
 description = "Factom API client"
 
