@@ -1,9 +1,12 @@
 #![allow(dead_code, non_camel_case_types)]
-pub mod api;
+pub mod utils;
+pub mod factomd;
+pub mod walletd;
 pub mod errors;
 mod tests;
 
 pub use futures;
+pub use utils::*;
 pub use tokio::prelude::*;
 pub use tokio::runtime::Runtime;
 pub use hyper::rt::{Future, Stream};
@@ -265,21 +268,6 @@ impl Factom {
                                 Ok(output)
                             })
     }
-}
-
-// Retrieves future, blocks until Result is returned
-pub fn fetch<F, R, E>(fut: F)-> Result<R, E>
-    where
-        F: Send + 'static + Future<Item = R, Error = E>,
-        R: Send + 'static,
-        E: Send + 'static,
-    {
-        let mut runtime = Runtime::new().expect("Unable to create a tokio runtime");
-        runtime.block_on(fut)
-    }
-
-fn to_static_str(s: String) -> &'static str {
-    Box::leak(s.into_boxed_str())
 }
 
 
