@@ -1,3 +1,4 @@
+//! Basic helper functions
 use super::*;
 
 // Search options for the transactions function

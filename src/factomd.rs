@@ -1,3 +1,8 @@
+//! Contains all the factomd api calls
+//! 
+//! Documentation for all api methods are located on the [Factom struct page](struct.Factom.html)
+
+
 use super::*;
 
 impl Factom{

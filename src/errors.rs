@@ -1,9 +1,10 @@
+//! Error handling for networking, json parsing and the API.
+//! 
+//! Networking errors are handled by [hyper](https://docs.rs/hyper/0.12.25/hyper/)
+//!
+//! Problems parsing JSON by [serde_json](https://docs.serde.rs/serde_json/error/index.html)
 use super::*;
-/**
-Module containing errors from networking, json parsing or the API.
-Networking errors are handled by [hyper](https://docs.rs/hyper/0.12.25/hyper/)
-Problems parsing JSON by [serde_json](https://docs.serde.rs/serde_json/error/index.html)
-*/
+/// Errors relating to network requests or json serialiazation
 #[derive(Debug)]
 pub enum FetchError {
     Http(hyper::Error),

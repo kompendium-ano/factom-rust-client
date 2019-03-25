@@ -28,14 +28,18 @@ const API_VERSION: u8 = 2;
 const JSONRPC : &str = "2.0";
 const ID: u32 = 0;
 
+/// Handles the JSON result or error
 #[derive(Debug, Deserialize, PartialEq)]
 pub enum Outcome{
     result(Value),
     error(HashMap<String, Value>)
 }
 
+
+/// JSON responses are deserialized into this struct
 #[derive(Deserialize, Debug, PartialEq)]
 pub struct Response{
+    
     pub jsonrpc: String,
     pub id: u32,
     #[serde(flatten)]
@@ -101,6 +105,7 @@ impl Response {
     }
 }
 
+/// Struct is serialized into the JSON body of the request
 #[derive(Serialize, Debug)]
 pub struct ApiRequest{
     jsonrpc: String,
@@ -135,6 +140,7 @@ impl ApiRequest {
 
 }
 
+/// Main struct from which API requests are built
 #[derive(Clone, Copy, Default)]
 pub struct Factom{
     uri: &'static str,

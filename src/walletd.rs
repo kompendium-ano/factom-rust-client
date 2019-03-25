@@ -1,3 +1,6 @@
+//! Contains all the walletd api calls
+//!
+//! Documentation for the api calls are located on the [Factom struct page](struct.Factom.html)
 use super::*;
 use utils::*;
 
