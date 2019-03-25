@@ -1,3 +1,8 @@
+//! A rust client for the Factom network API.
+//! 
+//! Documentation for the api calls are located on the [Factom struct page](struct.Factom.html)
+
+
 #![allow(dead_code, non_camel_case_types)]
 pub mod utils;
 pub mod factomd;
