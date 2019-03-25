@@ -11,13 +11,13 @@ Committing or revealing entries require the result of the compose methods and wi
  # Example
 
  ```
- use factom::{Factom, Future, rt};
+ use factom::*;
  
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom.properties()
                         .map(|result| println!("{:?}", result))
                         .map_err(|err| panic!("{:?}", err));
- rt::run(query);
+ let result = fetch(query).unwrap();
 ```
  */
 
@@ -32,7 +32,7 @@ The ABEntries are detailed [here](https://github.com/FactomProject/FactomDocs/bl
 ```
 use factom::*;  
 
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
                 .ablock_by_height(2)
                 .map(|response| response).map_err(|err| err);
@@ -87,7 +87,7 @@ use factom::*;
 
 let hash = "6ecd7c6c40d0e9dbb52457343e083d4306c5b4cd2d6e623ba67cf9d18b39faa7";
 let tx_type = "f";
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .ack(hash, tx_type, None)
             .map(|response| response).map_err(|err| err);
@@ -114,7 +114,7 @@ Retrieve a specified admin block given its merkle root key.
 use factom::*;
 
 let keymr = "9f9b2d68e7f018a272e9331765ac8d353c7f58c6f18685405b5286353b58daee";
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .admin_block(keymr)
             .map(|response| response).map_err(|err| err);
@@ -135,7 +135,7 @@ Return the keymr of the head of the chain for a chain ID (the unique hash create
 use factom::*;
 
 let chainid = "9dec48601fba6ddb4bcea12066ba0f2b2467f89c788c5a243eb253c3de0f815b";
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .chain_head(chainid)
             .map(|response| response).map_err(|err| err);
@@ -209,7 +209,7 @@ The current-minute API call returns:
 ```
 use factom::*;
 
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .current_minute()
             .map(|response| response).map_err(|err| err);
@@ -227,7 +227,7 @@ Retrieve a directory block given only its height.
 ```
 use factom::*;
 
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .dblock_by_height(2)
             .map(|response| response).map_err(|err| err);
@@ -249,7 +249,7 @@ Every directory block has a KeyMR (Key Merkle Root), which can be used to retrie
 use factom::*;
 
 let keymr = "5b372f4622c682c984dc922983d0c769db33c376d107c74e8023446029592011";
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .directory_block(keymr)
             .map(|response| response).map_err(|err| err);
@@ -269,7 +269,7 @@ The directory block head is the last known directory block by factom, or in othe
 ```
 use factom::*;
 
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .directory_block_head()
             .map(|response| response).map_err(|err| err);
@@ -287,7 +287,7 @@ Retrieve the entry credit block for any given height. These blocks contain entry
 ```
 use factom::*;
 
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .ecblock_by_height(2)
             .map(|response| response).map_err(|err| err);
@@ -308,7 +308,7 @@ Get an Entry from factomd specified by the Entry Hash.
 use factom::*;
 
 let hash = "6ecd7c6c40d0e9dbb52457343e083d4306c5b4cd2d6e623ba67cf9d18b39faa7";
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom.entry(hash)
                         .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
@@ -328,7 +328,7 @@ Retrieve a specified entry block given its merkle root key. The entry block cont
 use factom::*;
 
 let keymr = "1df118c1293858d1111762d6a0df92b12231c72deb14b53bfffc09b867db1f3b";
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .entry_block(keymr)
             .map(|response| response).map_err(|err| err);
@@ -350,7 +350,7 @@ Return its current balance for a specific entry credit address.
 use factom::*;
 
 let address = "EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx";
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .entry_credit_balance(address)
             .map(|response| response).map_err(|err| err);
@@ -371,7 +371,7 @@ Retrieve a specified entrycredit block given its merkle root key. The numbers ar
 use factom::*;
 
 let keymr = "9b9e5b67b17f2e2d3d8405ea5fc227f6bf61fcc8c2422b36b11a7fce97018521";
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .entry_credit_block(keymr)
             .map(|response| response).map_err(|err| err);
@@ -391,7 +391,7 @@ Returns the number of Factoshis (Factoids *10^-8) that purchase a single Entry C
 ```
 use factom::*;
 
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .entry_credit_rate()
             .map(|response| response).map_err(|err| err);
@@ -410,7 +410,7 @@ This call returns the number of Factoshis (Factoids *10^-8) that are currently a
 use factom::*;
 
 let address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .factoid_balance(address)
             .map(|response| response).map_err(|err| err);
@@ -431,7 +431,7 @@ Retrieve a specified factoid block given its merkle root key.
 use factom::*;
 
 let keymr = "aaaf4db6c1f5b716df0d63dcf9605f599d9e41eb635d8ba3e9ddfbe697ec426c";
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .factoid_block(keymr)
             .map(|response| response).map_err(|err| err);
@@ -454,7 +454,7 @@ The factoid-submit API takes a specifically formatted message encoded in hex tha
 use factom::*;
 
 let tx = "0201565d109233010100b0a0e100646f3e8750c550e4582eca5047546ffef89c13a175985e320232bacac81cc428afd7c200ce7b98bfdae90f942bc1fe88c3dd44d8f4c81f4eeb88a5602da05abc82ffdb5301718b5edd2914acc2e4677f336c1a32736e5e9bde13663e6413894f57ec272e28dc1908f98b79df30005a99df3c5caf362722e56eb0e394d20d61d34ff66c079afad1d09eee21dcd4ddaafbb65aacea4d5c1afcd086377d77172f15b3aa32250a";
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .factoid_submit(tx)
             .map(|response| response).map_err(|err| err);
@@ -473,7 +473,7 @@ Retrieve the factoid block for any given height. These blocks contain factoid tr
 # Example
 ```
 use factom::*;
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .fblock_by_height(1)
             .map(|response| response).map_err(|err| err);
@@ -500,7 +500,7 @@ A fully synced node should show the same number for all, (except between minute 
 ```
 use factom::*;
 
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom.heights()
                         .map(|response| response).map_err(|err| err);
 let result = fetch(query);
@@ -537,7 +537,7 @@ The multiple-ec-balances API is used to query the acknowledged and saved balance
 use factom::*;
 
 let addresses: Vec<&str> = vec!["EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx"];
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom.multiple_ec_balances(addresses)
                         .map(|response| response).map_err(|err| err);
 let result = fetch(query);
@@ -576,7 +576,7 @@ The multiple-fct-balances API is used to query the acknowledged and saved balanc
 use factom::*;
 
 let addresses: Vec<&str> = vec!["FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q"];
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom.multiple_fct_balances(addresses)
                         .map(|response| response).map_err(|err| err);
 let result = fetch(query);
@@ -596,7 +596,7 @@ Returns an array of the entries that have been submitted but have not been recor
 ```
 use factom::*;
 
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom.pending_entries()
                         .map(|response| response).map_err(|err| err);
 let result = fetch(query);
@@ -614,7 +614,7 @@ Returns an array of factoid transactions that have not yet been recorded in the 
 ```
 use factom::*;
 
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom.pending_transactions(None)
                         .map(|response| response).map_err(|err| err);
 let result = fetch(query);
@@ -636,7 +636,7 @@ Retrieve current properties of the Factom system, including the software and the
 ```
 use factom::*;
 
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom.properties()
                         .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
@@ -654,7 +654,7 @@ Retrieve an entry or transaction in raw format, the data is a hex encoded string
 use factom::*;
 
 let hash = "6ecd7c6c40d0e9dbb52457343e083d4306c5b4cd2d6e623ba67cf9d18b39faa7";
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom.raw_data(hash)
                         .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
@@ -674,7 +674,7 @@ Retrieve a receipt providing cryptographically verifiable proof that information
 use factom::*;
 
 let hash = "6ecd7c6c40d0e9dbb52457343e083d4306c5b4cd2d6e623ba67cf9d18b39faa7";
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom.receipt(hash)
                         .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
@@ -742,7 +742,7 @@ If the input hash is non-existent, the returned fields will be as follows:
 use factom::*;
 
 let hash = "21fc64855771f2ee12da2a85b1aa0108007ed3a566425f3eaec7c8c7d2db6c6d";
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom.transaction(hash)
                         .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
@@ -853,7 +853,7 @@ use factom::*;
 let ec_address = "EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx";
 let extids = vec!("Cargo Test", "test harness");
 let content = "Here be the content";
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .compose_chain(extids, content, ec_address)
             .map(|response| response).map_err(|err| err);
@@ -894,7 +894,7 @@ let chainid = "9dec48601fba6ddb4bcea12066ba0f2b2467f89c788c5a243eb253c3de0f815b"
 let ec_address = "EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx";
 let extids = vec!("Cargo Test", "test harness");
 let content = "Here be the content";
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .compose_entry(chainid, extids, content, ec_address)
             .map(|response| response).map_err(|err| err);
@@ -940,7 +940,7 @@ Deletes a working transaction in the wallet. The full transaction will be return
 use factom::*;
 
 let txname = "test-tx";
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let handler = factom.clone();
 fetch(handler.new_transaction(txname)
             .map(|res| res)
@@ -963,7 +963,7 @@ Create a new Entry Credit Address and store it in the wallet.
 # Example
 ```
 use factom::*;
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .generate_ec_address()
             .map(|response| response).map_err(|err| err);
@@ -981,7 +981,7 @@ Create a new Entry Credit Address and store it in the wallet.
 ```
 use factom::*;
 
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .generate_factoid_address()
             .map(|response| response).map_err(|err| err);
@@ -999,7 +999,7 @@ Get the current hight of blocks that have been cached by the wallet while syncin
 ```
 use factom::*;
 
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .get_height()
             .map(|response| response).map_err(|err| err);
@@ -1018,7 +1018,7 @@ Import Factoid and/or Entry Credit address secret keys into the wallet.
 use factom::*;
 
 let addresses = vec!("Fs3E9gV6DXsYzf7Fqx1fVBQPQXV695eP3k5XbmHEZVRLkMdD9qCK");
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .import_addresses(addresses)
             .map(|response| response).map_err(|err| err);
@@ -1047,7 +1047,7 @@ When dealing with transactions all factoids are represented in factoshis. 1 fact
 use factom::*;
 
 let txname = "new-tx-test";
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let handler = factom.clone();
 let query = factom
             .new_transaction(txname)
@@ -1069,7 +1069,7 @@ Retrieve current properties of factom-walletd, including the wallet and wallet A
 ```
 use factom::*;
 
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .properties()
             .map(|response| response).map_err(|err| err);
@@ -1110,7 +1110,7 @@ Lists all the current working transactions in the wallet. These are transactions
 ```
 use factom::*;
 
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .tmp_transactions()
             .map(|response| response).map_err(|err| err);
@@ -1141,7 +1141,7 @@ use factom::*;
 
 
 let tx = api::SearchBy::Range(1,2);
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .transactions(tx)
             .map(|response| response).map_err(|err| err);
@@ -1192,7 +1192,7 @@ Return the wallet seed and all addresses in the wallet for backup and offline st
 ```
 use factom::*;
 
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .wallet_backup()
             .map(|response| response).map_err(|err| err);
@@ -1222,7 +1222,7 @@ The wallet-balances API is used to query the acknowledged and saved balances for
 ```
 use factom::*;
 
-let factom = Factom::from_host("192.168.121.131");
+let factom = Factom::new();
 let query = factom
             .wallet_balances()
             .map(|response| response).map_err(|err| err);
