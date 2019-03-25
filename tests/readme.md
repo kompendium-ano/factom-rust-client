@@ -12,7 +12,8 @@ rm factom-amd64.deb
 #### Start custom factomd testnet and walletd
 ```bash
 factomd -network=CUSTOM -customnet="cargo-test" -exclusive=true
-# Open wallet daeom in seperate shell
+
+# Open walletd in seperate shell
 factom-walletd
 ```
 
