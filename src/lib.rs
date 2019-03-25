@@ -3,7 +3,6 @@ pub mod utils;
 pub mod factomd;
 pub mod walletd;
 pub mod errors;
-mod tests;
 
 pub use futures;
 pub use utils::*;
@@ -130,18 +129,6 @@ impl ApiRequest {
     }
 
 }
-
-// struct Query<F: ?Sized>(Future<Item=Response, Error=FetchError>);
-
-// impl Query<F>{
-//     // Retrieves future, blocks until Result is returned
-//     pub fn fetch(self)-> Result<Response, FetchError>
-    
-//         {
-//             let mut runtime = Runtime::new().expect("Unable to create a tokio runtime");
-//             runtime.block_on(self.fut)
-//         }
-// }
 
 #[derive(Clone, Copy, Default)]
 pub struct Factom{

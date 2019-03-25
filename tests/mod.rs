@@ -1,4 +1,4 @@
-use super::*; 
+use factom::*; 
 use std::iter;
 use rand::{Rng, thread_rng};
 use rand::distributions::Alphanumeric;
