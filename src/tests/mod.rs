@@ -462,7 +462,7 @@ fn tmp_transactions() {
 
 #[test]
 fn transactions_range() {
-    let tx = api::SearchBy::Range(1,2);
+    let tx = utils::SearchBy::Range(1,2);
     let query = factom()
                 .transactions(tx)
                 .map(|response| response).map_err(|err| err);
@@ -472,7 +472,7 @@ fn transactions_range() {
 
 #[test]
 fn transactions_address() {
-    let tx = api::SearchBy::Address(FCT_PUB_ADDRESS);
+    let tx = utils::SearchBy::Address(FCT_PUB_ADDRESS);
     let query = factom()
                 .transactions(tx)
                 .map(|response| response).map_err(|err| err);
@@ -482,7 +482,7 @@ fn transactions_address() {
 
 #[test]
 fn transactions_txid() {
-    let tx = api::SearchBy::Txid(TXID);
+    let tx = utils::SearchBy::Txid(TXID);
     let query = factom()
                 .transactions(tx)
                 .map(|response| response).map_err(|err| err);
