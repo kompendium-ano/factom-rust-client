@@ -1,19 +1,18 @@
 #![allow(dead_code, non_camel_case_types)]
-
-/// 
 pub mod api;
 pub mod errors;
 mod tests;
 
+pub use futures;
+pub use tokio::prelude::*;
+pub use tokio::runtime::Runtime;
+pub use hyper::rt::{Future, Stream};
+pub use errors::{FetchError, FactomError};
 use std::collections::HashMap;
 use http::header::HeaderValue;
 use serde_json::{Value, json};
 use hyper_tls::HttpsConnector;
 use serde::{Serialize, Deserialize};
-pub use hyper::rt::{Future, Stream};
-pub use tokio::runtime::Runtime;
-pub use tokio::prelude::*;
-pub use errors::{FetchError, FactomError};
 use hyper::{Method, Request, Body, Client};
 
 const WALLET_URI: &str = "http://localhost:8088/v2";
@@ -129,12 +128,13 @@ impl ApiRequest {
 
 }
 
-
 #[derive(Clone, Copy, Default)]
 pub struct Factom{
-    uri: &'static str,    wallet_uri: &'static str,
+    uri: &'static str,
+    wallet_uri: &'static str,
     id: u32
 }
+
 
 impl Factom {
     /**
