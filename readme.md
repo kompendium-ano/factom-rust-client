@@ -1,7 +1,7 @@
 # Factom API Client
 
 [![Crates.io](https://img.shields.io/crates/v/factom.svg)](https://crates.io/crates/factom)
-[![Build Status](https://travis-ci.com/MitchellBerry/factom-client.svg?branch=master)](https://travis-ci.com/MitchellBerry/factom-client)
+[![Build Status](https://travis-ci.com/MitchellBerry/Factom-Client.svg?branch=master)](https://travis-ci.com/MitchellBerry/Factom-Client)
 [![dependency status](https://deps.rs/crate/factom/1.0.1/status.svg)](https://deps.rs/crate/factom/1.0.1)
 
 Asynchronous rust client for the Factom API.
