@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.com/MitchellBerry/Factom-Client.svg?branch=master)](https://travis-ci.com/MitchellBerry/Factom-Client)
 [![dependency status](https://deps.rs/crate/factom/1.0.1/status.svg)](https://deps.rs/crate/factom/1.0.1)
 
-Asynchronous rust client for the Factom API.
+Asynchronous rust client for the Factom API. Full documentation is available [here](https://docs.rs/factom/1.0.1/factom/). Serialisation is handled by serde and the futures runtime is handled by tokio.
 
 ## Installation
 
@@ -19,8 +19,17 @@ factom = "1.0.1"
 ```rust
 use factom::*;
 
+// Create new api handler for factomd/walletd on the localhost on ports 8088 and 8089 respectively
 let api = Factom::new();
-let response = fetch(api.properties()).expect("Unable to fetch query");
+
+// Methods return a future to be spawned onto a runtime or synchronously fetched
+let request = api.properties();
+
+// Fetch is a blocking helper method to get the result of a future
+// Http or Json errors raise here. 
+// API errors such as invalid method or parameters will passed along in the response to be handled later
+let response = fetch(request).expect("Unable to fetch request");
+
 dbg!(response);
 
 /*
@@ -49,22 +58,26 @@ Response {
 use factom::*;
 ```
 
-##### Simple synchronous call from remote host
+##### Synchronous call from remote host
 ```rust
+// For https calls use Factom::from_https_host()
 let api = Factom::from_host("192.168.27.42");
-let height_query = api.heights();
-let response = fetch(height_query).unwrap();
+let request = api.heights();
+let response = fetch(request).unwrap();
 dbg!(response)
 ```
 
-##### Synchronous call using Tokio block_on
+##### Synchronous call using Tokio block_on and custom json-rpc id
 ```rust
 // Create Tokio runtime
 let mut runtime = Runtime::new().expect("Unable to create Tokio Runtime"); 
 let api = Factom::new();
 
 let entryhash = "6ecd7c6c40d0e9dbb52457343e083d4306c5b4cd2d6e623ba67cf9d18b39faa7";
-let entry_query = api.entry(entryhash);
+
+// Add custom id
+let entry_query = api.entry(entryhash)
+                        .set_id(42);
 
 // block_on waits for future to return result
 let response = runtime.block_on(entry_query).unwrap();
@@ -156,7 +169,5 @@ shutdown(runtime);
 
 ## Testing 
 
-Setup test environment first, if factomd/walletd are not run locally modify the HOST variable in tests/mod.rs, see the [readme](/tests/readme.md) for more information.
-```bash
-cargo test
-```
+A custom database (~700kb) is located in /tests/env/ and needs to moved into the ~/.factom folder. 
+If factomd/walletd are not run locally, you will need to modify the HOST variable in tests/mod.rs, see the tests [readme](/tests/readme.md) for more information.

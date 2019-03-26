@@ -1,6 +1,7 @@
 # Factom client test environment
 
-To run through tests a custom blockchain with prior entries and credits is needed, which is included in the tests/env folder. The .factom folder there containing the database needs to be moved to ~/.factom beforehand and the daemon needs additional parameters as specified below. The current blocktime is set at 100 seconds in factomd.conf and can be modified as needed.
+To run through tests a custom blockchain with prior entries and credits is needed, which is included in the tests/env folder. The .factom folder there containing the database needs to be moved to ~/.factom beforehand. 
+The daemon also needs to be executed with additional parameters as specified below. The current blocktime is set at 100 seconds in factomd.conf and can be modified as needed.
 
 #### Installing command line binaries
 ```bash
