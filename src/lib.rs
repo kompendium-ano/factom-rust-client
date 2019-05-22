@@ -22,8 +22,8 @@ use hyper_tls::HttpsConnector;
 use serde::{Serialize, Deserialize};
 use hyper::{Method, Request, Body, Client};
 
-const WALLET_URI: &str = "http://localhost:8088/v2";
-const FACTOMD_URI: &str = "http://localhost:8089/v2";
+const WALLET_URI: &str = "http://localhost:8089/v2";
+const FACTOMD_URI: &str = "http://localhost:8088/v2";
 const API_VERSION: u8 = 2;
 const JSONRPC : &str = "2.0";
 const ID: u32 = 0;
