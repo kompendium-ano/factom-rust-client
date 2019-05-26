@@ -17,7 +17,6 @@ const FBLOCK_KEYMR: &str = "aaaf4db6c1f5b716df0d63dcf9605f599d9e41eb635d8ba3e9dd
 const EBLOCK_KEYMR: &str = "1df118c1293858d1111762d6a0df92b12231c72deb14b53bfffc09b867db1f3b";
 const ECBLOCK_KEYMR: &str = "9b9e5b67b17f2e2d3d8405ea5fc227f6bf61fcc8c2422b36b11a7fce97018521";
 
-
 fn random_string(len: usize)-> String {
     let mut rng = thread_rng();
     iter::repeat(())
@@ -35,6 +34,15 @@ fn error_check(response: Response){
     if let Outcome::error(err) = &result{
         panic!("{:?}", err)
     }
+}
+
+// Will fail if not using local factomd
+#[test]
+fn factom_new(){
+    let api = Factom::new();
+    let query = api.properties();
+    let response = fetch(query).expect("Unable to fetch request");
+    error_check(response);
 }
 
 // Daemon
