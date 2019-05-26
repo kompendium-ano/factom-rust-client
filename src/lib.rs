@@ -143,9 +143,9 @@ impl ApiRequest {
 /// Main struct from which API requests are built
 #[derive(Clone, Copy, Default)]
 pub struct Factom{
-    uri: &'static str,
-    wallet_uri: &'static str,
-    id: u32
+    pub uri: &'static str,
+    pub wallet_uri: &'static str,
+    pub id: u32
 }
 
 
