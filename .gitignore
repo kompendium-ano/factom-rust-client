@@ -1,5 +1,4 @@
 /target
-/tests/env
 **/*.rs.bk
 Cargo.lock
 launch.json
