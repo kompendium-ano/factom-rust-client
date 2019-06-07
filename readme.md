@@ -71,10 +71,10 @@ dbg!(response);
 ```rust
 // Factomd open node and walletd locally on port 3003. Id is included in the json-rpc call.
 let api = Factom{
-    uri: to_static_str("https://api.factomd.net/v2"),
-    wallet_uri: to_static_str("http://localhost:3003/v2"),
+    uri: "https://api.factomd.net/v2",
+    wallet_uri: "http://localhost:3003/v2",
     id: 0
-}
+};
 let request = api.wallet_balances();
 let response = fetch(request).unwrap();
 dbg!(response);
