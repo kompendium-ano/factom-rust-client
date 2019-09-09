@@ -8,6 +8,7 @@ pub mod utils;
 pub mod factomd;
 pub mod walletd;
 pub mod errors;
+pub mod constants;
 
 pub use futures;
 pub use utils::*;
@@ -15,6 +16,7 @@ pub use tokio::prelude::*;
 pub use tokio::runtime::Runtime;
 pub use hyper::rt::{Future, Stream};
 pub use errors::{FetchError, FactomError};
+pub use constants::*; 
 use std::collections::HashMap;
 use http::header::HeaderValue;
 use serde_json::{Value, json};
@@ -22,11 +24,6 @@ use hyper_tls::HttpsConnector;
 use serde::{Serialize, Deserialize};
 use hyper::{Method, Request, Body, Client};
 
-const WALLET_URI: &str = "http://localhost:8089/v2";
-const FACTOMD_URI: &str = "http://localhost:8088/v2";
-const API_VERSION: u8 = 2;
-const JSONRPC : &str = "2.0";
-const ID: u32 = 0;
 
 /// Handles the JSON result or error
 #[derive(Debug, Deserialize, PartialEq)]
@@ -164,7 +161,7 @@ impl Factom {
     pub fn new()->Factom{
         Factom {
             uri: FACTOMD_URI,
-            wallet_uri: WALLET_URI,
+            wallet_uri: WALLETD_URI,
             id: ID
         }
     }
