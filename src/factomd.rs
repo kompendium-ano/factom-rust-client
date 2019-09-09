@@ -19,8 +19,8 @@ Committing or revealing entries require the result of the compose methods and wi
  
 let factom = Factom::new();
 let query = factom.properties()
-                        .map(|result| println!("{:?}", result))
-                        .map_err(|err| panic!("{:?}", err));
+                  .map(|result| println!("{:?}", result))
+                  .map_err(|err| panic!("{:?}", err));
  let result = fetch(query).unwrap();
 ```
  */
@@ -37,18 +37,18 @@ The ABEntries are detailed [here](https://github.com/FactomProject/FactomDocs/bl
 use factom::*;  
 
 let factom = Factom::new();
-let query = factom
-                .ablock_by_height(2)
-                .map(|response| response).map_err(|err| err);
+let query = factom.ablock_by_height(2)
+              .map(|response| response)
+              .map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success());
 ```
 */
-    pub fn ablock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("height".to_string(), json!(height));
-        self.call("ablock-by-height", params)
-    }
+  pub fn ablock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("height".to_string(), json!(height));
+    self.call("ablock-by-height", params)
+  }
 
 /**
 This api call is used to find the status of a transaction, whether it be a factoid, reveal entry, or commit entry. When using this, you must specify the type of the transaction by giving the chainid field 1 of 3 values:
@@ -100,16 +100,16 @@ assert!(response.success());
 ```
 
 */
-    pub fn ack(self, hash: &str, chainid: &str, full_transaction: Option<&str>)
-                                    -> impl Future<Item=Response, Error=FetchError> {
-        let mut params = HashMap::new();
-        params.insert("hash".to_string(), json!(hash));
-        params.insert("chainid".to_string(), json!(chainid));
-        if let Some(tx) = full_transaction{
-            params.insert("fulltransaction".to_string(), json!(tx));
-        }
-        self.call("ack", params)
+  pub fn ack(self, hash: &str, chainid: &str, full_transaction: Option<&str>)
+                  -> impl Future<Item=Response, Error=FetchError> {
+    let mut params = HashMap::new();
+    params.insert("hash".to_string(), json!(hash));
+    params.insert("chainid".to_string(), json!(chainid));
+    if let Some(tx) = full_transaction{
+      params.insert("fulltransaction".to_string(), json!(tx));
     }
+    self.call("ack", params)
+  }
 
 /**
 Retrieve a specified admin block given its merkle root key.
@@ -120,17 +120,17 @@ use factom::*;
 let keymr = "9f9b2d68e7f018a272e9331765ac8d353c7f58c6f18685405b5286353b58daee";
 let factom = Factom::new();
 let query = factom
-            .admin_block(keymr)
-            .map(|response| response).map_err(|err| err);
+              .admin_block(keymr)
+              .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */   
-    pub fn admin_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("keymr".to_string(), json!(keymr));
-        self.call("admin-block", params)
-    }
+  pub fn admin_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("keymr".to_string(), json!(keymr));
+    self.call("admin-block", params)
+  }
 
 /**
 Return the keymr of the head of the chain for a chain ID (the unique hash created when the chain was created).
@@ -147,11 +147,11 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn chain_head(self, chainid: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("chainid".to_string(), json!(chainid));
-        self.call("chain-head", params)
-    }
+  pub fn chain_head(self, chainid: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("chainid".to_string(), json!(chainid));
+    self.call("chain-head", params)
+  }
 
 /**
 Send a Chain Commit Message to factomd to create a new Chain. The commit chain hex encoded string is documented here: Github Documentation
@@ -164,11 +164,11 @@ Notes:
 It is possible to be unable to send a commit, if the commit already exists (if you try to send it twice). This is a mechanism to prevent you from double spending. If you encounter this error, just skip to the reveal-chain. The error format can be found here: repeated-commit
 
 */
-    pub fn commit_chain(self, message: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("message".to_string(), json!(message));
-        self.call("commit-chain", params)
-    }
+  pub fn commit_chain(self, message: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("message".to_string(), json!(message));
+    self.call("commit-chain", params)
+  }
 
 /**
 Send an Entry Commit Message to factom to create a new Entry. The entry commit hex encoded string is documented here: [Github Documentation](https://github.com/FactomProject/FactomDocs/blob/master/factomDataStructureDetails.md#entry-commit)
@@ -181,11 +181,11 @@ Notes:
 It is possible to be unable to send a commit, if the commit already exists (if you try to send it twice). This is a mechanism to prevent you from double spending. If you encounter this error, just skip to the reveal-entry. The error format can be found here: repeated-commit
 
 */
-    pub fn commit_entry(self, message: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("message".to_string(), json!(message));
-        self.call("commit-entry", params)
-    }
+  pub fn commit_entry(self, message: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("message".to_string(), json!(message));
+    self.call("commit-entry", params)
+  }
 
 /**
 The current-minute API call returns:
@@ -215,15 +215,15 @@ use factom::*;
 
 let factom = Factom::new();
 let query = factom
-            .current_minute()
-            .map(|response| response).map_err(|err| err);
+      .current_minute()
+      .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn current_minute(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.call("current-minute", HashMap::new())
-    }
+  pub fn current_minute(self)-> impl Future<Item=Response, Error=FetchError>{
+    self.call("current-minute", HashMap::new())
+  }
 
 /**
 Retrieve a directory block given only its height.
@@ -233,17 +233,17 @@ use factom::*;
 
 let factom = Factom::new();
 let query = factom
-            .dblock_by_height(2)
-            .map(|response| response).map_err(|err| err);
+      .dblock_by_height(2)
+      .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn dblock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("height".to_string(), json!(height));
-        self.call("dblock-by-height", params)
-    }
+  pub fn dblock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("height".to_string(), json!(height));
+    self.call("dblock-by-height", params)
+  }
 
 
 /**
@@ -255,17 +255,17 @@ use factom::*;
 let keymr = "5b372f4622c682c984dc922983d0c769db33c376d107c74e8023446029592011";
 let factom = Factom::new();
 let query = factom
-            .directory_block(keymr)
-            .map(|response| response).map_err(|err| err);
+      .directory_block(keymr)
+      .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
-assert!(response.success());      
+assert!(response.success());    
 ```
 */
-    pub fn directory_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("keymr".to_string(), json!(keymr));
-        self.call("directory-block", params)
-    }
+  pub fn directory_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("keymr".to_string(), json!(keymr));
+    self.call("directory-block", params)
+  }
 
 /**
 The directory block head is the last known directory block by factom, or in other words, the most recently recorded block. This can be used to grab the latest block and the information required to traverse the entire blockchain. 
@@ -275,15 +275,15 @@ use factom::*;
 
 let factom = Factom::new();
 let query = factom
-            .directory_block_head()
-            .map(|response| response).map_err(|err| err);
+      .directory_block_head()
+      .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn directory_block_head(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.call("directory-block-head", HashMap::new())
-    }
+  pub fn directory_block_head(self)-> impl Future<Item=Response, Error=FetchError>{
+    self.call("directory-block-head", HashMap::new())
+  }
 
 /**
 Retrieve the entry credit block for any given height. These blocks contain entry credit transaction information.
@@ -293,17 +293,17 @@ use factom::*;
 
 let factom = Factom::new();
 let query = factom
-            .ecblock_by_height(2)
-            .map(|response| response).map_err(|err| err);
+      .ecblock_by_height(2)
+      .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn ecblock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("height".to_string(), json!(height));
-        self.call("ecblock-by-height", params)
-    }
+  pub fn ecblock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("height".to_string(), json!(height));
+    self.call("ecblock-by-height", params)
+  }
 
 /**
 Get an Entry from factomd specified by the Entry Hash.
@@ -314,16 +314,16 @@ use factom::*;
 let hash = "6ecd7c6c40d0e9dbb52457343e083d4306c5b4cd2d6e623ba67cf9d18b39faa7";
 let factom = Factom::new();
 let query = factom.entry(hash)
-                        .map(|response| response).map_err(|err| err);
+            .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success()); 
 ```
 */
-    pub fn entry(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("hash".to_string(), json!(hash));
-        self.call("entry", params)
-    }
+  pub fn entry(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("hash".to_string(), json!(hash));
+    self.call("entry", params)
+  }
 
 /**
 Retrieve a specified entry block given its merkle root key. The entry block contains 0 to many entries
@@ -334,18 +334,18 @@ use factom::*;
 let keymr = "1df118c1293858d1111762d6a0df92b12231c72deb14b53bfffc09b867db1f3b";
 let factom = Factom::new();
 let query = factom
-            .entry_block(keymr)
-            .map(|response| response).map_err(|err| err);
+      .entry_block(keymr)
+      .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success());  
 
 ```
 */
-    pub fn entry_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("keymr".to_string(), json!(keymr));
-        self.call("entry-block", params)
-    }
+  pub fn entry_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("keymr".to_string(), json!(keymr));
+    self.call("entry-block", params)
+  }
 
 /**
 Return its current balance for a specific entry credit address.
@@ -356,17 +356,17 @@ use factom::*;
 let address = "EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx";
 let factom = Factom::new();
 let query = factom
-            .entry_credit_balance(address)
-            .map(|response| response).map_err(|err| err);
+      .entry_credit_balance(address)
+      .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn entry_credit_balance(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("address".to_string(), json!(address));
-        self.call("entry-credit-balance", params)
-    }
+  pub fn entry_credit_balance(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("address".to_string(), json!(address));
+    self.call("entry-credit-balance", params)
+  }
 
 /**
 Retrieve a specified entrycredit block given its merkle root key. The numbers are minute markers.
@@ -377,17 +377,17 @@ use factom::*;
 let keymr = "9b9e5b67b17f2e2d3d8405ea5fc227f6bf61fcc8c2422b36b11a7fce97018521";
 let factom = Factom::new();
 let query = factom
-            .entry_credit_block(keymr)
-            .map(|response| response).map_err(|err| err);
+      .entry_credit_block(keymr)
+      .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn entry_credit_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("keymr".to_string(), json!(keymr));
-        self.call("entrycredit-block", params)
-    }
+  pub fn entry_credit_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("keymr".to_string(), json!(keymr));
+    self.call("entrycredit-block", params)
+  }
 
 /**
 Returns the number of Factoshis (Factoids *10^-8) that purchase a single Entry Credit. The minimum factoid fees are also determined by this rate, along with how complex the factoid transaction is.
@@ -397,15 +397,15 @@ use factom::*;
 
 let factom = Factom::new();
 let query = factom
-            .entry_credit_rate()
-            .map(|response| response).map_err(|err| err);
+      .entry_credit_rate()
+      .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn entry_credit_rate(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.call("entry-credit-rate", HashMap::new())
-    }
+  pub fn entry_credit_rate(self)-> impl Future<Item=Response, Error=FetchError>{
+    self.call("entry-credit-rate", HashMap::new())
+  }
 
 /**
 This call returns the number of Factoshis (Factoids *10^-8) that are currently available at the address specified.
@@ -416,17 +416,17 @@ use factom::*;
 let address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
 let factom = Factom::new();
 let query = factom
-            .factoid_balance(address)
-            .map(|response| response).map_err(|err| err);
+      .factoid_balance(address)
+      .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn factoid_balance(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("address".to_string(), json!(address));
-        self.call("factoid-balance", params)
-    }
+  pub fn factoid_balance(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("address".to_string(), json!(address));
+    self.call("factoid-balance", params)
+  }
 
 /**
 Retrieve a specified factoid block given its merkle root key.
@@ -437,17 +437,17 @@ use factom::*;
 let keymr = "aaaf4db6c1f5b716df0d63dcf9605f599d9e41eb635d8ba3e9ddfbe697ec426c";
 let factom = Factom::new();
 let query = factom
-            .factoid_block(keymr)
-            .map(|response| response).map_err(|err| err);
+      .factoid_block(keymr)
+      .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn factoid_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("keymr".to_string(), json!(keymr));
-        self.call("factoid-block", params)
-    }
+  pub fn factoid_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("keymr".to_string(), json!(keymr));
+    self.call("factoid-block", params)
+  }
 
 /**
 Submit a factoid transaction. The transaction hex encoded string is documented here: [Github Documentation](https://github.com/FactomProject/FactomDocs/blob/master/factomDataStructureDetails.md#factoid-transaction)
@@ -460,17 +460,17 @@ use factom::*;
 let tx = "0201565d109233010100b0a0e100646f3e8750c550e4582eca5047546ffef89c13a175985e320232bacac81cc428afd7c200ce7b98bfdae90f942bc1fe88c3dd44d8f4c81f4eeb88a5602da05abc82ffdb5301718b5edd2914acc2e4677f336c1a32736e5e9bde13663e6413894f57ec272e28dc1908f98b79df30005a99df3c5caf362722e56eb0e394d20d61d34ff66c079afad1d09eee21dcd4ddaafbb65aacea4d5c1afcd086377d77172f15b3aa32250a";
 let factom = Factom::new();
 let query = factom
-            .factoid_submit(tx)
-            .map(|response| response).map_err(|err| err);
+      .factoid_submit(tx)
+      .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success()); 
 ```
 */
-    pub fn factoid_submit(self, transaction: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("transaction".to_string(), json!(transaction));
-        self.call("factoid-submit", params)
-    }
+  pub fn factoid_submit(self, transaction: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("transaction".to_string(), json!(transaction));
+    self.call("factoid-submit", params)
+  }
 
 /**
 Retrieve the factoid block for any given height. These blocks contain factoid transaction information.
@@ -479,17 +479,17 @@ Retrieve the factoid block for any given height. These blocks contain factoid tr
 use factom::*;
 let factom = Factom::new();
 let query = factom
-            .fblock_by_height(1)
-            .map(|response| response).map_err(|err| err);
+      .fblock_by_height(1)
+      .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn fblock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("height".to_string(), json!(height));
-        self.call("fblock-by-height", params)
-    }
+  pub fn fblock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("height".to_string(), json!(height));
+    self.call("fblock-by-height", params)
+  }
 
 /**
 Returns various heights that allows you to view the state of the blockchain. The heights returned provide a lot of information regarding the state of factomd, but not all are needed by most applications. The heights also indicate the most recent block, which could not be complete, and still being built. The heights mean as follows:
@@ -506,15 +506,15 @@ use factom::*;
 
 let factom = Factom::new();
 let query = factom.heights()
-                        .map(|response| response).map_err(|err| err);
+            .map(|response| response).map_err(|err| err);
 let result = fetch(query);
 let response = result.unwrap();
 assert!(response.success());   
 ```
 */
-    pub fn heights(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.call("heights", HashMap::new())
-    }
+  pub fn heights(self)-> impl Future<Item=Response, Error=FetchError>{
+    self.call("heights", HashMap::new())
+  }
 
 /**
 The multiple-ec-balances API is used to query the acknowledged and saved balances for a list of entry credit addresses.
@@ -523,9 +523,9 @@ The multiple-ec-balances API is used to query the acknowledged and saved balance
 * lastsavedheight is the height last saved to the database.
 
 * In balances it returns "ack", "saved" and "err".
-    * ack is the balance after processing any in-flight transactions known to the Factom node responding to the API call
-    * saved is the last saved to the database
-    * err is just used to display any error that might have happened during the request. If it is empty that means there was no error.
+  * ack is the balance after processing any in-flight transactions known to the Factom node responding to the API call
+  * saved is the last saved to the database
+  * err is just used to display any error that might have happened during the request. If it is empty that means there was no error.
 
 * If the syntax of the parameters is off e.g. missing a quote, a comma, or a square bracket, it will return: `{“jsonrpc”:“2.0”,“id”:null,“error”:{“code”:-32600,“message”:“Invalid Request”}}`
 
@@ -543,17 +543,17 @@ use factom::*;
 let addresses: Vec<&str> = vec!["EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx"];
 let factom = Factom::new();
 let query = factom.multiple_ec_balances(addresses)
-                        .map(|response| response).map_err(|err| err);
+            .map(|response| response).map_err(|err| err);
 let result = fetch(query);
 let response = result.unwrap();
 assert!(response.success());   
 ```
 */
-    pub fn multiple_ec_balances(self, addresses: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("addresses".to_string(), json!(addresses));
-        self.call("multiple-ec-balances", params)
-    }
+  pub fn multiple_ec_balances(self, addresses: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("addresses".to_string(), json!(addresses));
+    self.call("multiple-ec-balances", params)
+  }
 
 /**
 The multiple-fct-balances API is used to query the acknowledged and saved balances in factoshis (a factoshi is 10^8 factoids) not factoids(FCT) for a list of FCT addresses.
@@ -562,9 +562,9 @@ The multiple-fct-balances API is used to query the acknowledged and saved balanc
 * lastsavedheight is the height last saved to the database.
 
 * In balances it returns "ack", "saved" and "err".
-    * ack is the balance after processing any in-flight transactions known to the Factom node responding to the API call
-    * saved is the last saved to the database
-    * err is just used to display any error that might have happened during the request. If it is "" that means there was no error.
+  * ack is the balance after processing any in-flight transactions known to the Factom node responding to the API call
+  * saved is the last saved to the database
+  * err is just used to display any error that might have happened during the request. If it is "" that means there was no error.
 
 * If the syntax of the parameters is off e.g. missing a quote, a comma, or a square bracket, it will return: `{”jsonrpc”:“2.0”,“id”:null,“error”:{“code”:-32600,“message”:“Invalid Request”}}`
 
@@ -582,17 +582,17 @@ use factom::*;
 let addresses: Vec<&str> = vec!["FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q"];
 let factom = Factom::new();
 let query = factom.multiple_fct_balances(addresses)
-                        .map(|response| response).map_err(|err| err);
+            .map(|response| response).map_err(|err| err);
 let result = fetch(query);
 let response = result.unwrap();
 assert!(response.success());   
 ```
 */
-    pub fn multiple_fct_balances(self, addresses: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("addresses".to_string(), json!(addresses));
-        self.call("multiple-fct-balances", params)
-    }
+  pub fn multiple_fct_balances(self, addresses: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("addresses".to_string(), json!(addresses));
+    self.call("multiple-fct-balances", params)
+  }
 
 /**
 Returns an array of the entries that have been submitted but have not been recorded into the blockchain.
@@ -602,15 +602,15 @@ use factom::*;
 
 let factom = Factom::new();
 let query = factom.pending_entries()
-                        .map(|response| response).map_err(|err| err);
+            .map(|response| response).map_err(|err| err);
 let result = fetch(query);
 let response = result.unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn pending_entries(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.call("pending-entries", HashMap::new())
-    }
+  pub fn pending_entries(self)-> impl Future<Item=Response, Error=FetchError>{
+    self.call("pending-entries", HashMap::new())
+  }
 
 /**
 Returns an array of factoid transactions that have not yet been recorded in the blockchain, but are known to the system.
@@ -620,19 +620,19 @@ use factom::*;
 
 let factom = Factom::new();
 let query = factom.pending_transactions(None)
-                        .map(|response| response).map_err(|err| err);
+            .map(|response| response).map_err(|err| err);
 let result = fetch(query);
 let response = result.unwrap();
 assert!(response.success());   
 ```
 */
-    pub fn pending_transactions(self, address: Option<&str>)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        if let Some(add) = address {
-            params.insert("address".to_string(), json!(add));
-        }
-        self.call("pending-transactions", params)
+  pub fn pending_transactions(self, address: Option<&str>)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    if let Some(add) = address {
+      params.insert("address".to_string(), json!(add));
     }
+    self.call("pending-transactions", params)
+  }
 
 /**
 Retrieve current properties of the Factom system, including the software and the API versions.
@@ -642,14 +642,14 @@ use factom::*;
 
 let factom = Factom::new();
 let query = factom.properties()
-                        .map(|response| response).map_err(|err| err);
+            .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success());   
 ```
 */
-    pub fn properties(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.call("properties", HashMap::new())
-    }
+  pub fn properties(self)-> impl Future<Item=Response, Error=FetchError>{
+    self.call("properties", HashMap::new())
+  }
 
 /**
 Retrieve an entry or transaction in raw format, the data is a hex encoded string. 
@@ -660,16 +660,16 @@ use factom::*;
 let hash = "6ecd7c6c40d0e9dbb52457343e083d4306c5b4cd2d6e623ba67cf9d18b39faa7";
 let factom = Factom::new();
 let query = factom.raw_data(hash)
-                        .map(|response| response).map_err(|err| err);
+            .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success());   
 ```
 */
-    pub fn raw_data(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("hash".to_string(), json!(hash));
-        self.call("raw-data", params)
-    }
+  pub fn raw_data(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("hash".to_string(), json!(hash));
+    self.call("raw-data", params)
+  }
 
 /**
 Retrieve a receipt providing cryptographically verifiable proof that information was recorded in the factom blockchain and that this was subsequently anchored in the bitcoin blockchain.
@@ -680,16 +680,16 @@ use factom::*;
 let hash = "6ecd7c6c40d0e9dbb52457343e083d4306c5b4cd2d6e623ba67cf9d18b39faa7";
 let factom = Factom::new();
 let query = factom.receipt(hash)
-                        .map(|response| response).map_err(|err| err);
+            .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn receipt(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("hash".to_string(), json!(hash));
-        self.call("receipt", params)
-    }
+  pub fn receipt(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("hash".to_string(), json!(hash));
+    self.call("receipt", params)
+  }
 
 /**
 Reveal the First Entry in a Chain to factomd after the Commit to complete the Chain creation. The reveal-chain hex encoded string is documented here: [Github Documentation](https://github.com/FactomProject/FactomDocs/blob/master/factomDataStructureDetails.md#entry)
@@ -699,11 +699,11 @@ The reveal-chain API takes a specifically formatted message encoded in hex that 
 The compose-chain api call has two api calls in its response: commit-chain and reveal-chain. To successfully create a chain, the reveal-chain must be called after the commit-chain.
 
 */
-    pub fn reveal_chain(self, entry: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("entry".to_string(), json!(entry));
-        self.call("reveal-chain", params)
-    }
+  pub fn reveal_chain(self, entry: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("entry".to_string(), json!(entry));
+    self.call("reveal-chain", params)
+  }
 
 /**
 Reveal an Entry to factomd after the Commit to complete the Entry creation. The reveal-entry hex encoded string is documented here: [Github Documentation](https://github.com/FactomProject/FactomDocs/blob/master/factomDataStructureDetails.md#entry)
@@ -713,11 +713,11 @@ The reveal-entry API takes a specifically formatted message encoded in hex that 
 The compose-entry api call has two api calls in it’s response: commit-entry and reveal-entry. To successfully create an entry, the reveal-entry must be called after the commit-entry.
 
 */
-    pub fn reveal_entry(self, entry: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("entry".to_string(), json!(entry));
-        self.call("reveal-entry", params)
-    }
+  pub fn reveal_entry(self, entry: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("entry".to_string(), json!(entry));
+    self.call("reveal-entry", params)
+  }
 
 /**
 Retrieve details of a factoid transaction using a transaction’s hash (or corresponding transaction id).
@@ -748,14 +748,14 @@ use factom::*;
 let hash = "21fc64855771f2ee12da2a85b1aa0108007ed3a566425f3eaec7c8c7d2db6c6d";
 let factom = Factom::new();
 let query = factom.transaction(hash)
-                        .map(|response| response).map_err(|err| err);
+            .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn transaction(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("hash".to_string(), json!(hash));
-        self.call("transaction", params)
-    }
+  pub fn transaction(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("hash".to_string(), json!(hash));
+    self.call("transaction", params)
+  }
 }

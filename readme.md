@@ -34,20 +34,20 @@ dbg!(response);
 
 /*
 Response {
-    jsonrpc: "2.0",
-    id: 0,
-    result: result(
-        Object(
-            {
-                "factomdapiversion": String(
-                    "2.0"
-                ),
-                "factomdversion": String(
-                    "6.1.0"
-                )
-            }
+  jsonrpc: "2.0",
+  id: 0,
+  result: result(
+    Object(
+      {
+        "factomdapiversion": String(
+          "2.0"
+        ),
+        "factomdversion": String(
+          "6.1.0"
         )
+      }
     )
+  )
 }
 */
 ```
@@ -71,9 +71,9 @@ dbg!(response);
 ```rust
 // Factomd open node and walletd locally on port 3003. Id is included in the json-rpc call.
 let api = Factom{
-    uri: "https://api.factomd.net/v2",
-    wallet_uri: "http://localhost:3003/v2",
-    id: 0
+  uri: "https://api.factomd.net/v2",
+  wallet_uri: "http://localhost:3003/v2",
+  id: 0
 };
 let request = api.wallet_balances();
 let response = fetch(request).unwrap();
@@ -108,18 +108,18 @@ let api = Factom::new();
 
 // Closure to parse heights response
 let height_handler = |response: Response| {
-    // Parse Result
-    let result = response.get_result().expect("Error fetching request");
-    // Extract heights
-    let leader = &result["leaderheight"];
-    let dblockheight = &result["directoryblockheight"];
-    // Compare
-    if leader == dblockheight{
-        println!("Factomd fully synced at height: {}", leader);
-    }
-    else {
-        println!("Not synced");
-    }
+  // Parse Result
+  let result = response.get_result().expect("Error fetching request");
+  // Extract heights
+  let leader = &result["leaderheight"];
+  let dblockheight = &result["directoryblockheight"];
+  // Compare
+  if leader == dblockheight{
+    println!("Factomd fully synced at height: {}", leader);
+  }
+  else {
+    println!("Not synced");
+  }
 };
 
 // Main heights request
@@ -131,15 +131,15 @@ let heights_query = api.heights()
 
 // Closure to print entry content
 let entry_handler = |res: Response| {
-    let result = res.get_result().unwrap();
-    dbg!(&result["content"]);
+  let result = res.get_result().unwrap();
+  dbg!(&result["content"]);
 };
 
 // Main entry request
 let entryhash = "6ecd7c6c40d0e9dbb52457343e083d4306c5b4cd2d6e623ba67cf9d18b39faa7";
 let entry_query = api.entry(entryhash)
-                        .map(entry_handler)
-                        .map_err(|err| {dbg!(err);});
+                      .map(entry_handler)
+                      .map_err(|err| {dbg!(err);});
 
 // Spawn queries into current runtime
 runtime.spawn(heights_query);
@@ -160,20 +160,20 @@ let (tx, rx) = oneshot::channel::<Response>();
 
 // Heights query transmits the response data
 let heights = api.heights()
-                    .map(|res| {
-                        tx.send(res);
-                    })
-                    .map_err(|err| ());
+                  .map(|res| {
+                    tx.send(res);
+                  })
+                  .map_err(|err| ());
 
 // Spawn into current runtime
 runtime.spawn(heights);
 
 // Reciever prints out response
 runtime.spawn(rx.and_then(|res| {
-    println!("response recieved: {:?}", res);
-    Ok(())
-    })
-    .map_err(|e| {println!("error: {}", e);})
+  println!("response recieved: {:?}", res);
+  Ok(())
+  })
+  .map_err(|e| {println!("error: {}", e);})
 );
 
 shutdown(runtime);

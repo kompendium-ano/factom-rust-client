@@ -16,14 +16,14 @@ In our case, the rate is 1000, meaning 1000 entry credits per factoid. We added 
 To get the ECRate search in the search bar above for “entry-credit-rate”
 
 */
-    pub fn add_ec_output(self, txname: &str, address: &str, amount: u64)
-                                                -> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("tx-name".to_string(), json!(txname));
-        params.insert("address".to_string(), json!(address));
-        params.insert("amount".to_string(), json!(amount));
-        self.walletd_call("add-ec-output", params)
-    }
+  pub fn add_ec_output(self, txname: &str, address: &str, amount: u64)
+                        -> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("tx-name".to_string(), json!(txname));
+    params.insert("address".to_string(), json!(address));
+    params.insert("amount".to_string(), json!(amount));
+    self.walletd_call("add-ec-output", params)
+  }
 
 /**
 Addfee is a shortcut and safeguard for adding the required additional factoshis to covert the fee. The fee is displayed in the returned transaction after each step, but addfee should be used instead of manually adding the additional input. This will help to prevent overpaying.
@@ -32,13 +32,13 @@ Addfee will complain if your inputs and outputs do not match up. For example, in
 
 Run the addfee again, and the feepaid and feerequired will match up
 */
-    pub fn add_fee(self, txname: &str, address: &str)
-                                                -> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("tx-name".to_string(), json!(txname));
-        params.insert("address".to_string(), json!(address));
-        self.walletd_call("add-fee", params)
-    }
+  pub fn add_fee(self, txname: &str, address: &str)
+                        -> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("tx-name".to_string(), json!(txname));
+    params.insert("address".to_string(), json!(address));
+    self.walletd_call("add-fee", params)
+  }
 
 /**
 Adds an input to the transaction from the given address. The public address is given, and the wallet must have the private key associated with the address to successfully sign the transaction.
@@ -46,14 +46,14 @@ Adds an input to the transaction from the given address. The public address is g
 The input is measured in factoshis, so to send ten factoids, you must input 1,000,000,000 factoshis (without commas in JSON)
 
 */
-    pub fn add_input(self, txname: &str, address: &str, amount: u64)
-                                                -> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("tx-name".to_string(), json!(txname));
-        params.insert("address".to_string(), json!(address));
-        params.insert("amount".to_string(), json!(amount));
-        self.walletd_call("add-input", params)
-    }
+  pub fn add_input(self, txname: &str, address: &str, amount: u64)
+                        -> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("tx-name".to_string(), json!(txname));
+    params.insert("address".to_string(), json!(address));
+    params.insert("amount".to_string(), json!(amount));
+    self.walletd_call("add-input", params)
+  }
 
 /**
 Adds a factoid address output to the transaction. Keep in mind the output is done in factoshis. 1 factoid is 1,000,000,000 factoshis.
@@ -61,33 +61,33 @@ Adds a factoid address output to the transaction. Keep in mind the output is don
 So to send ten factoids, you must send 1,000,000,000 factoshis (no commas in JSON).
 
 */
-    pub fn add_output(self, txname: &str, address: &str, amount: u64)
-                                                -> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("tx-name".to_string(), json!(txname));
-        params.insert("address".to_string(), json!(address));
-        params.insert("amount".to_string(), json!(amount));
-        self.walletd_call("add-output", params)
-    }
+  pub fn add_output(self, txname: &str, address: &str, amount: u64)
+                        -> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("tx-name".to_string(), json!(txname));
+    params.insert("address".to_string(), json!(address));
+    params.insert("amount".to_string(), json!(amount));
+    self.walletd_call("add-output", params)
+  }
 
 /**
 Retrieve the public and private parts of a Factoid or Entry Credit address stored in the wallet.
 
 
 */
-    pub fn address(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("address".to_string(), json!(address));
-        self.walletd_call("address", params)
-    }
+  pub fn address(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("address".to_string(), json!(address));
+    self.walletd_call("address", params)
+  }
 
 /**
 Retrieve all of the Factoid and Entry Credit addresses stored in the wallet.
 
 */  
-    pub fn all_addresses(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.walletd_call("all-addresses", HashMap::new())
-    }
+  pub fn all_addresses(self)-> impl Future<Item=Response, Error=FetchError>{
+    self.walletd_call("all-addresses", HashMap::new())
+  }
 
 /**
 This method, compose-chain, will return the appropriate API calls to create a chain in factom. You must first call the commit-chain, then the reveal-chain API calls. To be safe, wait a few seconds after calling commit.
@@ -102,32 +102,32 @@ let extids = vec!("Cargo Test", "test harness");
 let content = "Here be the content";
 let factom = Factom::new();
 let query = factom
-            .compose_chain(extids, content, ec_address)
-            .map(|response| response).map_err(|err| err);
+              .compose_chain(extids, content, ec_address)
+              .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn compose_chain(self, extids: Vec<&str>, content: &str, ecpub: &str)
-                                                -> impl Future<Item=Response, Error=FetchError>{
-        
-        let mut params = HashMap::new();
-        let hex_content = str_to_hex(content);
-        let mut hex_extids = Vec::new();
-        for extid in extids{
-            hex_extids.push(str_to_hex(extid));
-        }
-        let chain = json!({
-            "firstentry": {
-                "extids": hex_extids,
-                "content": hex_content
-            }
-        });
-        params.insert("chain".to_string(), chain);
-        params.insert("ecpub".to_string(), json!(ecpub));
-        dbg!(&params);
-        self.walletd_call("compose-chain", params)
+  pub fn compose_chain(self, extids: Vec<&str>, content: &str, ecpub: &str)
+                        -> impl Future<Item=Response, Error=FetchError>{
+    
+    let mut params = HashMap::new();
+    let hex_content = str_to_hex(content);
+    let mut hex_extids = Vec::new();
+    for extid in extids{
+      hex_extids.push(str_to_hex(extid));
     }
+    let chain = json!({
+      "firstentry": {
+        "extids": hex_extids,
+        "content": hex_content
+      }
+    });
+    params.insert("chain".to_string(), chain);
+    params.insert("ecpub".to_string(), json!(ecpub));
+    dbg!(&params);
+    self.walletd_call("compose-chain", params)
+  }
 
 /**
 This method, compose-entry, will return the appropriate API calls to create an entry in factom. You must first call the commit-entry, then the reveal-entry API calls. To be safe, wait a few seconds after calling commit.
@@ -143,28 +143,28 @@ let extids = vec!("Cargo Test", "test harness");
 let content = "Here be the content";
 let factom = Factom::new();
 let query = factom
-            .compose_entry(chainid, extids, content, ec_address)
-            .map(|response| response).map_err(|err| err);
+      .compose_entry(chainid, extids, content, ec_address)
+      .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success()); 
 ```
 */
-    pub fn compose_entry(self, chainid: &str, extids: Vec<&str>, content: &str, ecpub: &str)
-                                                -> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        let mut hex_extids = Vec::new();
-        for extid in extids {
-            hex_extids.push(str_to_hex(extid));
-        }
-        let entry = json!({
-        "chainid": chainid,
-        "extids": hex_extids,
-        "content": str_to_hex(content)
-        });
-        params.insert("entry".to_string(), entry);
-        params.insert("ecpub".to_string(), json!(ecpub));
-        self.walletd_call("compose-entry", params)
+  pub fn compose_entry(self, chainid: &str, extids: Vec<&str>, content: &str, ecpub: &str)
+                        -> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    let mut hex_extids = Vec::new();
+    for extid in extids {
+      hex_extids.push(str_to_hex(extid));
     }
+    let entry = json!({
+    "chainid": chainid,
+    "extids": hex_extids,
+    "content": str_to_hex(content)
+    });
+    params.insert("entry".to_string(), entry);
+    params.insert("ecpub".to_string(), json!(ecpub));
+    self.walletd_call("compose-entry", params)
+  }
 
 /**
 Compose transaction marshals the transaction into a hex encoded string. The string can be inputted into the factomd API factoid-submit to be sent to the network.
@@ -174,11 +174,11 @@ use factom::*;
 
 ```
 */
-    pub fn compose_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("tx-name".to_string(), json!(tx_name));
-        self.walletd_call("compose-transaction", params)
-    }
+  pub fn compose_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("tx-name".to_string(), json!(tx_name));
+    self.walletd_call("compose-transaction", params)
+  }
 
 /**
 Deletes a working transaction in the wallet. The full transaction will be returned, and then deleted.
@@ -190,8 +190,8 @@ let txname = "test-tx";
 let factom = Factom::new();
 let handler = factom.clone();
 fetch(handler.new_transaction(txname)
-            .map(|res| res)
-            .map_err(|err| err)).unwrap();
+              .map(|res| res)
+              .map_err(|err| err)).unwrap();
 let query = factom
             .delete_transaction(txname)
             .map(|response| response).map_err(|err| err);
@@ -199,11 +199,11 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn delete_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("tx-name".to_string(), json!(tx_name));
-        self.walletd_call("delete-transaction", params)
-    }
+  pub fn delete_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("tx-name".to_string(), json!(tx_name));
+    self.walletd_call("delete-transaction", params)
+  }
 
 /**
 Create a new Entry Credit Address and store it in the wallet.
@@ -218,9 +218,9 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn generate_ec_address(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.walletd_call("generate-ec-address", HashMap::new())
-    }
+  pub fn generate_ec_address(self)-> impl Future<Item=Response, Error=FetchError>{
+    self.walletd_call("generate-ec-address", HashMap::new())
+  }
 
 /**
 Create a new Entry Credit Address and store it in the wallet.
@@ -236,9 +236,9 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn generate_factoid_address(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.walletd_call("generate-factoid-address", HashMap::new())
-    }
+  pub fn generate_factoid_address(self)-> impl Future<Item=Response, Error=FetchError>{
+    self.walletd_call("generate-factoid-address", HashMap::new())
+  }
 
 /**
 Get the current hight of blocks that have been cached by the wallet while syncing.
@@ -254,9 +254,9 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn get_height(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.walletd_call("get-height", HashMap::new())
-    }
+  pub fn get_height(self)-> impl Future<Item=Response, Error=FetchError>{
+    self.walletd_call("get-height", HashMap::new())
+  }
 
 /**
 Import Factoid and/or Entry Credit address secret keys into the wallet.
@@ -273,17 +273,17 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn import_addresses(self, addresses: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        let mut secrets: Vec<HashMap<&str, &str>> = Vec::new();
-        for address in addresses{
-            let mut tmp = HashMap::new();
-            tmp.insert("secret", address);
-            secrets.push(tmp);
-        }
-        params.insert("addresses".to_string(), json!(secrets));
-        self.walletd_call("import-addresses", params)
+  pub fn import_addresses(self, addresses: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    let mut secrets: Vec<HashMap<&str, &str>> = Vec::new();
+    for address in addresses{
+      let mut tmp = HashMap::new();
+      tmp.insert("secret", address);
+      secrets.push(tmp);
     }
+    params.insert("addresses".to_string(), json!(secrets));
+    self.walletd_call("import-addresses", params)
+  }
 
 /**
 This will create a new transaction. The txid is in flux until the final transaction is signed. Until then, it should not be used or recorded.
@@ -297,18 +297,18 @@ let txname = "new-tx-test";
 let factom = Factom::new();
 let handler = factom.clone();
 let query = factom
-            .new_transaction(txname)
-            .map(|response| response).map_err(|err| err);
+              .new_transaction(txname)
+              .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success());
 fetch(handler.delete_transaction(txname).map(|_| ())).map_err(|_| ()).unwrap();
 ```
 */
-    pub fn new_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("tx-name".to_string(), json!(tx_name));
-        self.walletd_call("new-transaction", params)
-    }
+  pub fn new_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("tx-name".to_string(), json!(tx_name));
+    self.walletd_call("new-transaction", params)
+  }
 
 /**
 Retrieve current properties of factom-walletd, including the wallet and wallet API versions.
@@ -324,19 +324,19 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn walletd_properties(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.walletd_call("properties", HashMap::new())
-    }
+  pub fn walletd_properties(self)-> impl Future<Item=Response, Error=FetchError>{
+    self.walletd_call("properties", HashMap::new())
+  }
 
 /**
 Signs the transaction. It is now ready to be executed.
 
 */
-    pub fn sign_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("tx-name".to_string(), json!(tx_name));
-        self.walletd_call("sign-transaction", params)
-    }
+  pub fn sign_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("tx-name".to_string(), json!(tx_name));
+    self.walletd_call("sign-transaction", params)
+  }
 
 /**
 When paying from a transaction, you can also make the receiving transaction pay for it. Using sub fee, you can use the receiving address in the parameters, and the fee will be deducted from their output amount.
@@ -344,12 +344,12 @@ When paying from a transaction, you can also make the receiving transaction pay 
 This allows a wallet to send all it’s factoids, by making the input and output the remaining balance, then using sub fee on the output address.
 
 */  
-    pub fn sub_fee(self, tx_name: &str, address: &str)-> impl Future<Item=Response, Error=FetchError>{
-        let mut params = HashMap::new();
-        params.insert("tx-name".to_string(), json!(tx_name));
-        params.insert("address".to_string(), json!(address));
-        self.walletd_call("sub-fee", params)
-    }
+  pub fn sub_fee(self, tx_name: &str, address: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("tx-name".to_string(), json!(tx_name));
+    params.insert("address".to_string(), json!(address));
+    self.walletd_call("sub-fee", params)
+  }
 
 /**
 Lists all the current working transactions in the wallet. These are transactions that are not yet sent.
@@ -365,9 +365,9 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn tmp_transactions(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.walletd_call("tmp-transactions", HashMap::new())
-    } 
+  pub fn tmp_transactions(self)-> impl Future<Item=Response, Error=FetchError>{
+    self.walletd_call("tmp-transactions", HashMap::new())
+  } 
 
 /**
 There are a few ways to search for a transaction
@@ -412,26 +412,26 @@ let id_response = fetch(id_query).unwrap();
 assert!(id_response.success());  
 ```
 */
-    pub fn transactions(self, filter: SearchBy )-> impl Future<Item=Response, Error=FetchError>{
-         
-        let mut params = HashMap::new();
+  pub fn transactions(self, filter: SearchBy )-> impl Future<Item=Response, Error=FetchError>{
+     
+    let mut params = HashMap::new();
 
-        match filter {
-            SearchBy::Txid(txid) => {
-                                params.insert("txid".to_string(), json!(txid));
-                                }
-            SearchBy::Address(address) => {
-                                params.insert("address".to_string(), json!(address));
-                                }
-            SearchBy::Range(start, end) => {
-                                let mut range = HashMap::new();
-                                range.insert("start", json!(start));
-                                range.insert("end", json!(end));
-                                params.insert("range".to_string(),json!(range));
-                                }
-        };          
-        self.walletd_call("transactions", params)
-    } 
+    match filter {
+      SearchBy::Txid(txid) => {
+                params.insert("txid".to_string(), json!(txid));
+                }
+      SearchBy::Address(address) => {
+                params.insert("address".to_string(), json!(address));
+                }
+      SearchBy::Range(start, end) => {
+                let mut range = HashMap::new();
+                range.insert("start", json!(start));
+                range.insert("end", json!(end));
+                params.insert("range".to_string(),json!(range));
+                }
+    };      
+    self.walletd_call("transactions", params)
+  } 
 
 /**
 Return the wallet seed and all addresses in the wallet for backup and offline storage.
@@ -447,9 +447,9 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-    pub fn wallet_backup(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.walletd_call("wallet-backup", HashMap::new())
-    } 
+  pub fn wallet_backup(self)-> impl Future<Item=Response, Error=FetchError>{
+    self.walletd_call("wallet-backup", HashMap::new())
+  } 
 
 /**
 The wallet-balances API is used to query the acknowledged and saved balances for all addresses in the currently running factom-walletd. The saved balance is the last saved to the database and the acknowledged or “ack” balance is the balance after processing any in-flight transactions known to the Factom node responding to the API call. The factoid address balance will be returned in factoshis (a factoshi is 10^8 factoids) not factoids(FCT) and the entry credit balance will be returned in entry credits.
@@ -478,7 +478,7 @@ assert!(response.success());
 ```
 */
 
-    pub fn wallet_balances(self)-> impl Future<Item=Response, Error=FetchError>{
-        self.walletd_call("wallet-balances", HashMap::new())
-    } 
+  pub fn wallet_balances(self)-> impl Future<Item=Response, Error=FetchError>{
+    self.walletd_call("wallet-balances", HashMap::new())
+  } 
 }
