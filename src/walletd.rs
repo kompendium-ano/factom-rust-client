@@ -41,9 +41,12 @@ Run the addfee again, and the feepaid and feerequired will match up
   }
 
 /**
-Adds an input to the transaction from the given address. The public address is given, and the wallet must have the private key associated with the address to successfully sign the transaction.
+Adds an input to the transaction from the given address. The public address is 
+given, and the wallet must have the private key associated with the address to 
+successfully sign the transaction.
 
-The input is measured in factoshis, so to send ten factoids, you must input 1,000,000,000 factoshis (without commas in JSON)
+The input is measured in factoshis, so to send ten factoids, you must input 
+1,000,000,000 factoshis (without commas in JSON)
 
 */
   pub fn add_input(self, txname: &str, address: &str, amount: u64)
@@ -56,10 +59,11 @@ The input is measured in factoshis, so to send ten factoids, you must input 1,00
   }
 
 /**
-Adds a factoid address output to the transaction. Keep in mind the output is done in factoshis. 1 factoid is 1,000,000,000 factoshis.
+Adds a factoid address output to the transaction. Keep in mind the output is 
+done in factoshis. 1 factoid is 1,000,000,000 factoshis.
 
-So to send ten factoids, you must send 1,000,000,000 factoshis (no commas in JSON).
-
+So to send ten factoids, you must send 1,000,000,000 factoshis 
+(no commas in JSON).
 */
   pub fn add_output(self, txname: &str, address: &str, amount: u64)
                         -> impl Future<Item=Response, Error=FetchError>{
@@ -71,9 +75,8 @@ So to send ten factoids, you must send 1,000,000,000 factoshis (no commas in JSO
   }
 
 /**
-Retrieve the public and private parts of a Factoid or Entry Credit address stored in the wallet.
-
-
+Retrieve the public and private parts of a Factoid or Entry Credit address 
+stored in the wallet.
 */
   pub fn address(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
     let mut params = HashMap::new();
@@ -83,16 +86,18 @@ Retrieve the public and private parts of a Factoid or Entry Credit address store
 
 /**
 Retrieve all of the Factoid and Entry Credit addresses stored in the wallet.
-
 */  
   pub fn all_addresses(self)-> impl Future<Item=Response, Error=FetchError>{
     self.walletd_call("all-addresses", HashMap::new())
   }
 
 /**
-This method, compose-chain, will return the appropriate API calls to create a chain in factom. You must first call the commit-chain, then the reveal-chain API calls. To be safe, wait a few seconds after calling commit.
+This method, compose-chain, will return the appropriate API calls to create a 
+chain in factom. You must first call the commit-chain, then the reveal-chain 
+API calls. To be safe, wait a few seconds after calling commit.
 
-Note: The firstentry fields are automatically hex encoded for the server to process.
+Note: The firstentry fields are automatically hex encoded for the server to 
+process.
 # Example
 ```
 use factom::*;
@@ -130,7 +135,9 @@ assert!(response.success());
   }
 
 /**
-This method, compose-entry, will return the appropriate API calls to create an entry in factom. You must first call the commit-entry, then the reveal-entry API calls. To be safe, wait a few seconds after calling commit.
+This method, compose-entry, will return the appropriate API calls to create an 
+entry in factom. You must first call the commit-entry, then the reveal-entry 
+API calls. To be safe, wait a few seconds after calling commit.
 
 Note: The entry fields are automatically hex encoded for the server to process.
 # Example
@@ -167,7 +174,9 @@ assert!(response.success());
   }
 
 /**
-Compose transaction marshals the transaction into a hex encoded string. The string can be inputted into the factomd API factoid-submit to be sent to the network.
+Compose transaction marshals the transaction into a hex encoded string. The 
+string can be inputted into the factomd API factoid-submit to be sent to 
+the network.
 # Example
 ```
 use factom::*;
@@ -181,7 +190,8 @@ use factom::*;
   }
 
 /**
-Deletes a working transaction in the wallet. The full transaction will be returned, and then deleted.
+Deletes a working transaction in the wallet. The full transaction will be 
+returned, and then deleted.
 # Example
 ```
 use factom::*;
@@ -286,9 +296,12 @@ assert!(response.success());
   }
 
 /**
-This will create a new transaction. The txid is in flux until the final transaction is signed. Until then, it should not be used or recorded.
+This will create a new transaction. The txid is in flux until the final 
+transaction is signed. Until then, it should not be used or recorded.
 
-When dealing with transactions all factoids are represented in factoshis. 1 factoid is 1e8 factoshis, meaning you can never send anything less than 0 to a transaction (0.5).
+When dealing with transactions all factoids are represented in factoshis. 
+1 factoid is 1e8 factoshis, meaning you can never send anything less than 0 to 
+a transaction (0.5).
 # Example
 ```
 use factom::*;
@@ -311,7 +324,8 @@ fetch(handler.delete_transaction(txname).map(|_| ())).map_err(|_| ()).unwrap();
   }
 
 /**
-Retrieve current properties of factom-walletd, including the wallet and wallet API versions.
+Retrieve current properties of factom-walletd, including the wallet and wallet 
+API versions.
 # Example
 ```
 use factom::*;
@@ -339,9 +353,12 @@ Signs the transaction. It is now ready to be executed.
   }
 
 /**
-When paying from a transaction, you can also make the receiving transaction pay for it. Using sub fee, you can use the receiving address in the parameters, and the fee will be deducted from their output amount.
+When paying from a transaction, you can also make the receiving transaction 
+pay for it. Using sub fee, you can use the receiving address in the parameters, 
+and the fee will be deducted from their output amount.
 
-This allows a wallet to send all it’s factoids, by making the input and output the remaining balance, then using sub fee on the output address.
+This allows a wallet to send all it’s factoids, by making the input and output 
+the remaining balance, then using sub fee on the output address.
 
 */  
   pub fn sub_fee(self, tx_name: &str, address: &str)-> impl Future<Item=Response, Error=FetchError>{
@@ -352,7 +369,8 @@ This allows a wallet to send all it’s factoids, by making the input and output
   }
 
 /**
-Lists all the current working transactions in the wallet. These are transactions that are not yet sent.
+Lists all the current working transactions in the wallet. These are transactions 
+that are not yet sent.
 # Example
 ```
 use factom::*;
@@ -376,9 +394,13 @@ There are a few ways to search for a transaction
 This will retrieve all transactions within a given block height range.
 
 ### By TxID
-This will retrieve a transaction by the given TxID. This call is the fastest way to retrieve a transaction, but it will not display the height of the transaction. If a height is in the response, it will be 0. To retrieve the height of a transaction, use the 'By Address’ method
+This will retrieve a transaction by the given TxID. This call is the fastest 
+way to retrieve a transaction, but it will not display the height of the 
+transaction. If a height is in the response, it will be 0. To retrieve the 
+height of a transaction, use the 'By Address’ method
 
-This call in the backend actually pushes the request to factomd. For a more informative response, it is advised to use the factomd transaction method
+This call in the backend actually pushes the request to factomd. For a more 
+informative response, it is advised to use the factomd transaction method
 
 ### By Address
 Retrieves all transactions that involve a particular address.
@@ -434,7 +456,8 @@ assert!(id_response.success());
   } 
 
 /**
-Return the wallet seed and all addresses in the wallet for backup and offline storage.
+Return the wallet seed and all addresses in the wallet for backup and offline 
+storage.
 # Example
 ```
 use factom::*;
@@ -452,19 +475,31 @@ assert!(response.success());
   } 
 
 /**
-The wallet-balances API is used to query the acknowledged and saved balances for all addresses in the currently running factom-walletd. The saved balance is the last saved to the database and the acknowledged or “ack” balance is the balance after processing any in-flight transactions known to the Factom node responding to the API call. The factoid address balance will be returned in factoshis (a factoshi is 10^8 factoids) not factoids(FCT) and the entry credit balance will be returned in entry credits.
+The wallet-balances API is used to query the acknowledged and saved balances for 
+all addresses in the currently running factom-walletd. The saved balance is the 
+last saved to the database and the acknowledged or “ack” balance is the balance 
+after processing any in-flight transactions known to the Factom node responding 
+to the API call. The factoid address balance will be returned in factoshis 
+(a factoshi is 10^8 factoids) not factoids(FCT) and the entry credit balance 
+will be returned in entry credits.
 
 * If walletd and factomd are not both running this call will not work.
 
-* If factomd is not loaded up all the way to last saved block it will return: “result”:{“Factomd Error”:“Factomd is not fully booted, please wait and try again.”}
+* If factomd is not loaded up all the way to last saved block it will 
+return: “result”:{“Factomd Error”:“Factomd is not fully booted, please 
+wait and try again.”}
 
-* If an address is not in the correct format the call will return: “result”:{“Factomd Error”:”There was an error decoding an address”}
+* If an address is not in the correct format the call will return: 
+“result”:{“Factomd Error”:”There was an error decoding an address”}
 
-* If an address does not have a public and private address known to the wallet it will not be included in the balance.
+* If an address does not have a public and private address known to the wallet 
+it will not be included in the balance.
 
-* "fctaccountbalances" are the total of all factoid account balances returned in factoshis.
+* "fctaccountbalances" are the total of all factoid account balances returned 
+in factoshis.
 
-* "ecaccountbalances" are the total of all entry credit account balances returned in entry credits.
+* "ecaccountbalances" are the total of all entry credit account balances 
+returned in entry credits.
 # Example
 ```
 use factom::*;
