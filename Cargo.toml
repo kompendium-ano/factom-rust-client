@@ -11,7 +11,6 @@ maintenance = { status = "passively-maintained" }
 description = "Factom API client"
 
 [dependencies]
-rand = "0.6.5"
 tokio = "0.1.17"
 http = "0.1.15"
 hyper = "0.12.23"
@@ -20,3 +19,7 @@ serde_json = "1.0.39"
 serde_derive = "1.0.89"
 serde =  { version = "1.0.89", features = ["derive"] }
 futures = "0.1.25"
+
+[dev-dependencies]
+rand = "0.7.2"
+
