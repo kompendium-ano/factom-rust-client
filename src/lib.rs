@@ -1,7 +1,9 @@
 //! A rust client for the Factom network API.
 //! 
 //! Documentation for the api calls are located on the [Factom struct page](struct.Factom.html)
-
+#![doc(html_logo_url = "https://seeklogo.com/images/F/factom-fct-logo-08400C829C-seeklogo.com.png",
+ html_favicon_url = "https://www.factom.com/wp-content/uploads/2019/06/cropped-factom_favicon_azul-05-192x192.png",
+ html_playground_url = "https://play.rust-lang.org/")]
 
 #![allow(dead_code, non_camel_case_types)]
 pub mod utils;
