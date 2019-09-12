@@ -103,9 +103,15 @@ The response will look different than entry related ack calls.
 
 ### Extra notes:
 
-Why c? It is short for 000000000000000000000000000000000000000000000000000000000000000c, which is the chainid for all entry credit blocks. All commits are placed in the entry credit block (assuming they are valid and are properly paid for)
+Why c? It is short for 
+000000000000000000000000000000000000000000000000000000000000000c,
+which is the chainid for all entry credit blocks. All commits are placed in the 
+entry credit block (assuming they are valid and are properly paid for)
 
-Why f? It is short for 000000000000000000000000000000000000000000000000000000000000000f, which is the chainid for all factoid blocks. All factoid transactions are placed in the factoid (assuming they are valid)
+Why f? It is short for 
+000000000000000000000000000000000000000000000000000000000000000f, 
+which is the chainid for all factoid blocks. All factoid transactions are placed 
+in the factoid (assuming they are valid)
 
 # Example
 ```
