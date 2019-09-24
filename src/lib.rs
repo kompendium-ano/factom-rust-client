@@ -6,11 +6,23 @@
  html_playground_url = "https://play.rust-lang.org/")]
 
 #![allow(dead_code, non_camel_case_types)]
-pub mod utils;
-pub mod factomd;
-pub mod walletd;
-pub mod errors;
+pub mod address;
+pub mod balance;
+pub mod block;
+pub mod chain;
+pub mod compose;
 pub mod constants;
+pub mod debug;
+pub mod entry;
+pub mod errors;
+pub mod factomd;
+pub mod generate;
+pub mod identity;
+pub mod import;
+pub mod tx;
+pub mod utils;
+pub mod wallet;
+pub mod walletd;
 
 pub use futures;
 pub use utils::*;
@@ -25,7 +37,6 @@ use serde_json::{Value, json};
 use hyper_tls::HttpsConnector;
 use serde::{Serialize, Deserialize};
 use hyper::{Method, Request, Body, Client};
-
 
 /// Handles the JSON result or error
 #[derive(Debug, Deserialize, PartialEq)]
@@ -149,6 +160,23 @@ pub struct Factom{
 
 
 impl Factom {
+
+  pub fn open_node()->Factom{
+    Factom {
+      uri: OPEN_NODE_URI,
+      wallet_uri: WALLETD_URI,
+      id: ID
+    }
+  }
+
+  pub fn testnet_open_node()->Factom{
+    Factom {
+      uri: DEV_OPEN_NODE_URI,
+      wallet_uri: WALLETD_URI,
+      id: ID
+    }
+  }
+
   /**
   Creates a Factom struct containing the default paths for both factomd and 
   factom-walletd. Requests will go to "http://localhost:8088/v2" and 
