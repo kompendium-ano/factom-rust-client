@@ -21,7 +21,6 @@ pub mod import;
 pub mod tx;
 pub mod utils;
 pub mod wallet;
-pub mod walletd;
 
 pub use futures;
 pub use utils::*;
