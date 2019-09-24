@@ -15,7 +15,6 @@ pub mod constants;
 pub mod debug;
 pub mod entry;
 pub mod errors;
-pub mod factomd;
 pub mod generate;
 pub mod identity;
 pub mod import;
