@@ -26,7 +26,7 @@ fn random_string(len: usize)-> String {
 }
 
 fn factom()-> Factom{
-  Factom::from_host(HOST)
+  Factom::testnet_open_node()
 }
 
 fn error_check(response: Response){
@@ -423,7 +423,7 @@ fn generate_factoid_address() {
 #[test]
 fn get_height() {
   let query = factom()
-              .get_height()
+              .heights()
               .map(|response| response).map_err(|err| err);
   let response = fetch(query).unwrap();
   error_check(response);  
