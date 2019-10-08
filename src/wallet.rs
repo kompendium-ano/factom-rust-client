@@ -61,4 +61,21 @@ assert!(response.success());
   pub fn wallet_balances(self)-> impl Future<Item=Response, Error=FetchError>{
     self.walletd_call("wallet-balances", HashMap::new())
   } 
+
+/**
+ Unlocks this wallet for the amount of time specified in seconds by timeout. 
+ The maximum amount of time a wallet can be unlocked for is 230 seconds (Roughly 
+ 34 Years… Give or take a decade). This command will only work on wallets that 
+ are encrypted. If successful, returns the expiration time of your access as a 
+ Unix timestamp.
+
+While the wallet is locked, the only accessible RPC API commands are get-height, 
+properties, transactions, and unlock-wallet.
+ */
+  pub fn unlock_wallet(self, passphrase :&str, timeout: usize) -> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("passphrase".to_string(), json!(passphrase));
+    params.insert("timeout".to_string(), json!(timeout));
+    self.walletd_call("unlock-wallet", params)
+  } 
 }

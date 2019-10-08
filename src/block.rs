@@ -33,7 +33,8 @@ the most common is a directory block signature (DBSig). A majority of the
 federated servers sign every directory block, meaning every block after m5 
 will contain 5 DBSigs in each admin block.
 
-The ABEntries are detailed [here](https://github.com/FactomProject/FactomDocs/blob/master/factomDataStructureDetails.md#adminid-bytes)
+The ABEntries are detailed 
+[here](https://github.com/FactomProject/FactomDocs/blob/master/factomDataStructureDetails.md#adminid-bytes)
 
 # Example
 ```
@@ -72,6 +73,24 @@ assert!(response.success());
     let mut params = HashMap::new();
     params.insert("keymr".to_string(), json!(keymr));
     self.call("admin-block", params)
+  }
+
+/**
+ Retrieve information about the directory block anchors that have been confirmed 
+ on Bitcoin and Ethereum.
+
+Parameter options: - "height" - the directory block height (integer) to request 
+anchors for - "hash" - the object’s hash (hex string) to request anchors for 
+(e.g. entry hash, entry block keymr, factoid block keymr, admin block lookup 
+hash, entry credit block header hash, or directory block keymr)
+ */
+  pub fn anchors(self, target: Anchor)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    match target {
+      Anchor::Hash(h) => {params.insert("hash".to_string(), json!(h));},
+      Anchor::Height(i) => {params.insert("height".to_string(), json!(i));}
+    }
+    self.call("anchors", params)
   }
 
 /**
