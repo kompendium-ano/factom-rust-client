@@ -78,6 +78,17 @@ fn admin_block() {
 }
 
 #[test]
+fn anchors() {
+  let block = 100;
+  let query = factom()
+              .anchors(Anchor::Height(block))
+              .map(|response| response).map_err(|err| err);
+  let response = fetch(query).unwrap();
+  error_check(response);  
+}
+
+
+#[test]
 fn chain_head() {
   let chainid = CHAINID;
   let query = factom()
@@ -91,6 +102,15 @@ fn chain_head() {
 fn current_minute() {
   let query = factom()
               .current_minute()
+              .map(|response| response).map_err(|err| err);
+  let response = fetch(query).unwrap();
+  error_check(response);  
+}
+
+#[test]
+fn diagnostics() {
+  let mut query = factom()
+              .diagnostics()
               .map(|response| response).map_err(|err| err);
   let response = fetch(query).unwrap();
   error_check(response);  
