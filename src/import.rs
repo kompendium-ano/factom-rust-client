@@ -27,4 +27,60 @@ assert!(response.success());
     params.insert("addresses".to_string(), json!(secrets));
     self.walletd_call("import-addresses", params)
   }
+
+  /**
+Allows a user to add one or more identity keys to the wallet. Using the secret 
+keys as input, the command will return the corresponding key pairs that were 
+imported. If the wallet is encrypted, it must be unlocked prior to using this 
+command.
+
+# Example
+```
+use factom::*;
+
+let addresses = vec!("idsec2rWrfNTD1x9HPPesA3fz8dmMNZdjmSBULHx8VTXE1J4D9icmAK");
+let factom = Factom::new();
+let query = factom
+            .import_identity_keys(addresses)
+            .map(|response| response).map_err(|err| err);
+let response = fetch(query).unwrap();
+assert!(response.success());  
+```
+*/
+  pub fn import_identity_keys(self, keys: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    let mut secrets: Vec<HashMap<&str, &str>> = Vec::new();
+    for address in keys{
+      let mut tmp = HashMap::new();
+      tmp.insert("secret", address);
+      secrets.push(tmp);
+    }
+    params.insert("keys".to_string(), json!(secrets));
+    self.walletd_call("import-identity-keys", params)
+  }
+
+/**
+Import a Koinify crowd sale address into the wallet. In our examples we used 
+the word “yellow” twelve times, note that in your case the master passphrase 
+will be different. If the wallet is encrypted, it must be unlocked prior to 
+using this command.
+
+# Example
+```
+use factom::*;
+
+let koinify_phrase = "yellow yellow yellow yellow yellow yellow yellow yellow yellow yellow yellow yellow";
+let factom = Factom::new();
+let query = factom
+            .import_koinify(koinify_phrase)
+            .map(|response| response).map_err(|err| err);
+let response = fetch(query).unwrap();
+assert!(response.success());  
+```
+*/
+  pub fn import_koinify(self, phrase: &str)-> impl Future<Item=Response, Error=FetchError>{
+    let mut params = HashMap::new();
+    params.insert("words".to_string(), json!(phrase));
+    self.walletd_call("import-koinify", params)
+  }
 }
