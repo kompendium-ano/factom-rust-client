@@ -248,12 +248,8 @@ impl Factom {
                   .map_err(|err| err);
   ```
   */
-  pub fn set_id(self, id: u32)-> Factom{
-    Factom{
-      id,
-      uri: self.uri,
-      wallet_uri: self.wallet_uri
-    }
+  pub fn set_id(mut self, id: u32){
+    self.id = id;
   }   
 
   fn call(self, method: &str, params: HashMap<String, Value>)
@@ -265,6 +261,12 @@ impl Factom {
   fn walletd_call(self, method: &str, params: HashMap<String, Value>)
             ->  impl Future<Item=Response, Error=FetchError>{
       let uri = self.wallet_uri;
+      self.inner_api_call(method, params, uri)
+  }
+
+  fn debug_call(self, method: &str, params: HashMap<String, Value>)
+            ->  impl Future<Item=Response, Error=FetchError>{
+      let uri = "localhost:8088/debug";
       self.inner_api_call(method, params, uri)
   }
 
