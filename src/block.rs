@@ -83,6 +83,20 @@ Parameter options: - "height" - the directory block height (integer) to request
 anchors for - "hash" - the object’s hash (hex string) to request anchors for 
 (e.g. entry hash, entry block keymr, factoid block keymr, admin block lookup 
 hash, entry credit block header hash, or directory block keymr)
+
+# Example
+```
+use factom::*;
+
+let height = Anchor::height(200);
+let factom = Factom::new();
+let query = factom
+              .anchor(height)
+              .map(|response| response).map_err(|err| err);
+let response = fetch(query).unwrap();
+assert!(response.success());  
+```
+
  */
   pub fn anchors(self, target: Anchor)-> impl Future<Item=Response, Error=FetchError>{
     let mut params = HashMap::new();

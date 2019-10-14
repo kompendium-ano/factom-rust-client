@@ -10,8 +10,8 @@ use factom::*;
 let address = "EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx";
 let factom = Factom::new();
 let query = factom
-      .entry_credit_balance(address)
-      .map(|response| response).map_err(|err| err);
+            .entry_credit_balance(address)
+            .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success());  
 ```

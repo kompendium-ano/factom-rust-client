@@ -48,6 +48,22 @@ assert!(response.success());
 
 Note: For signing large amounts of data it may be advisable to sign a hash of 
 the data rather than the data itself.
+# Example
+```
+use factom::*;
+
+let factom = Factom::new();
+let signer = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
+let data = "Here be data";
+let query = factom
+            .sign_data(
+              signer,
+              data
+            )
+            .map(|response| response).map_err(|err| err);
+let response = fetch(query).unwrap();
+assert!(response.success());  
+```
  */
   pub fn sign_data(self, signer: &str, data: &str)-> impl Future<Item=Response, Error=FetchError>{
     let mut params = Hashmap::new();

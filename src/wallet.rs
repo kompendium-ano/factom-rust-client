@@ -71,6 +71,23 @@ assert!(response.success());
 
 While the wallet is locked, the only accessible RPC API commands are get-height, 
 properties, transactions, and unlock-wallet.
+
+# Example
+```
+use factom::*;
+
+let factom = Factom::new();
+let passphrase = "opensesame";
+let timeout = 300;
+let query = factom
+            .unlock_wallet(
+              passphrase,
+              timeout
+            )
+            .map(|response| response).map_err(|err| err);
+let response = fetch(query).unwrap();
+assert!(response.success());  
+```
  */
   pub fn unlock_wallet(self, passphrase :&str, timeout: usize) -> impl Future<Item=Response, Error=FetchError>{
     let mut params = HashMap::new();

@@ -91,6 +91,13 @@ the network.
 ```
 use factom::*;
 
+let tx_name = "my-tx";
+let factom = Factom::new();
+let query = factom
+      .compose_transaction(tx_name)
+      .map(|response| response).map_err(|err| err);
+let response = fetch(query).unwrap();
+assert!(response.success()); 
 ```
 */
   pub fn compose_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
@@ -136,15 +143,34 @@ wait a few seconds after calling commit.
 #Example
 ```
 use factom::*;
+use std::collections::Hashmap;
 
-let addresses = vec!("Fs3E9gV6DXsYzf7Fqx1fVBQPQXV695eP3k5XbmHEZVRLkMdD9qCK");
+let rx_chain = "3b69dabe22c014af9a9bc9dfa7917ce4602a03579597ddf184d8de56702512ae";
+let dst_chain = "3b69dabe22c014af9a9bc9dfa7917ce4602a03579597ddf184d8de56702512ae";
+let mut attributes = Hashmap::new();
+attributes.insert("key".to_string(), "email");
+attributes.insert("value".to_string(), "hello@factom.com");
+attributes = vec!(attributes);
+let signerkey = "idpub2cw4NS4JZowXTwhGeo2tTGNvnjc5n2QvHBURdvVFCKRDuLEnBh";
+let signer_chain = "3b69dabe22c014af9a9bc9dfa7917ce4602a03579597ddf184d8de56702512ae";
+let ecpub = "EC2ZFTmTv5Fs7UyKZzxY8km4jF635VkhR5KKBMzNP4BK4fPKaVw4";
+let force = false;
+
 let factom = Factom::new();
 let query = factom
-            .import_addresses(addresses)
+            .compose_id_attribute(
+              rx_chain,
+              dst_chain,
+              attributes,
+              signerkey,
+              signer_chain,
+              ecpub,
+              force
+            )
             .map(|response| response).map_err(|err| err);
 let response = fetch(query).unwrap();
-assert!(response.success());  
-
+assert!(response.success());
+```
  */
   pub fn compose_id_attribute<T>(
     self, 
@@ -210,6 +236,32 @@ attribute located at entry-hash)
 The response you receive is similar to the compose-entry response. You must 
 first call the commit-entry, then the reveal-entry API calls. To be safe, 
 wait a few seconds after calling commit.
+
+#Example
+```
+use factom::*;
+
+let entry_hash = "c07f1d89bb6c43e7e3166b9e53672110ff8077c367758fbe4265561c8b91e675";
+let dst_chain = "3b69dabe22c014af9a9bc9dfa7917ce4602a03579597ddf184d8de56702512ae";
+let signerkey = "idpub2cw4NS4JZowXTwhGeo2tTGNvnjc5n2QvHBURdvVFCKRDuLEnBh";
+let signer_chain = "3b69dabe22c014af9a9bc9dfa7917ce4602a03579597ddf184d8de56702512ae";
+let ecpub = "EC2ZFTmTv5Fs7UyKZzxY8km4jF635VkhR5KKBMzNP4BK4fPKaVw4";
+let force = false;
+
+let factom = Factom::new();
+let query = factom
+            .compose_id_attribute_endorsement(
+              dst_chain,
+              entry_hash,
+              signerkey,
+              signer_chain,
+              ecpub,
+              force
+            )
+            .map(|response| response).map_err(|err| err);
+let response = fetch(query).unwrap();
+assert!(response.success());
+```
  */
   pub fn compose_id_attribute_endorsement(
     self, 
@@ -251,6 +303,31 @@ can be kept in less secure locations and used more frequently. A higher
 priority key can always just replace a lower priority key that was 
 compromised or simply lost. For more information on key replacements, see the 
 compose-identity-key-replacement section.
+
+#Example
+```
+use factom::*;
+
+let name = vec!["Factom", "Test", "ID"];
+let pubkeys = vec![
+  "idpub2k8zGYQUfekxehyUKeqPw6QPiJ5hkV3bbc9JBgL7GNrEiqMpQX",
+  "idpub3fXRj21gXveTk6RKYrpJniWV2pAanQktekEt62yhJUQXyPdvwL",
+  "idpub2GU1Pcax2PibH8hHZg58fKRiSJKQWQkWYkpmt7VH1jCXBgqp9w"];
+let ecpub = "EC2ZFTmTv5Fs7UyKZzxY8km4jF635VkhR5KKBMzNP4BK4fPKaVw4";
+let force = false;
+
+let factom = Factom::new();
+let query = factom
+            .compose_id_chain(
+              name,
+              pubkeys,
+              ecpub,
+              force
+            )
+            .map(|response| response).map_err(|err| err);
+let response = fetch(query).unwrap();
+assert!(response.success());
+```
  */
   pub fn compose_id_chain(
     self, 
@@ -291,6 +368,31 @@ request.
 replacement. This key must be stored in the wallet already and must be of the 
 same or higher priority than the oldkey in the context of the given Identity Chain.
 
+#Example
+```
+use factom::*;
+
+let chain_id = "3b69dabe22c014af9a9bc9dfa7917ce4602a03579597ddf184d8de56702512ae";
+let old_key = "idpub2GU1Pcax2PibH8hHZg58fKRiSJKQWQkWYkpmt7VH1jCXBgqp9w";
+let new_key = "idpub2cw4NS4JZowXTwhGeo2tTGNvnjc5n2QvHBURdvVFCKRDuLEnBh";
+let signer_key = "idpub2GU1Pcax2PibH8hHZg58fKRiSJKQWQkWYkpmt7VH1jCXBgqp9w";
+let ecpub = "EC2ZFTmTv5Fs7UyKZzxY8km4jF635VkhR5KKBMzNP4BK4fPKaVw4";
+let force = false;
+
+let factom = Factom::new();
+let query = factom
+            .compose_id_key_replacement(
+              chain_id,
+              old_key,
+              new_key,
+              signer_key,
+              ecpub,
+              force
+            )
+            .map(|response| response).map_err(|err| err);
+let response = fetch(query).unwrap();
+assert!(response.success());
+```
  */
   pub fn compose_id_key_replacement(
     self, 

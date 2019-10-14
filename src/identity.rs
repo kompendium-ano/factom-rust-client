@@ -5,8 +5,17 @@ impl Factom {
 Returns all of the identity key pairs that are currently stored in the wallet. 
 If the wallet is encrypted, it must be unlocked prior to using this command.
 
-TODO: Examples
+# Example
+```
+use factom::*;
 
+let factom = Factom::new();
+let query = factom
+            .all_id_keys()
+            .map(|response| response).map_err(|err| err);
+let response = fetch(query).unwrap();
+assert!(response.success());  
+```
 */
   pub fn all_id_keys(self)-> impl Future<Item=Response, Error=FetchError>{
     self.walletd_call("all-identity-keys", HashMap::new())
@@ -32,6 +41,23 @@ just replaced, we will be able to tell that the signer key is no longer valid
 and that the entry shouldn’t be trusted.
 
 If the wallet is encrypted, it must be unlocked prior to using this command.
+
+# Example
+```
+use factom::*;
+
+let factom = Factom::new();
+let chain_id = "3b69dabe22c014af9a9bc9dfa7917ce4602a03579597ddf184d8de56702512ae";
+let height = 100;
+let query = factom
+            .active_id_keys(
+              chain_id,
+              height
+            )
+            .map(|response| response).map_err(|err| err);
+let response = fetch(query).unwrap();
+assert!(response.success());  
+```
 */
   pub fn active_id_keys(
     self,
@@ -52,6 +78,21 @@ If the wallet is encrypted, it must be unlocked prior to using this command.
  no longer be able to retrieve that key pair or sign attributes/endorsements 
  with the key pair from this wallet. If the wallet is encrypted, it must be 
  unlocked prior to using this command.
+ # Example
+```
+use factom::*;
+
+let factom = Factom::new();
+let public = "idpub26PEBWuumVp19yUSpfGJ2HPrTrU7hgw5empU7FPiTHdCKoy5Ao";
+let height = 100;
+let query = factom
+            .remove_id_key(
+              public
+            )
+            .map(|response| response).map_err(|err| err);
+let response = fetch(query).unwrap();
+assert!(response.success());  
+```
  */
   pub fn remove_id_key(
     self,
@@ -67,6 +108,21 @@ Given an identity public key as input, this command will respond with the
 corresponding public/private key pair from the wallet. If the desired identity 
 key isn’t currently stored in the wallet, an error is returned to indicate this. 
 If the wallet is encrypted, it must be unlocked prior to using this command.
+ # Example
+```
+use factom::*;
+
+let factom = Factom::new();
+let public = "idpub26PEBWuumVp19yUSpfGJ2HPrTrU7hgw5empU7FPiTHdCKoy5Ao";
+let height = 100;
+let query = factom
+            .id_key(
+              public
+            )
+            .map(|response| response).map_err(|err| err);
+let response = fetch(query).unwrap();
+assert!(response.success());  
+```
  */
   pub fn id_key(
     self,

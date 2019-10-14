@@ -294,22 +294,5 @@ assert!(response.success());
   pub fn messages(self)-> impl Future<Item=Response, Error=FetchError>{ 
     self.debug_call("messages", HashMap::new())
   }
-
-
-/*
-predictive-fer
-audit-servers
-federated-servers
-configuration
-process-list
-authorities
-reload-configuration
-drop-rate
-set-drop-rate
-delay
-set-delay
-summary
-messages
-*/
 }
 
