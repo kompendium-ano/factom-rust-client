@@ -1,7 +1,7 @@
 # Client test environment
 
 Initial setup of the wallet environment is required to run many of the tests.
-With factom-walletd running locally use the apporopriate "test-setup" script located in this folder.
+With factom-walletd running locally use the appropriate "test-setup" script located in this folder.
 
 Otherwise the commands necessary are listed below. Factom-cli is required, it can be downloaded from [here](TODO: link github.com/factom/distribution/releases).
 
@@ -22,11 +22,12 @@ factom-cli balance EC2MJzCcHqYJyujnPzjitEaHhtEPVBhmEWUKkv4SVaaKeYcq3fqK
 Some functions are multipart and are dependant on other calls being made, *eg*. 
 Sending a transaction or creating a chain or identity. 
 
-These interactions can be found in the examples folder but in general the creation functions have a compose part whih returns the information to commit and reveal functions. Transactions require an input, output and fee, then it must be sent.
+These interactions can be found in the examples folder but in general the creation functions have a compose part which returns the information to commit and reveal functions. Transactions require an input, output and fee, then it must be sent.
 
 # Contributing
 
-All contributions are welcome, please fork this repo, create your own branch, and submit a PR. 
+All contributions are welcome, please fork this repo, create your own branch, and submit a PR.
+ 
 By making contributions you agree to them being published under the Apache 2.0 license.
 
 
