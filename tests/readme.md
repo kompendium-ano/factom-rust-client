@@ -1,34 +1,23 @@
 # Factom client test environment
 
-To run through tests a custom blockchain with prior entries and credits is needed, which is included in the tests/env folder. The .factom folder there containing the database needs to be moved to ~/.factom beforehand. 
-The daemon also needs to be executed with additional parameters as specified below. The current blocktime is set at 100 seconds in factomd.conf and can be modified as needed.
-
-#### Installing command line binaries
+Initial setup of the wallet environment is required to run many of the tests.
+Either run the test-setup script located in this folder or the below
+commands with factom-walletd running
 ```bash
-wget https://github.com/FactomProject/distribution/releases/download/v6.1.0/factom-amd64.deb 
-dpkg -i factom-amd64.deb
-rm factom-amd64.deb
-```
-
-#### Start custom factomd testnet and walletd
-```bash
-factomd -network=CUSTOM -customnet="cargo-test" -exclusive=true
-
-# Open walletd in seperate shell
-factom-walletd
-```
-
-
-#### CLI commands used in creating test environment
-For replication purposes only, not necessary to call.
-```bash
-
+# Import funded testnet address FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q
 factom-cli importaddress Fs3E9gV6DXsYzf7Fqx1fVBQPQXV695eP3k5XbmHEZVRLkMdD9qCK
 
-factom-cli importaddress Es2r45VdEdf34jBrA2zSeiQQKuH8sP9xzCsSBzLE68pB2KuhjTBn
+# Import an EC address EC2MJzCcHqYJyujnPzjitEaHhtEPVBhmEWUKkv4SVaaKeYcq3fqK
+factom-cli importaddress Es3LS7zYa9DSzZuUC14HDpMinehmzz61JG1XFY62rX5pVDenH8Pk
 
-factom-cli buyec FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx 10000
+# Buy entry credits
+factom-cli buyec FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q EC2MJzCcHqYJyujnPzjitEaHhtEPVBhmEWUKkv4SVaaKeYcq3fqK 100000
 
-echo "A test chain" | factom-cli addchain -n "rust api client testing" EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx
-
+# Check balance
+factom-cli balance EC2MJzCcHqYJyujnPzjitEaHhtEPVBhmEWUKkv4SVaaKeYcq3fqK
 ```
+
+Some functions are multipart and are dependant on other calls being made, eg. 
+Sending a transaction or creating a chain. 
+For these full examples can be found in the examples folder. 
+

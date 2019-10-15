@@ -184,6 +184,15 @@ In our case, the rate is 1000, meaning 1000 entry credits per factoid. We added 
 
 To get the ECRate search in the search bar above for “entry-credit-rate”
 
+# Example
+```
+use factom::*;
+
+let api = Factom::testnet_open_node();
+let query = api.add_ec_output(EC_OUTPUT);
+let response = fetch(query).expect("Fetching query");
+assert!(response.result);
+
 */
   pub fn add_ec_output(self, txname: &str, address: &str, amount: u64)
                         -> impl Future<Item=Response, Error=FetchError>{
@@ -200,6 +209,11 @@ Addfee is a shortcut and safeguard for adding the required additional factoshis 
 Addfee will complain if your inputs and outputs do not match up. For example, in the steps above we added the inputs first. This was done intentionally to show a case of overpaying. Obviously, no one wants to overpay for a transaction, so addfee has returned an error and the message: ‘Inputs and outputs don’t add up’. This is because we have 2,000,000,000 factoshis as input and only 1,000,000,000 + 10,000 as output. Let’s correct the input by doing 'add-input’, and putting 1000010000 as the amount for the address. It will overwrite the previous input.
 
 Run the addfee again, and the feepaid and feerequired will match up
+
+# Example
+
+Add fee is a part of sending a transaction to see a full example check the 
+examples folder.
 */
   pub fn add_fee(self, txname: &str, address: &str)
                         -> impl Future<Item=Response, Error=FetchError>{
@@ -217,6 +231,11 @@ successfully sign the transaction.
 The input is measured in factoshis, so to send ten factoids, you must input 
 1,000,000,000 factoshis (without commas in JSON)
 
+# Example
+
+Add input is used in the process of sending a transaction, to see the full 
+process as an example check the examples folder.
+
 */
   pub fn add_input(self, txname: &str, address: &str, amount: u64)
                         -> impl Future<Item=Response, Error=FetchError>{
@@ -233,6 +252,12 @@ done in factoshis. 1 factoid is 1,000,000,000 factoshis.
 
 So to send ten factoids, you must send 1,000,000,000 factoshis 
 (no commas in JSON).
+
+#Example
+
+Add Output is used in the transaction process, the full process and an example of 
+this function being used can be found in the examples folder
+
 */
   pub fn add_output(self, txname: &str, address: &str, amount: u64)
                         -> impl Future<Item=Response, Error=FetchError>{
@@ -298,6 +323,10 @@ fetch(handler.delete_transaction(txname).map(|_| ())).map_err(|_| ()).unwrap();
 /**
 Signs the transaction. It is now ready to be executed.
 
+# Example
+
+sign_transaction is used in the transaction process, the full process can be 
+found in the examples folder
 */
   pub fn sign_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
     let mut params = HashMap::new();
@@ -313,6 +342,10 @@ and the fee will be deducted from their output amount.
 This allows a wallet to send all it’s factoids, by making the input and output 
 the remaining balance, then using sub fee on the output address.
 
+#Example
+
+sub_fee is used in the transaction process, the full process and an example of 
+this function being used can be found in the examples folder
 */  
   pub fn sub_fee(self, tx_name: &str, address: &str)-> impl Future<Item=Response, Error=FetchError>{
     let mut params = HashMap::new();
@@ -360,18 +393,21 @@ Retrieves all transactions that involve a particular address.
 # Example
 ```
 use factom::*;
+// SearchBy is an enum for use only in this function.
+// Options are Range / Address / TxId
+use utils::SearchBy;
 
-
-let tx = utils::SearchBy::Range(1,2);
-let factom = Factom::new();
+let tx = SearchBy::Range(1,2);
+let factom = Factom::testnet_open_node();
 let query = factom
             .transactions(tx)
-            .map(|response| response).map_err(|err| err);
+            .map(|response| response)
+            .map_err(|err| err);
 let response = fetch(query).unwrap();
 assert!(response.success()); 
 
 let address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
-let add_tx = utils::SearchBy::Address(address);
+let add_tx = SearchBy::Address(address);
 let add_query = factom
                 .transactions(add_tx)
                 .map(|response| response).map_err(|err| err);
@@ -379,7 +415,7 @@ let add_response = fetch(add_query).unwrap();
 assert!(add_response.success());  
 
 let txid = "21fc64855771f2ee12da2a85b1aa0108007ed3a566425f3eaec7c8c7d2db6c6d";
-let id_tx = utils::SearchBy::Txid(txid);
+let id_tx = SearchBy::Txid(txid);
 let id_query = factom
                 .transactions(id_tx)
                 .map(|response| response).map_err(|err| err);
@@ -407,4 +443,4 @@ assert!(id_response.success());
     };      
     self.walletd_call("transactions", params)
   } 
-}
+} 
