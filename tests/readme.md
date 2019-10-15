@@ -3,7 +3,7 @@
 Initial setup of the wallet environment is required to run many of the tests.
 With factom-walletd running locally use the apporopriate "test-setup" script located in this folder.
 
-Otherwise the commands are listed below and will work on all platforms as long as you have factom-cli installed. It can be downloaded from [here](TODO: link github.com/factom/distribution/releases).
+Otherwise the commands necessary are listed below. Factom-cli is required, it can be downloaded from [here](TODO: link github.com/factom/distribution/releases).
 
 
 ```bash
