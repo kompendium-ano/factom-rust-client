@@ -1,12 +1,12 @@
-//! A rust client for the Factom network API.
-//! 
-//! Documentation for the api calls are located on the [Factom struct page](struct.Factom.html)
 #![doc(html_logo_url = "https://seeklogo.com/images/F/factom-fct-logo-08400C829C-seeklogo.com.png",
  html_favicon_url = "https://www.factom.com/wp-content/uploads/2019/06/cropped-factom_favicon_azul-05-192x192.png",
  html_playground_url = "https://play.rust-lang.org/")]
-
+#![forbid(unsafe_code)]
 #![allow(dead_code, non_camel_case_types)]
 
+//! A rust client for the Factom network API.
+//! 
+//! Documentation for the api calls are located on the [Factom struct page](struct.Factom.html)
 pub mod address;
 pub mod balance;
 pub mod block;
@@ -23,6 +23,7 @@ pub mod tx;
 pub mod utils;
 pub mod wallet;
 pub mod requests;
+pub mod nodes;
 
 pub use futures;
 pub use utils::*;
@@ -31,12 +32,13 @@ pub use tokio::runtime::Runtime;
 pub use hyper::rt::{Future, Stream};
 pub use errors::{FetchError, FactomError};
 pub use constants::*; 
+pub use requests::Factom;
+
 use std::collections::HashMap;
-use http::header::HeaderValue;
 use serde_json::{Value, json};
 use hyper_tls::HttpsConnector;
 use serde::{Serialize, Deserialize};
-use hyper::{Method, Request, Body, Client};
+use hyper::{Request, Body, Client};
 
 /// Handles the JSON result or error
 #[derive(Debug, Deserialize, PartialEq)]
@@ -44,7 +46,6 @@ pub enum Outcome{
   result(Value),
   error(HashMap<String, Value>)
 }
-
 
 /// JSON responses are deserialized into this struct
 #[derive(Deserialize, Debug, PartialEq)]
@@ -58,7 +59,7 @@ pub struct Response{
 
 impl Response {
   /**
-  Returns a boolean indicating whether the server sucessfully processed the request
+  Returns a boolean indicating whether the server successfully processed the request
   # Example
   ```
   use factom::*;
@@ -149,111 +150,4 @@ impl ApiRequest {
   }
 
 }
-
-/// Main struct from which API requests are built
-#[derive(Clone, Copy, Default)]
-pub struct Factom{
-  pub uri: &'static str,
-  pub wallet_uri: &'static str,
-  pub id: u32
-}
-
-
-impl Factom {
-
-  pub fn open_node()->Factom{
-    Factom {
-      uri: OPEN_NODE_URI,
-      wallet_uri: WALLETD_URI,
-      id: ID
-    }
-  }
-
-  pub fn testnet_open_node()->Factom{
-    Factom {
-      uri: DEV_OPEN_NODE_URI,
-      wallet_uri: WALLETD_URI,
-      id: ID
-    }
-  }
-
-  /**
-  Creates a Factom struct containing the default paths for both factomd and 
-  factom-walletd. Requests will go to "http://localhost:8088/v2" and 
-  "http://localhost:8089/v2" respectively. Is used to construct queries which 
-  can be passed to a runtime or fetched synchronously.
-  # Example
-  ```
-  use factom::Factom;
-
-  let api = Factom::new();
-  ```
-  */
-  pub fn new()->Factom{
-    Factom {
-      uri: FACTOMD_URI,
-      wallet_uri: WALLETD_URI,
-      id: ID
-    }
-  }
-
-  /**
-  Constructs a new  Factom struct for a specific host. All other default 
-  parmaeters stay the same
-  # Example
-  ```
-  use factom::Factom;
-
-  let api = Factom::from_host("192.168.42.42");
-  // factomd uri => "http://192.168.42.42:8088/v2"
-  ```
-  */
-  pub fn from_host(host: &str)->Factom{
-    Factom {
-      uri: to_static_str(format!("http://{}:8088/v{}", host, API_VERSION)),
-      wallet_uri: to_static_str(format!("http://{}:8089/v{}", host, API_VERSION)),
-      id: ID
-    }
-  }
-
-  /**
-  Same as from_host but with tls implemented. All other default parmaeters 
-  stay the same
-  # Example
-  ```
-  use factom::Factom;
-
-  let api = Factom::from_https_host("https://api.factomd.net/v2");
-  // factomd uri => "https://api.factomd.net/v2"
-  ```
-  */
-  pub fn from_https_host(host: &str)->Factom{
-    Factom {
-      uri: to_static_str(format!("https://{}:8088/v{}", host, API_VERSION)),
-      wallet_uri: to_static_str(format!("https://{}:8089/v{}", host, API_VERSION)),
-      id: ID
-    }
-  }
-
-  /**
-  Sets the ID parameter used in asynchronous JSON-RPC calls a returns a copy 
-  of the Factom struct
-  Will default to 0 if not set.
-  # Example
-  ```
-  use factom::Factom;
-
-  let api = Factom::new();
-  let query = api.properties()
-                  .set_id(1888)
-                  .map(|res| res)
-                  .map_err(|err| err);
-  ```
-  */
-  pub fn set_id(mut self, id: u32){
-    self.id = id;
-  }   
-
-}
-
 
