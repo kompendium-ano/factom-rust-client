@@ -1,4 +1,4 @@
-use factom::*; 
+use ::factom::*;
 use std::iter;
 use rand::{Rng, thread_rng};
 use rand::distributions::Alphanumeric;
@@ -87,7 +87,6 @@ fn anchors() {
   error_check(response);  
 }
 
-
 #[test]
 fn chain_head() {
   let query = factom()
@@ -108,7 +107,7 @@ fn current_minute() {
 
 #[test]
 fn diagnostics() {
-  let mut query = factom()
+  let query = factom()
               .diagnostics()
               .map(|response| response).map_err(|err| err);
   let response = fetch(query).unwrap();
