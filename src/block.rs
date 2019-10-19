@@ -280,3 +280,39 @@ assert!(response.success());
     self.call("fblock-by-height", params)
   }
 }
+
+#[derive(Deserialize)]
+pub struct ABlock {
+  pub header: ABHeader,
+  pub ab_entries: Vec<ABEntry>,
+  pub backreference_hash: String,
+  pub lookup_hash: String,
+  pub id: usize
+}
+
+#[derive(Deserialize)]
+pub struct ABEntry {
+  pub identityadminchainid: String,
+  pub prevdbsig:  PrevDbSig,
+}
+
+#[derive(Deserialize)]
+pub struct PrevDbSig {
+  #[serde(alias = "pub")]
+  pub public: String,
+  pub string: String
+}
+
+#[derive(Deserialize)]
+pub struct ABHeader {
+  pub prevbackrefhash: String,
+  pub dbheight: usize,
+  pub headerexpansionsize: usize,
+  pub headerexpansionarea: String,
+  pub messagecount: usize,
+  pub bodysize: usize,
+  pub adminchainid: String,
+  pub chainid: String
+}
+
+

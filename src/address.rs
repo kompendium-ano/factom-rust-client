@@ -68,3 +68,25 @@ assert!(response.success());
     self.walletd_call("remove-address", params)
   }
 }
+
+#[derive(Deserialize)]
+pub struct Address {
+  pub public: String,
+  pub secret: String,
+  pub id: usize
+}
+
+#[derive(Deserialize)]
+pub struct AllAddresses {
+  pub addresses: Vec<Address>,
+  pub id: usize
+}
+
+#[derive(Deserialize)]
+pub struct RemoveAddress {
+  pub success: bool,
+  pub id: usize
+}
+
+
+

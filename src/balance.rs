@@ -149,3 +149,25 @@ assert!(response.success());
     self.call("multiple-fct-balances", params)
   }
 }
+
+#[derive(Deserialize)]
+pub struct Balance {
+  pub balance: usize,
+  pub id: usize
+}
+
+/// Struct for deserialising multiple-fct-balances and multiple-ec-balances
+#[derive(Deserialize)]
+pub struct MultipleBalances {
+  pub currentheight: usize,
+  pub lastsavedheight: usize,
+  pub balances: Vec<Balances>,
+  pub id: usize
+}
+
+#[derive(Deserialize)]
+pub struct Balances {
+  pub ack: usize,
+  pub saved: usize,
+  pub err: String
+}
