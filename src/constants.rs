@@ -6,6 +6,8 @@ pub const FACTOMD_URI: &str = "http://localhost:8088/v2";
 pub const OPEN_NODE_URI: &str = "https://api.factomd.net/v2";
 /// Public factomd testnet open node
 pub const DEV_OPEN_NODE_URI: &str = "https://dev.factomd.net/v2";
+/// Factomd debug functions
+pub const DEBUG_URI: &str = "http://localhost:8088/debug";
 /// Factom api versioning
 pub const API_VERSION: u8 = 2;
 /// JSON-RPC versioning
