@@ -40,26 +40,11 @@ impl Factom {
       uri: &str
   ) ->  impl Future<Item=Response, Error=FetchError> 
   {
+
     let json_str = ApiRequest::method(method)
                               .parameters(params)
                               .id(self.id)
                               .to_json();
-    // let mut req = Request::new(Body::from(json_str));
-    // *req.method_mut() = Method::POST;
-    // *req.uri_mut() = uri.parse()
-    //                     .unwrap_or_else(|_| 
-    //                       panic!("Parsing URI: {}", uri)
-    //                     );
-    // req.headers_mut().insert(
-    //   hyper::header::CONTENT_TYPE,
-    //   HeaderValue::from_static("application/json")
-    // );
-
-  // // Use a https connector instead of the default
-  // let https = HttpsConnector::new(4).expect("TLS initialization");
-
-  // // Hyper client
-  // let client = Client::builder().build::<_, hyper::Body>(https);
 
   // This should serialise directly into the body
   let req = self.factomd_req.body(Body::from(json_str)).unwrap();
