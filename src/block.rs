@@ -1,4 +1,5 @@
 use super::*;
+use serde::Deserialize;
 
 impl Factom {
 /*!
@@ -315,4 +316,228 @@ pub struct ABHeader {
   pub chainid: String
 }
 
+pub struct Anchor {
+  pub directoryblockheight: usize,
+  pub directoryblockkeymr: String,
+  pub bitcoin: Bitcoin,
+  pub ethereum: Ethereuem
+}
 
+pub struct Ethereuem {
+  pub recordheight: usize,
+  pub dbheightmax: usize,
+  pub dbheightmin: usize,
+  pub windowmr: String,
+  pub merklebranch: Vec<MerkleBranch>,
+  pub contractaddress: String,
+  pub txid: String,
+  pub blockhash: String,
+  pub txindex: usize
+
+}
+pub struct Bitcoin {
+  pub transactionhash: String,
+  pub blockhash: String
+}
+
+pub struct MerkleBranch {
+  pub left: String,
+  pub right: String,
+  pub top: String
+}
+
+#[serde(alias = "dblock")]
+pub struct DBlockByHeight {
+  #[serde(alias = "header")]
+  pub header: DBHeader,
+  pub dbentries: Vec<DBEntry>,
+  pub dbhash: String,
+  pub keymr: String
+}
+
+/// Constructed by the dblock-by-height function
+pub struct DBHeightHeader {
+  pub version: u8,
+  pub networkid: usize,
+  pub bodymr: String,
+  pub prevkeymr: String,
+  pub prevfullhash: String,
+  pub timestamp: usize,
+  pub dbheight: usize,
+  pub blockcount: usize,
+  pub chainid: String
+}
+
+
+pub struct DBEntry {
+  pub chainid: String,
+  keymr: String
+}
+
+/// directory-block function
+pub struct DBlock {
+  pub header: DBHeader,
+  pub entryblocklist: EntryBlockList
+} 
+
+/// directory-block function
+pub struct DBHeader {
+  pub prevblockkeymr: String,
+  pub sequencenumber: usize,
+  pub timestamp: usize
+
+}
+/// directory-block function
+pub struct EntryBlockList {
+  pub chainid: String,
+  pub keymr: String
+}
+
+/// directory-block-head function
+pub struct DBlockHead {
+  pub keymr: String
+}
+
+/// ecblock-by-height function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct EBlockHeightResult {
+    ecblock: EcBlock,
+    rawdata: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+pub struct EcBlock {
+    header: ECHeightHeader,
+    body: Body,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct ECHeightHeader {
+    bodyhash: String,
+    prevheaderhash: String,
+    prevfullhash: String,
+    dbheight: i64,
+    headerexpansionarea: String,
+    objectcount: i64,
+    bodysize: i64,
+    chainid: String,
+    ecchainid: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Body {
+    entries: Vec<Entry>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Entry {
+    serverindexnumber: Option<i64>,
+    version: Option<i64>,
+    millitime: Option<String>,
+    entryhash: Option<String>,
+    credits: Option<i64>,
+    ecpubkey: Option<String>,
+    sig: Option<String>,
+    number: Option<i64>,
+}
+
+/// entry-block function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct EBlock {
+    header: EBlockHeader,
+    entrylist: Vec<Entrylist>,
+}
+
+/// entry-block function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct EBlockHeader {
+    blocksequencenumber: i64,
+    chainid: String,
+    prevkeymr: String,
+    timestamp: i64,
+    dbheight: i64,
+}
+
+/// entry-block function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Entrylist {
+    entryhash: String,
+    timestamp: i64,
+}
+
+/// entrycredit-block function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct EcBlockResult {
+    ecblock: Ecblock,
+    rawdata: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Ecblock {
+    header: EcBlockHeader,
+    body: Body,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct EcBlockHeader {
+    bodyhash: String,
+    prevheaderhash: String,
+    prevfullhash: String,
+    dbheight: i64,
+    headerexpansionarea: String,
+    objectcount: i64,
+    bodysize: i64,
+    chainid: String,
+    ecchainid: String,
+}
+
+// factoid-block and fblock-by-height functions
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct FBlockResult {
+    fblock: Fblock,
+    rawdata: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Fblock {
+    bodymr: String,
+    prevkeymr: String,
+    prevledgerkeymr: String,
+    exchrate: i64,
+    dbheight: i64,
+    transactions: Vec<Transaction>,
+    chainid: String,
+    keymr: String,
+    ledgerkeymr: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Transaction {
+    txid: String,
+    blockheight: i64,
+    millitimestamp: i64,
+    inputs: Vec<Input>,
+    outputs: Vec<Output>,
+    outecs: Vec<::serde_json::Value>,
+    rcds: Vec<String>,
+    sigblocks: Vec<Sigblock>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Input {
+    amount: i64,
+    address: String,
+    useraddress: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Output {
+    amount: i64,
+    address: String,
+    useraddress: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Sigblock {
+    signatures: Vec<String>,
+}

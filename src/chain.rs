@@ -71,3 +71,29 @@ after the commit-chain.
     self.call("reveal-chain", params)
   }
 }
+
+/// chain-head function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct ChainHead {
+    chainhead: String,
+    chaininprocesslist: bool,
+}
+
+/// commit-chain function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct CommitChain {
+    message: String,
+    txid: String,
+    entryhash: String,
+    chainid: String,
+}
+
+/// reveal-chain function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct RevealChain {
+    message: String,
+    entryhash: String,
+    chainid: String,
+}
+
+

@@ -415,3 +415,83 @@ assert!(response.success());
   }
 
 }
+
+/// Struct for deserialising the results of the functions: compose-chain
+/// compose-entry
+/// compose-identity-attribute
+/// compose-identity-attribute-endorsement
+/// compose-identity-chain
+/// compose-identity-key-replacementt
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Compose {
+    commit: Commit,
+    reveal: Reveal,
+}
+
+/// Struct for deserialising the results of: compose-chain
+/// compose-entry
+/// compose-identity-attribute
+/// compose-identity-attribute-endorsement
+/// compose-identity-chain
+/// compose-identity-key-replacementt
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Commit {
+    jsonrpc: String,
+    id: i64,
+    // #[serde(rename = "params")]
+    params: CommitParams,
+    method: String,
+}
+
+/// Struct for deserialising the results of the functions: compose-chain
+/// compose-entry
+/// compose-identity-attribute
+/// compose-identity-attribute-endorsement
+/// compose-identity-chain
+/// compose-identity-key-replacementt
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct CommitParams {
+    message: String,
+}
+
+/// Struct for deserialising the results of the functions: compose-chain
+/// compose-entry
+/// compose-identity-attribute
+/// compose-identity-attribute-endorsement
+/// compose-identity-chain
+/// compose-identity-key-replacementt
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Reveal {
+    jsonrpc: String,
+    id: i64,
+    // #[serde(rename = "params")]
+    params: RevealParams,
+    method: String,
+}
+
+/// Struct for deserialising the results of the functions: compose-chain
+/// compose-entry
+/// compose-identity-attribute
+/// compose-identity-attribute-endorsement
+/// compose-identity-chain
+/// compose-identity-key-replacementt
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct RevealParams {
+    entry: String,
+}
+
+/// compose-transaction function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct ComposeTx {
+    jsonrpc: String,
+    id: i64,
+    params: TxParams,
+    method: String,
+}
+
+/// compose-transaction function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct TxParams {
+    transaction: String,
+}
+
