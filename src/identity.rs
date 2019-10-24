@@ -134,3 +134,31 @@ assert!(response.success());
     self.walletd_call("identity-key", params)
   }
 }
+
+/// all-identity-keys function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct IdKeys {
+    keys: Vec<Key>,
+}
+
+/// identity-key function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Key {
+    public: String,
+    secret: String,
+}
+
+/// active-identity-keys function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct ActiveIdKeys {
+    chainid: String,
+    height: i64,
+    keys: Vec<String>,
+}
+
+/// remove-id-key function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct RemoveIdKey {
+    success: String,
+}
+

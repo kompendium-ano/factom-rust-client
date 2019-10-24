@@ -444,3 +444,193 @@ assert!(id_response.success());
     self.walletd_call("transactions", params)
   } 
 } 
+
+/// factoid-submit function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct FctSubmit {
+    message: String,
+    txid: String,
+}
+
+/// transaction function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Transaction {
+    factoidtransaction: Factoidtransaction,
+    includedintransactionblock: String,
+    includedindirectoryblock: String,
+    includedindirectoryblockheight: i64,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Factoidtransaction {
+    millitimestamp: i64,
+    inputs: Vec<Input>,
+    outputs: Vec<Output>,
+    outecs: Vec<::serde_json::Value>,
+    rcds: Vec<String>,
+    sigblocks: Vec<Sigblock>,
+    blockheight: i64,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Input {
+    amount: i64,
+    address: String,
+    useraddress: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Output {
+    amount: i64,
+    address: String,
+    useraddress: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Sigblock {
+    signatures: Vec<String>,
+}
+
+/// pending-transactions function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct PendingTx {
+    transactionid: String,
+    status: String,
+    inputs: Vec<Input>,
+    outputs: Vec<Output>,
+    ecoutputs: Vec<::serde_json::Value>,
+    fees: i64,
+}
+
+/// ack function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Ack {
+    committxid: String,
+    entryhash: String,
+    commitdata: Commitdata,
+    entrydata: Entrydata,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Commitdata {
+    status: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Entrydata {
+    status: String,
+}
+
+/// add-ec-output functions
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct AddEcOutput {
+    feesrequired: i64,
+    signed: bool,
+    name: String,
+    timestamp: i64,
+    totalecoutputs: i64,
+    totalinputs: i64,
+    totaloutputs: i64,
+    inputs: Vec<TxInput>,
+    outputs: Vec<TxOutput>,
+    ecoutputs: Vec<Ecoutput>,
+    txid: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct TxInput {
+    address: String,
+    amount: i64,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct TxOutput {
+    address: String,
+    amount: i64,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Ecoutput {
+    address: String,
+    amount: i64,
+}
+
+// add-input, add-output, add-fee, sub-fee, sign-transaction functions
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Tx {
+    feespaid: i64,
+    feesrequired: i64,
+    signed: bool,
+    name: String,
+    timestamp: i64,
+    totalecoutputs: i64,
+    totalinputs: i64,
+    totaloutputs: i64,
+    inputs: Vec<TxInput>,
+    outputs: Vec<TxOutput>,
+    ecoutputs: Vec<Ecoutput>,
+    txid: String,
+}
+
+/// delete-transaction function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct DeleteTx {
+    signed: bool,
+    name: String,
+    timestamp: i64,
+    totalecoutputs: i64,
+    totalinputs: i64,
+    totaloutputs: i64,
+    inputs: ::serde_json::Value,
+    outputs: ::serde_json::Value,
+    ecoutputs: ::serde_json::Value,
+}
+
+/// tmp-transactions function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct TmpTransactions {
+    transactions: Vec<TmpTransaction>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct TmpTransaction {
+    #[serde(rename = "tx-name")]
+    tx_name: String,
+    txid: String,
+    totalinputs: i64,
+    totaloutputs: i64,
+    totalecoutputs: i64,
+}
+
+/// transactions function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Transactions {
+    transactions: Vec<Transaction>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Transaction {
+    blockheight: i64,
+    feespaid: i64,
+    signed: bool,
+    timestamp: i64,
+    totalecoutputs: i64,
+    totalinputs: i64,
+    totaloutputs: i64,
+    inputs: Vec<Input>,
+    outputs: ::serde_json::Value,
+    ecoutputs: Vec<Ecoutput>,
+    txid: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Input {
+    address: String,
+    amount: i64,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Ecoutput {
+    address: String,
+    amount: i64,
+}

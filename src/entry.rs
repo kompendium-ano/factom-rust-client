@@ -110,3 +110,38 @@ after the commit-entry.
   }
 
 }
+
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct CommitEntry {
+    message: String,
+    txid: String,
+    entryhash: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct CommitChain {
+    chainid: String,
+    content: String,
+    extids: Vec<String>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct RawData {
+    data: String,
+}
+
+/// pending-entries function returns a Vec of PendingEntry 
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct PendingEntry {
+    entryhash: String,
+    chainid: String,
+    status: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct RevealEntry {
+    message: String,
+    entryhash: String,
+    chainid: String,
+}

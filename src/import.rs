@@ -84,3 +84,32 @@ assert!(response.success());
     self.walletd_call("import-koinify", params)
   }
 }
+
+/// import-addresses function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Addresses {
+    addresses: Vec<Address>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Address {
+    public: String,
+    secret: String,
+}
+
+/// import-identity-keys function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Keys {
+    keys: Vec<Key>,
+}
+
+/// import-koinify function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Key {
+    public: String,
+    secret: String,
+}
+
+
+
+
