@@ -521,7 +521,7 @@ struct Entrydata {
     status: String,
 }
 
-/// add-ec-output functions
+/// new-transaction and add-ec-output functions
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
 struct AddEcOutput {
     feesrequired: i64,
@@ -623,14 +623,3 @@ struct Transaction {
     txid: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct Input {
-    address: String,
-    amount: i64,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct Ecoutput {
-    address: String,
-    amount: i64,
-}

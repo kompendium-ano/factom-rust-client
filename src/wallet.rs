@@ -96,3 +96,25 @@ assert!(response.success());
     self.walletd_call("unlock-wallet", params)
   } 
 }
+
+/// sign-data function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct SignData {
+    pubkey: String,
+    signature: String,
+}
+
+/// wallet-properties function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Properties {
+    walletversion: String,
+    walletapiversion: String,
+}
+
+/// get-height function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Height {
+    height: i64,
+}
+
+

@@ -280,3 +280,119 @@ pub fn fetch<F, R, E>(fut: F)-> Result<R, E>
 pub fn to_static_str(s: String) -> &'static str {
   Box::leak(s.into_boxed_str())
 }
+
+/// current-minute function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct CurrentMinute {
+    leaderheight: i64,
+    directoryblockheight: i64,
+    minute: i64,
+    currentblockstarttime: i64,
+    currentminutestarttime: i64,
+    currenttime: i64,
+    directoryblockinseconds: i64,
+    stalldetected: bool,
+    faulttimeout: i64,
+    roundtimeout: i64,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Diagnostics {
+    name: String,
+    id: String,
+    publickey: String,
+    role: String,
+    leaderheight: i64,
+    currentheight: i64,
+    currentminute: i64,
+    currentminuteduration: f64,
+    previousminuteduration: f64,
+    balancehash: String,
+    tempbalancehash: String,
+    lastblockfromdbstate: bool,
+    syncing: Syncing,
+    authset: Authset,
+    elections: Elections,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Syncing {
+    status: String,
+    received: i64,
+    expected: i64,
+    missing: Vec<String>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Authset {
+    leaders: Vec<Leader>,
+    audits: Vec<Audit>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Leader {
+    id: String,
+    vm: i64,
+    listheight: i64,
+    listlength: i64,
+    nextnil: i64,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Audit {
+    id: String,
+    online: bool,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Elections {
+    inprogress: bool,
+}
+
+// entry-credit-rate function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct EcRate {
+    rate: i64,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Heights {
+    directoryblockheight: i64,
+    leaderheight: i64,
+    entryblockheight: i64,
+    entryheight: i64,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Properties {
+    factomdversion: String,
+    factomdapiversion: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct ReceiptResult {
+    receipt: Receipt,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Receipt {
+    entry: Entry,
+    merklebranch: Vec<Merklebranch>,
+    entryblockkeymr: String,
+    directoryblockkeymr: String,
+    directoryblockheight: i64,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Entry {
+    entryhash: String,
+    raw: String,
+    timestamp: i64,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Merklebranch {
+    left: String,
+    right: String,
+    top: String,
+}
