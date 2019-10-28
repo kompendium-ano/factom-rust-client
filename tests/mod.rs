@@ -3,7 +3,7 @@ use std::iter;
 use rand::{Rng, thread_rng};
 use rand::distributions::Alphanumeric;
 
-const HOST: &str ="localhost";
+// const HOST: &str ="localhost";
 const EC_ADDRESS: &str = "EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx";
 const FCT_PRIV_ADDRESS: &str = "Fs3E9gV6DXsYzf7Fqx1fVBQPQXV695eP3k5XbmHEZVRLkMdD9qCK";
 const FCT_PUB_ADDRESS: &str = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
@@ -81,7 +81,7 @@ fn admin_block() {
 fn anchors() {
   let block = 100;
   let query = factom()
-              .anchors(Anchor::Height(block))
+              .anchors(block::AnchorType::Height(block))
               .map(|response| response).map_err(|err| err);
   let response = fetch(query).unwrap();
   error_check(response);  

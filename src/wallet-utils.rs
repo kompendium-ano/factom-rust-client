@@ -74,40 +74,40 @@ assert!(response.success());
 }
 
 /// unlock-wallet function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct UnlockWallet {
     success: bool,
     unlockeduntil: i64,
 }
 
 /// wallet-backup function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct WalletBackup {
     #[serde(rename = "wallet-seed")]
     wallet_seed: String,
     addresses: Vec<Address>,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Address {
     public: String,
     secret: String,
 }
 
 /// wallet-balances function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct WalletBalances {
     fctaccountbalances: Fctaccountbalances,
     ecaccountbalances: Ecaccountbalances,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Fctaccountbalances {
     ack: i64,
     saved: i64,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Ecaccountbalances {
     ack: i64,
     saved: i64,

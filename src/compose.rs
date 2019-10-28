@@ -422,7 +422,7 @@ assert!(response.success());
 /// compose-identity-attribute-endorsement
 /// compose-identity-chain
 /// compose-identity-key-replacementt
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Compose {
     commit: Commit,
     reveal: Reveal,
@@ -434,7 +434,7 @@ struct Compose {
 /// compose-identity-attribute-endorsement
 /// compose-identity-chain
 /// compose-identity-key-replacementt
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Commit {
     jsonrpc: String,
     id: i64,
@@ -449,7 +449,7 @@ struct Commit {
 /// compose-identity-attribute-endorsement
 /// compose-identity-chain
 /// compose-identity-key-replacementt
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct CommitParams {
     message: String,
 }
@@ -460,7 +460,7 @@ struct CommitParams {
 /// compose-identity-attribute-endorsement
 /// compose-identity-chain
 /// compose-identity-key-replacementt
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Reveal {
     jsonrpc: String,
     id: i64,
@@ -475,13 +475,13 @@ struct Reveal {
 /// compose-identity-attribute-endorsement
 /// compose-identity-chain
 /// compose-identity-key-replacementt
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct RevealParams {
     entry: String,
 }
 
 /// compose-transaction function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct ComposeTx {
     jsonrpc: String,
     id: i64,
@@ -490,7 +490,7 @@ struct ComposeTx {
 }
 
 /// compose-transaction function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct TxParams {
     transaction: String,
 }

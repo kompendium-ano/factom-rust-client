@@ -253,10 +253,6 @@ pub enum SearchBy{
   Address(&'static str)
 }
 
-pub enum Anchor{
-    Hash(String),
-    Height(usize)
-  }
 
 pub fn str_to_hex(utf8: &str) -> String {
   let strs: Vec<String> = utf8.as_bytes()
@@ -282,7 +278,7 @@ pub fn to_static_str(s: String) -> &'static str {
 }
 
 /// current-minute function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct CurrentMinute {
     leaderheight: i64,
     directoryblockheight: i64,
@@ -296,7 +292,7 @@ struct CurrentMinute {
     roundtimeout: i64,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Diagnostics {
     name: String,
     id: String,
@@ -315,7 +311,7 @@ struct Diagnostics {
     elections: Elections,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Syncing {
     status: String,
     received: i64,
@@ -323,13 +319,13 @@ struct Syncing {
     missing: Vec<String>,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Authset {
     leaders: Vec<Leader>,
     audits: Vec<Audit>,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Leader {
     id: String,
     vm: i64,
@@ -338,24 +334,24 @@ struct Leader {
     nextnil: i64,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Audit {
     id: String,
     online: bool,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Elections {
     inprogress: bool,
 }
 
 // entry-credit-rate function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct EcRate {
     rate: i64,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Heights {
     directoryblockheight: i64,
     leaderheight: i64,
@@ -363,18 +359,18 @@ struct Heights {
     entryheight: i64,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Properties {
     factomdversion: String,
     factomdapiversion: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct ReceiptResult {
     receipt: Receipt,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Receipt {
     entry: Entry,
     merklebranch: Vec<Merklebranch>,
@@ -383,14 +379,14 @@ struct Receipt {
     directoryblockheight: i64,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Entry {
     entryhash: String,
     raw: String,
     timestamp: i64,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Merklebranch {
     left: String,
     right: String,

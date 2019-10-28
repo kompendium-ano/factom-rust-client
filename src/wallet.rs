@@ -98,21 +98,21 @@ assert!(response.success());
 }
 
 /// sign-data function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct SignData {
     pubkey: String,
     signature: String,
 }
 
 /// wallet-properties function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Properties {
     walletversion: String,
     walletapiversion: String,
 }
 
 /// get-height function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Height {
     height: i64,
 }

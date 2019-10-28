@@ -446,14 +446,14 @@ assert!(id_response.success());
 } 
 
 /// factoid-submit function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct FctSubmit {
     message: String,
     txid: String,
 }
 
 /// transaction function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Transaction {
     factoidtransaction: Factoidtransaction,
     includedintransactionblock: String,
@@ -461,7 +461,7 @@ struct Transaction {
     includedindirectoryblockheight: i64,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Factoidtransaction {
     millitimestamp: i64,
     inputs: Vec<Input>,
@@ -472,27 +472,27 @@ struct Factoidtransaction {
     blockheight: i64,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Input {
     amount: i64,
     address: String,
     useraddress: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Output {
     amount: i64,
     address: String,
     useraddress: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Sigblock {
     signatures: Vec<String>,
 }
 
 /// pending-transactions function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct PendingTx {
     transactionid: String,
     status: String,
@@ -503,7 +503,7 @@ struct PendingTx {
 }
 
 /// ack function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Ack {
     committxid: String,
     entryhash: String,
@@ -511,18 +511,18 @@ struct Ack {
     entrydata: Entrydata,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Commitdata {
     status: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Entrydata {
     status: String,
 }
 
 /// new-transaction and add-ec-output functions
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct AddEcOutput {
     feesrequired: i64,
     signed: bool,
@@ -537,26 +537,26 @@ struct AddEcOutput {
     txid: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct TxInput {
     address: String,
     amount: i64,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct TxOutput {
     address: String,
     amount: i64,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Ecoutput {
     address: String,
     amount: i64,
 }
 
 // add-input, add-output, add-fee, sub-fee, sign-transaction functions
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Tx {
     feespaid: i64,
     feesrequired: i64,
@@ -573,7 +573,7 @@ struct Tx {
 }
 
 /// delete-transaction function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct DeleteTx {
     signed: bool,
     name: String,
@@ -587,12 +587,12 @@ struct DeleteTx {
 }
 
 /// tmp-transactions function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct TmpTransactions {
     transactions: Vec<TmpTransaction>,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct TmpTransaction {
     #[serde(rename = "tx-name")]
     tx_name: String,
@@ -603,13 +603,14 @@ struct TmpTransaction {
 }
 
 /// transactions function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Transactions {
-    transactions: Vec<Transaction>,
+    transactions: Vec<Txs>,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct Transaction {
+/// Individual transactions from the transactions function
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+struct Txs {
     blockheight: i64,
     feespaid: i64,
     signed: bool,

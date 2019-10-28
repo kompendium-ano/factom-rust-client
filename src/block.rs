@@ -1,5 +1,10 @@
 use super::*;
-use serde::Deserialize;
+
+/// Anchor enum for use in the anchors function depending on the type of request
+pub enum AnchorType {
+  Hash(String),
+  Height(usize)
+}
 
 impl Factom {
 /*!
@@ -99,11 +104,11 @@ assert!(response.success());
 ```
 
  */
-  pub fn anchors(self, target: Anchor)-> impl Future<Item=Response, Error=FetchError>{
+  pub fn anchors(self, target: AnchorType)-> impl Future<Item=Response, Error=FetchError>{
     let mut params = HashMap::new();
     match target {
-      Anchor::Hash(h) => {params.insert("hash".to_string(), json!(h));},
-      Anchor::Height(i) => {params.insert("height".to_string(), json!(i));}
+      AnchorType::Hash(h) => {params.insert("hash".to_string(), json!(h));},
+      AnchorType::Height(i) => {params.insert("height".to_string(), json!(i));}
     }
     self.call("anchors", params)
   }
@@ -299,7 +304,7 @@ pub struct ABEntry {
 
 #[derive(Deserialize)]
 pub struct PrevDbSig {
-  #[serde(alias = "pub")]
+  // #[serde(alias = "pub")]
   pub public: String,
   pub string: String
 }
@@ -346,9 +351,7 @@ pub struct MerkleBranch {
   pub top: String
 }
 
-#[serde(alias = "dblock")]
 pub struct DBlockByHeight {
-  #[serde(alias = "header")]
   pub header: DBHeader,
   pub dbentries: Vec<DBEntry>,
   pub dbhash: String,
@@ -399,19 +402,19 @@ pub struct DBlockHead {
 }
 
 /// ecblock-by-height function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct EBlockHeightResult {
     ecblock: EcBlock,
     rawdata: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct EcBlock {
     header: ECHeightHeader,
     body: Body,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct ECHeightHeader {
     bodyhash: String,
     prevheaderhash: String,
@@ -424,12 +427,12 @@ struct ECHeightHeader {
     ecchainid: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Body {
     entries: Vec<Entry>,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Entry {
     serverindexnumber: Option<i64>,
     version: Option<i64>,
@@ -442,14 +445,14 @@ struct Entry {
 }
 
 /// entry-block function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct EBlock {
     header: EBlockHeader,
     entrylist: Vec<Entrylist>,
 }
 
 /// entry-block function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct EBlockHeader {
     blocksequencenumber: i64,
     chainid: String,
@@ -459,26 +462,26 @@ struct EBlockHeader {
 }
 
 /// entry-block function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Entrylist {
     entryhash: String,
     timestamp: i64,
 }
 
 /// entrycredit-block function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct EcBlockResult {
     ecblock: Ecblock,
     rawdata: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Ecblock {
     header: EcBlockHeader,
     body: Body,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct EcBlockHeader {
     bodyhash: String,
     prevheaderhash: String,
@@ -492,13 +495,13 @@ struct EcBlockHeader {
 }
 
 // factoid-block and fblock-by-height functions
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct FBlockResult {
     fblock: Fblock,
     rawdata: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Fblock {
     bodymr: String,
     prevkeymr: String,
@@ -511,7 +514,7 @@ struct Fblock {
     ledgerkeymr: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Transaction {
     txid: String,
     blockheight: i64,
@@ -523,21 +526,21 @@ struct Transaction {
     sigblocks: Vec<Sigblock>,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Input {
     amount: i64,
     address: String,
     useraddress: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Output {
     amount: i64,
     address: String,
     useraddress: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Sigblock {
     signatures: Vec<String>,
 }

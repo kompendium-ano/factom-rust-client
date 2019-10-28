@@ -297,13 +297,13 @@ assert!(response.success());
 }
 
 /// holding-queue function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct HoldingQueue {
   #[serde(rename = "NetworkNumber")]
   messages: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct NetworkInfo {
   #[serde(rename = "NetworkNumber")]
   network_number: i64,
@@ -313,25 +313,25 @@ struct NetworkInfo {
   network_id: i64,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct PredictiveFER {
     #[serde(rename = "PredictiveFER")]
     predictive_fer: i64,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct AuditServers {
     #[serde(rename = "AuditServers")]
     audit_servers: Vec<::serde_json::Value>,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct FederatedServer {
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+struct FederatedServers {
     #[serde(rename = "FederatedServers")]
     federated_servers: Vec<FederatedServer>,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct FederatedServer {
     #[serde(rename = "ChainID")]
     chain_id: String,
@@ -344,7 +344,7 @@ struct FederatedServer {
 }
 
 /// configuration and reload-configuration functions
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Configuration {
     #[serde(rename = "App")]
     app: App,
@@ -358,7 +358,7 @@ struct Configuration {
     walletd: Walletd,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct App {
     #[serde(rename = "PortNumber")]
     port_number: i64,
@@ -444,7 +444,7 @@ struct App {
     change_acks_height: i64,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Peer {
     #[serde(rename = "AddPeers")]
     add_peers: ::serde_json::Value,
@@ -462,7 +462,7 @@ struct Peer {
     sim_net: bool,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Log {
     #[serde(rename = "LogPath")]
     log_path: String,
@@ -472,7 +472,7 @@ struct Log {
     console_log_level: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Wallet {
     #[serde(rename = "Address")]
     address: String,
@@ -490,7 +490,7 @@ struct Wallet {
     factomd_port: i64,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Walletd {
     #[serde(rename = "WalletRpcUser")]
     wallet_rpc_user: String,
@@ -508,19 +508,19 @@ struct Walletd {
     walletd_location: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct ProcessList {
     #[serde(rename = "ProcessList")]
     process_list: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Authorities {
     #[serde(rename = "Authorities")]
     authorities: Vec<Authority>,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Authority {
     #[serde(rename = "AuthorityChainID")]
     authority_chain_id: String,
@@ -539,26 +539,26 @@ struct Authority {
 }
 
 /// drop-rate and set-drop-rate functions
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct DropRate {
     #[serde(rename = "DropRate")]
     drop_rate: i64,
 }
 
 /// delay and set-delay functions
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Delay {
     #[serde(rename = "Delay")]
     delay: i64,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Summary {
     #[serde(rename = "Summary")]
     summary: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Messages {
     #[serde(rename = "Messages")]
     messages: Vec<String>,

@@ -73,14 +73,14 @@ after the commit-chain.
 }
 
 /// chain-head function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct ChainHead {
     chainhead: String,
     chaininprocesslist: bool,
 }
 
 /// commit-chain function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct CommitChain {
     message: String,
     txid: String,
@@ -89,7 +89,7 @@ struct CommitChain {
 }
 
 /// reveal-chain function
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct RevealChain {
     message: String,
     entryhash: String,

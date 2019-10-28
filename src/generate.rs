@@ -61,7 +61,7 @@ assert!(response.success());
 
 /// Deserialises from generate-ec-address, generate-fct-address and 
 /// generate-identity-key
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 struct Generate {
     public: String,
     secret: String,

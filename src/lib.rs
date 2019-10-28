@@ -32,12 +32,12 @@ pub use tokio::prelude::*;
 pub use tokio::runtime::Runtime;
 pub use hyper::rt::{Future, Stream};
 pub use errors::{FetchError, FactomError};
+pub use serde_json::{Value, json};
 pub use serde::{Serialize, Deserialize};
 pub use constants::*; 
 pub use requests::Factom;
 
 use std::collections::HashMap;
-use serde_json::{Value, json};
 use hyper_tls::HttpsConnector;
 use hyper::{Request, Body, Client};
 
