@@ -37,7 +37,7 @@ impl Factom {
       mut self, 
       method: &str, 
       params: HashMap<String, Value>, 
-      uri: &str
+      _uri: &str
   ) ->  impl Future<Item=Response, Error=FetchError> 
   {
 
