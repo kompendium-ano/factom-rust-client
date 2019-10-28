@@ -423,7 +423,7 @@ let id_response = fetch(id_query).unwrap();
 assert!(id_response.success());  
 ```
 */
-  pub fn transactions(self, filter: SearchBy )-> impl Future<Item=Response, Error=FetchError>{
+  pub fn transactions(self, filter: SearchBy)-> impl Future<Item=Response, Error=FetchError>{
      
     let mut params = HashMap::new();
 
@@ -444,6 +444,13 @@ assert!(id_response.success());
     self.walletd_call("transactions", params)
   } 
 } 
+
+/// Search options for the transactions function
+pub enum SearchBy{
+  Range(usize, usize),
+  Txid(&'static str),
+  Address(&'static str)
+}
 
 /// factoid-submit function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]

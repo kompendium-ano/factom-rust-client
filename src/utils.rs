@@ -246,12 +246,7 @@ assert!(response.success());
     self.call("send-raw-message", params)
   }
 }
-// Search options for the transactions function
-pub enum SearchBy{
-  Range(u32, u32),
-  Txid(&'static str),
-  Address(&'static str)
-}
+
 
 
 pub fn str_to_hex(utf8: &str) -> String {
