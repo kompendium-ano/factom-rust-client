@@ -26,7 +26,7 @@ fn random_string(len: usize)-> String {
 }
 
 fn factom()-> Factom{
-  Factom::testnet_open_node()
+  Factom::new()
 }
 
 fn error_check(response: Response){
