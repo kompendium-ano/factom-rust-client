@@ -1,7 +1,7 @@
-//! Basic helper functions
 use super::*;
+use requests::{ApiRequest, parse_response};
 
-impl Factom {
+// impl Factom {
   /**
 The current-minute API call returns:
 
@@ -38,9 +38,9 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn current_minute(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.call("current-minute", HashMap::new())
-  }
+  // pub fn current_minute(self)-> impl Future<Item=Response, Error=FetchError>{
+  //   self.call("current-minute", HashMap::new())
+  // }
   
 /**
  * Retrieve basic system information along with a description of the node’s 
@@ -121,9 +121,9 @@ assert!(response.success());
 ```
  */
 
-  pub fn diagnostics(self) -> impl Future<Item=Response, Error=FetchError> {
-     self.call("diagnostics", HashMap::new())
-  }
+  // pub fn diagnostics(self) -> impl Future<Item=Response, Error=FetchError> {
+  //    self.call("diagnostics", HashMap::new())
+  // }
 
 /**
 Returns the number of Factoshis (Factoids *10^-8) that purchase a single 
@@ -142,9 +142,9 @@ assert!(response.success());
 ```
 */
 
-  pub fn entry_credit_rate(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.call("entry-credit-rate", HashMap::new())
-  }
+  // pub fn entry_credit_rate(self)-> impl Future<Item=Response, Error=FetchError>{
+  //   self.call("entry-credit-rate", HashMap::new())
+  // }
 
 /**
 Returns various heights that allows you to view the state of the blockchain. 
@@ -180,9 +180,6 @@ let response = result.unwrap();
 assert!(response.success());   
 ```
 */
-  pub fn heights(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.call("heights", HashMap::new())
-  }
 
 /**
 Retrieve current properties of the Factom system, including the software and 
@@ -198,9 +195,9 @@ let response = fetch(query).unwrap();
 assert!(response.success());   
 ```
 */
-  pub fn properties(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.call("properties", HashMap::new())
-  }
+  // pub fn properties(self)-> impl Future<Item=Response, Error=FetchError>{
+  //   self.call("properties", HashMap::new())
+  // }
 
 
 /**
@@ -219,11 +216,11 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn receipt(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("hash".to_string(), json!(hash));
-    self.call("receipt", params)
-  }
+  // pub fn receipt(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
+  //   let mut params = HashMap::new();
+  //   params.insert("hash".to_string(), json!(hash));
+  //   self.call("receipt", params)
+  // }
 
 /**
 Send a raw hex encoded binary message to the Factom network. This is mostly 
@@ -240,16 +237,29 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
  */
-  pub fn send_raw_message(self, msg: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("message".to_string(), json!(msg));
-    self.call("send-raw-message", params)
+  // pub fn send_raw_message(self, msg: &str)-> impl Future<Item=Response, Error=FetchError>{
+  //   let mut params = HashMap::new();
+  //   params.insert("message".to_string(), json!(msg));
+  //   self.call("send-raw-message", params)
+  // }
+
+impl Factom {
+
+  pub async fn current_minute(self)-> Result<ApiResponse<CurrentMinute>> {
+    let req =  ApiRequest::new("current-minute");
+    let res = self.factomd_call(req).await;
+    parse_response(res).await
+  } 
+
+  pub async fn heights(self)-> Result<ApiResponse<Heights>> {
+    let req =  ApiRequest::new("heights");
+    let res = self.factomd_call(req).await;
+    parse_response(res).await
   }
 }
 
-
-
-pub fn str_to_hex(utf8: &str) -> String {
+/// Converts a string to its hexadecimal representation.
+pub fn to_hex(utf8: &str) -> String {
   let strs: Vec<String> = utf8.as_bytes()
                               .iter()
                               .map(|b| format!("{:02X}", b))
@@ -257,16 +267,16 @@ pub fn str_to_hex(utf8: &str) -> String {
   strs.join("")
 }
 
-// Retrieves future, blocks until Result is returned
-pub fn fetch<F, R, E>(fut: F)-> Result<R, E>
-  where
-    F: Send + 'static + Future<Item = R, Error = E>,
-    R: Send + 'static,
-    E: Send + 'static,
-  {
-    let mut runtime = Runtime::new().expect("Unable to create a tokio runtime");
-    runtime.block_on(fut)
-  }
+// // Retrieves future, blocks until Result is returned
+// pub fn fetch<F, R, E>(fut: F)-> Result<R, E>
+//   where
+//     F: Send + 'static + Future<Item = R, Error = E>,
+//     R: Send + 'static,
+//     E: Send + 'static,
+//   {
+//     let mut runtime = Runtime::new().expect("Unable to create a tokio runtime");
+//     runtime.block_on(fut)
+//   }
 
 pub fn to_static_str(s: String) -> &'static str {
   Box::leak(s.into_boxed_str())
@@ -274,7 +284,7 @@ pub fn to_static_str(s: String) -> &'static str {
 
 /// current-minute function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct CurrentMinute {
+pub struct CurrentMinute {
     leaderheight: i64,
     directoryblockheight: i64,
     minute: i64,
@@ -288,7 +298,7 @@ struct CurrentMinute {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Diagnostics {
+pub struct Diagnostics {
     name: String,
     id: String,
     publickey: String,
@@ -307,7 +317,7 @@ struct Diagnostics {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Syncing {
+pub struct Syncing {
     status: String,
     received: i64,
     expected: i64,
@@ -315,13 +325,13 @@ struct Syncing {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Authset {
+pub struct Authset {
     leaders: Vec<Leader>,
     audits: Vec<Audit>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Leader {
+pub struct Leader {
     id: String,
     vm: i64,
     listheight: i64,
@@ -330,24 +340,24 @@ struct Leader {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Audit {
+pub struct Audit {
     id: String,
     online: bool,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Elections {
+pub struct Elections {
     inprogress: bool,
 }
 
 // entry-credit-rate function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct EcRate {
+pub struct EcRate {
     rate: i64,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Heights {
+pub struct Heights {
     directoryblockheight: i64,
     leaderheight: i64,
     entryblockheight: i64,
@@ -355,18 +365,18 @@ struct Heights {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Properties {
+pub struct Properties {
     factomdversion: String,
     factomdapiversion: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct ReceiptResult {
+pub struct ReceiptResult {
     receipt: Receipt,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Receipt {
+pub struct Receipt {
     entry: Entry,
     merklebranch: Vec<Merklebranch>,
     entryblockkeymr: String,
@@ -375,15 +385,39 @@ struct Receipt {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Entry {
+pub struct Entry {
     entryhash: String,
     raw: String,
     timestamp: i64,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Merklebranch {
+pub struct Merklebranch {
     left: String,
     right: String,
     top: String,
+}
+
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+    #[test]
+    fn heights() {
+      let rt = Runtime::new().expect("Initialising Runtime");
+      let api = Factom::new();
+      let query = api.heights();
+      let res = rt.block_on(query).expect("Runtime blocking thread");
+      assert!(res.result.directoryblockheight > 1)
+    }
+
+    #[test]
+    fn current_minute() {
+      let rt = Runtime::new().expect("Initialising Runtime");
+      let api = Factom::new();
+      let query = api.heights();
+      let res = rt.block_on(query).expect("Runtime blocking thread");
+      assert!(res.result.directoryblockheight > 1)
+    }
+    
 }

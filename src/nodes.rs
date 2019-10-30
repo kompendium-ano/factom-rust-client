@@ -5,19 +5,6 @@ use http::{Uri, request::Builder, header::CONTENT_TYPE};
 
 type HttpsClient = Client<HttpsConnector<HttpConnector>, hyper::Body>; 
 
-fn new_client() -> HttpsClient {
-  let https = HttpsConnector::new(4).expect("TLS initialization");
-  Client::builder().build::<_, hyper::Body>(https)
-}
-
-fn request_builder(uri: Uri) -> Builder {
-  let mut req = Request::builder();
-  req.method("POST")
-      .header(CONTENT_TYPE, "application/json")
-      .uri(uri);
-  req
-}
-
 impl Factom {
   pub fn open_node()->Factom{
     Factom {

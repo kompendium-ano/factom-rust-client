@@ -11,11 +11,16 @@ maintenance = { status = "passively-maintained" }
 description = "Factom API client"
 
 [dependencies]
-http = "0.1.15"
-tokio = "0.1.22"
-hyper = "0.12.23"
-futures = "0.1.25"
-hyper-tls = "0.3.2"
+futures-preview = {version = "0.3.0-alpha.19",  features = ["compat"] } 
+futures-core-preview = "=0.3.0-alpha.19"
+futures-channel-preview = "=0.3.0-alpha.19"
+futures-util-preview = "=0.3.0-alpha.19"
+hyper = {version = "0.13.0-alpha.4", features = ["unstable-stream"] }
+hyper-tls = "0.4.0-alpha.4"
+http = "0.1.19"
+tokio = "0.2.0-alpha.6"
+tokio-executor = "=0.2.0-alpha.6"
+
 serde_json = "1.0.39"
 serde_derive = "1.0.89"
 serde = { version = "1.0.89", features = ["derive"] }
