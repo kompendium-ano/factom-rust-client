@@ -181,6 +181,8 @@ assert!(response.success());
 ```
 */
 
+  // pub fn heights()
+
 /**
 Retrieve current properties of the Factom system, including the software and 
 the API versions.
@@ -251,8 +253,33 @@ impl Factom {
     parse_response(res).await
   } 
 
+  pub async fn diagnostics(self) -> Result<ApiResponse<Diagnostics>> {
+    let req =  ApiRequest::new("diagnostics");
+    let res = self.factomd_call(req).await;
+    parse_response(res).await
+  }
+
+  pub async fn entry_credit_rate(self)-> Result<ApiResponse<EcRate>> {
+    let req =  ApiRequest::new("entry-credit-rate");
+    let res = self.factomd_call(req).await;
+    parse_response(res).await
+  }
+
   pub async fn heights(self)-> Result<ApiResponse<Heights>> {
     let req =  ApiRequest::new("heights");
+    let res = self.factomd_call(req).await;
+    parse_response(res).await
+  }
+  
+  pub async fn properties(self)-> Result<ApiResponse<Properties>> {
+    let req =  ApiRequest::new("properties");
+    let res = self.factomd_call(req).await;
+    parse_response(res).await
+  }
+
+  pub async fn receipt(self, hash: &str)-> Result<ApiResponse<Receipt>> {
+    let mut req =  ApiRequest::new("receipt");
+    req.params.insert("hash".to_string(), json!(hash));
     let res = self.factomd_call(req).await;
     parse_response(res).await
   }
@@ -266,17 +293,6 @@ pub fn to_hex(utf8: &str) -> String {
                               .collect();
   strs.join("")
 }
-
-// // Retrieves future, blocks until Result is returned
-// pub fn fetch<F, R, E>(fut: F)-> Result<R, E>
-//   where
-//     F: Send + 'static + Future<Item = R, Error = E>,
-//     R: Send + 'static,
-//     E: Send + 'static,
-//   {
-//     let mut runtime = Runtime::new().expect("Unable to create a tokio runtime");
-//     runtime.block_on(fut)
-//   }
 
 pub fn to_static_str(s: String) -> &'static str {
   Box::leak(s.into_boxed_str())
@@ -403,6 +419,33 @@ pub struct Merklebranch {
 mod tests {
   use super::*;
     #[test]
+    fn current_minute() {
+      let rt = Runtime::new().expect("Initialising Runtime");
+      let api = Factom::new();
+      let query = api.current_minute();
+      let res = rt.block_on(query).expect("Runtime blocking thread");
+      assert!(res.result.directoryblockheight > 1)
+    }
+
+    #[test]
+    fn diagnostics() {
+      let rt = Runtime::new().expect("Initialising Runtime");
+      let api = Factom::new();
+      let query = api.diagnostics();
+      let res = rt.block_on(query).expect("Runtime blocking thread");
+      assert!(res.result.leaderheight > 1)
+    }
+
+    #[test]
+    fn entry_credit_rate() {
+      let rt = Runtime::new().expect("Initialising Runtime");
+      let api = Factom::new();
+      let query = api.entry_credit_rate();
+      let res = rt.block_on(query).expect("Runtime blocking thread");
+      assert!(res.result.rate > 1)
+    }
+
+    #[test]
     fn heights() {
       let rt = Runtime::new().expect("Initialising Runtime");
       let api = Factom::new();
@@ -410,14 +453,15 @@ mod tests {
       let res = rt.block_on(query).expect("Runtime blocking thread");
       assert!(res.result.directoryblockheight > 1)
     }
-
+    
     #[test]
-    fn current_minute() {
+    fn properties() {
       let rt = Runtime::new().expect("Initialising Runtime");
       let api = Factom::new();
-      let query = api.heights();
+      let query = api.properties();
       let res = rt.block_on(query).expect("Runtime blocking thread");
-      assert!(res.result.directoryblockheight > 1)
+      assert!(res.result.factomdversion.len() > 1)
     }
+
     
 }

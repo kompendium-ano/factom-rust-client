@@ -23,10 +23,10 @@ pub enum RequestType{
 /// Struct is serialized into the JSON body of the request
 #[derive(Serialize, Debug)]
 pub struct ApiRequest {
-  jsonrpc: &'static str,
-  id: usize,
-  method: String,
-  params: HashMap<String, Value>
+  pub jsonrpc: &'static str,
+  pub id: usize,
+  pub method: String,
+  pub params: HashMap<String, Value>
 }
 
 impl ApiRequest {
