@@ -1,6 +1,6 @@
 use super::*;
 
-/// Anchor enum for use in the anchors function depending on the type of request
+/// Anchortype is a required argument in the anchors function 
 pub enum AnchorType {
   Hash(String),
   Height(usize)
@@ -54,10 +54,15 @@ let response = fetch(query).unwrap();
 assert!(response.success());
 ```
 */
-  pub fn ablock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("height".to_string(), json!(height));
-    self.call("ablock-by-height", params)
+  pub async fn ablock_by_height(
+    self, 
+    height: u32
+  )-> Result<ApiResponse<ABlockHeightResult>>
+  {
+    let req =  ApiRequest::new("ablock-by-height");
+    req.params.insert("height".to_string(), json!(height));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -75,10 +80,14 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */   
-  pub fn admin_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("keymr".to_string(), json!(keymr));
-    self.call("admin-block", params)
+  pub async fn admin_block(self, 
+  keymr: &str
+  )-> Result<ApiResponse<ABlockResult>>
+  {
+    let req =  ApiRequest::new("admin-block");
+    req.params.insert("keymr".to_string(), json!(keymr));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -104,13 +113,18 @@ assert!(response.success());
 ```
 
  */
-  pub fn anchors(self, target: AnchorType)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
+  pub async fn anchors(
+    self, 
+    target: AnchorType
+  )-> Result<ApiResponse<Anchor>>
+  {
+    let req =  ApiRequest::new("anchors");
     match target {
-      AnchorType::Hash(h) => {params.insert("hash".to_string(), json!(h));},
-      AnchorType::Height(i) => {params.insert("height".to_string(), json!(i));}
+      AnchorType::Hash(h) => {req.params.insert("hash".to_string(), json!(h));},
+      AnchorType::Height(i) => {req.params.insert("height".to_string(), json!(i));}
     }
-    self.call("anchors", params)
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -127,10 +141,15 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn dblock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("height".to_string(), json!(height));
-    self.call("dblock-by-height", params)
+  pub async fn dblock_by_height(
+    self, 
+    height: u32
+  )-> Result<ApiResponse<DBlockHeightResult>>
+  {
+    req.params.insert("height".to_string(), json!(height));
+    let req =  ApiRequest::new("dblock-by-height");
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -152,10 +171,15 @@ let response = fetch(query).unwrap();
 assert!(response.success());    
 ```
 */
-  pub fn directory_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("keymr".to_string(), json!(keymr));
-    self.call("directory-block", params)
+  pub async fn directory_block(
+    self, 
+    keymr: &str
+  )-> Result<ApiResponse<DBlock>>
+  {
+    let req =  ApiRequest::new("directory-block");
+    req.params.insert("keymr".to_string(), json!(keymr));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 /**
 The directory block head is the last known directory block by factom, or in 
@@ -173,8 +197,13 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn directory_block_head(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.call("directory-block-head", HashMap::new())
+  pub async fn directory_block_head(
+    self
+  )-> Result<ApiResponse<DBlockHead>>
+  {
+    let req =  ApiRequest::new("directory-block-head");
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -192,10 +221,15 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn ecblock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("height".to_string(), json!(height));
-    self.call("ecblock-by-height", params)
+  pub async fn ecblock_by_height(
+    self, 
+    height: u32
+  )-> Result<ApiResponse<EBlockHeightResult>>
+  {
+    let req =  ApiRequest::new("ecblock-by-height");
+    req.params.insert("height".to_string(), json!(height));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 
@@ -216,10 +250,15 @@ assert!(response.success());
 
 ```
 */
-  pub fn entry_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("keymr".to_string(), json!(keymr));
-    self.call("entry-block", params)
+  pub async fn entry_block(
+    self, 
+    keymr: &str
+  )-> Result<ApiResponse<EBlock>>
+  {
+    let req =  ApiRequest::new("entry-block");
+    req.params.insert("keymr".to_string(), json!(keymr));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 
@@ -240,10 +279,15 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn entry_credit_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("keymr".to_string(), json!(keymr));
-    self.call("entrycredit-block", params)
+  pub async fn entry_credit_block(
+    self, 
+    keymr: &str
+  )-> Result<ApiResponse<EcBlockResult>>
+  {
+    let req =  ApiRequest::new("entrycredit-block");
+    req.params.insert("keymr".to_string(), json!(keymr));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -261,10 +305,16 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn factoid_block(self, keymr: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("keymr".to_string(), json!(keymr));
-    self.call("factoid-block", params)
+  pub async fn factoid_block(
+    self, 
+    keymr: &str
+  )
+  -> Result<ApiResponse<FBlockResult>>
+  {
+    let req =  ApiRequest::new("factoid-block");
+    req.params.insert("keymr".to_string(), json!(keymr));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
   
 /**
@@ -280,47 +330,82 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn fblock_by_height(self, height: u32)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("height".to_string(), json!(height));
-    self.call("fblock-by-height", params)
+  pub async fn fblock_by_height(
+    self, 
+    height: u32
+  )-> Result<ApiResponse<FBlockResult>>
+  {
+    let req =  ApiRequest::new("fblock-by-height");
+    req.params.insert("height".to_string(), json!(height));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 }
 
-#[derive(Deserialize)]
-pub struct ABlock {
-  pub header: ABHeader,
-  pub ab_entries: Vec<ABEntry>,
-  pub backreference_hash: String,
-  pub lookup_hash: String,
-  pub id: usize
+/// ablock-by-height function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct ABlockHeightResult {
+    ablock: AblockHeight,
+    rawdata: String,
 }
 
-#[derive(Deserialize)]
-pub struct ABEntry {
-  pub identityadminchainid: String,
-  pub prevdbsig:  PrevDbSig,
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct AblockHeight {
+    header: Header,
+    abentries: Vec<ABHeightentry>,
+    backreferencehash: String,
+    lookuphash: String,
 }
 
-#[derive(Deserialize)]
-pub struct PrevDbSig {
-  // #[serde(alias = "pub")]
-  pub public: String,
-  pub string: String
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct ABHeightentry {
+    identityadminchainid: String,
+    prevdbsig: Prevdbsig,
 }
 
-#[derive(Deserialize)]
-pub struct ABHeader {
-  pub prevbackrefhash: String,
-  pub dbheight: usize,
-  pub headerexpansionsize: usize,
-  pub headerexpansionarea: String,
-  pub messagecount: usize,
-  pub bodysize: usize,
-  pub adminchainid: String,
-  pub chainid: String
+/// admin block function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct ABlockResult {
+    ablock: Ablock,
+    rawdata: String,
 }
 
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Ablock {
+    header: Header,
+    abentries: Vec<Abentry>,
+    backreferencehash: String,
+    lookuphash: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Header {
+    prevbackrefhash: String,
+    dbheight: i64,
+    headerexpansionsize: i64,
+    headerexpansionarea: String,
+    messagecount: i64,
+    bodysize: i64,
+    adminchainid: String,
+    chainid: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Abentry {
+    identityadminchainid: Option<String>,
+    prevdbsig: Option<Prevdbsig>,
+    minutenumber: Option<i64>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Prevdbsig {
+    #[serde(rename = "pub")]
+    pub_field: String,
+    sig: String,
+}
+
+/// anchors function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
 pub struct Anchor {
   pub directoryblockheight: usize,
   pub directoryblockkeymr: String,
@@ -328,6 +413,7 @@ pub struct Anchor {
   pub ethereum: Ethereuem
 }
 
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
 pub struct Ethereuem {
   pub recordheight: usize,
   pub dbheightmax: usize,
@@ -338,65 +424,78 @@ pub struct Ethereuem {
   pub txid: String,
   pub blockhash: String,
   pub txindex: usize
-
 }
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
 pub struct Bitcoin {
   pub transactionhash: String,
   pub blockhash: String
 }
 
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
 pub struct MerkleBranch {
   pub left: String,
   pub right: String,
   pub top: String
 }
 
-pub struct DBlockByHeight {
-  pub header: DBHeader,
-  pub dbentries: Vec<DBEntry>,
-  pub dbhash: String,
-  pub keymr: String
+/// dblock-by-height function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct DBlockHeightResult {
+    dblock: DblockHeight,
+    rawdata: String,
 }
 
-/// Constructed by the dblock-by-height function
-pub struct DBHeightHeader {
-  pub version: u8,
-  pub networkid: usize,
-  pub bodymr: String,
-  pub prevkeymr: String,
-  pub prevfullhash: String,
-  pub timestamp: usize,
-  pub dbheight: usize,
-  pub blockcount: usize,
-  pub chainid: String
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct DblockHeight {
+    header: DBlockHeightHeader,
+    dbentries: Vec<Dbentry>,
+    dbhash: String,
+    keymr: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct DBlockHeightHeader {
+    version: i64,
+    networkid: i64,
+    bodymr: String,
+    prevkeymr: String,
+    prevfullhash: String,
+    timestamp: i64,
+    dbheight: i64,
+    blockcount: i64,
+    chainid: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Dbentry {
+    chainid: String,
+    keymr: String,
 }
 
 
-pub struct DBEntry {
-  pub chainid: String,
-  keymr: String
+/// directory block function
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct DBlock {
+    header: DBlockHeader,
+    entryblocklist: Vec<Entryblocklist>,
 }
 
-/// directory-block function
-pub struct DBlock {
-  pub header: DBHeader,
-  pub entryblocklist: EntryBlockList
-} 
-
-/// directory-block function
-pub struct DBHeader {
-  pub prevblockkeymr: String,
-  pub sequencenumber: usize,
-  pub timestamp: usize
-
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct DBlockHeader {
+    prevblockkeymr: String,
+    sequencenumber: i64,
+    timestamp: i64,
 }
-/// directory-block function
-pub struct EntryBlockList {
-  pub chainid: String,
-  pub keymr: String
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Entryblocklist {
+    chainid: String,
+    keymr: String,
 }
 
 /// directory-block-head function
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DBlockHead {
   pub keymr: String
 }

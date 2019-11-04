@@ -16,10 +16,15 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn entry_credit_balance(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("address".to_string(), json!(address));
-    self.call("entry-credit-balance", params)
+  pub async fn entry_credit_balance(
+    self, 
+    address: &str
+  )-> Result<ApiResponse<Balance>>
+  {
+    let req =  ApiRequest::new("entry-credit-balance");
+    req.params.insert("address".to_string(), json!(address));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -38,10 +43,15 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn factoid_balance(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("address".to_string(), json!(address));
-    self.call("factoid-balance", params)
+  pub async fn factoid_balance(
+    self, 
+    address: &str
+  )-> Result<ApiResponse<Balance>>
+  {
+    let req =  ApiRequest::new("factoid-balance");
+    req.params.insert("address".to_string(), json!(address));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -91,10 +101,15 @@ let response = result.unwrap();
 assert!(response.success());   
 ```
 */
-  pub fn multiple_ec_balances(self, addresses: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("addresses".to_string(), json!(addresses));
-    self.call("multiple-ec-balances", params)
+  pub async fn multiple_ec_balances(
+    self, 
+    addresses: Vec<&str>
+  )-> Result<ApiResponse<Balances>>
+  {
+    let req =  ApiRequest::new("multiple-ec-balances");
+    req.params.insert("addresses".to_string(), json!(addresses));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -143,31 +158,36 @@ let response = result.unwrap();
 assert!(response.success());   
 ```
 */
-  pub fn multiple_fct_balances(self, addresses: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("addresses".to_string(), json!(addresses));
-    self.call("multiple-fct-balances", params)
+  pub async fn multiple_fct_balances(
+    self, 
+    addresses: Vec<&str>
+    )-> Result<ApiResponse<Balances>>
+    {
+    let req =  ApiRequest::new("multiple-fct-balances");
+    req.params.insert("addresses".to_string(), json!(addresses));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 }
 
-#[derive(Deserialize)]
-pub struct Balance {
-  pub balance: usize,
-  pub id: usize
+/// entry-credit-balance and factoid-balance functions
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Balance {
+    balance: i64,
 }
+
 
 /// Struct for deserialising multiple-fct-balances and multiple-ec-balances
-#[derive(Deserialize)]
-pub struct MultipleBalances {
-  pub currentheight: usize,
-  pub lastsavedheight: usize,
-  pub balances: Vec<Balances>,
-  pub id: usize
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct MultipleBalances {
+    currentheight: i64,
+    lastsavedheight: i64,
+    balances: Vec<Balances>,
 }
 
-#[derive(Deserialize)]
-pub struct Balances {
-  pub ack: usize,
-  pub saved: usize,
-  pub err: String
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+struct Balances {
+    ack: i64,
+    saved: i64,
+    err: String,
 }

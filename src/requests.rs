@@ -90,7 +90,6 @@ impl Factom {
   }
 
   pub async fn inner(self, req_type: RequestType, mut req: ApiRequest) -> ResponseFuture {
-    // TODO: Tests for ID properly working
     req.id = self.id;
 
     let mut node_request = match req_type {

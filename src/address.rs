@@ -17,10 +17,15 @@ let response = fetch(query).unwrap();
 assert!(response.success());
 ```
 */
-  pub fn address(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("address".to_string(), json!(address));
-    self.walletd_call("address", params)
+  pub async fn address(
+    self, 
+    address: &str
+  )-> Result<ApiResponse<Address>>
+  {
+    let mut req =  ApiRequest::new("address");
+    req.params.insert("address".to_string(), json!(address));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
   /**
@@ -37,8 +42,12 @@ let response = fetch(query).unwrap();
 assert!(response.success());
 ```
 */  
-  pub fn all_addresses(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.walletd_call("all-addresses", HashMap::new())
+  pub async fn all_addresses(self)
+    -> Result<ApiResponse<AllAddresses>> 
+  {
+    let req =  ApiRequest::new("all-addresses");
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -62,30 +71,32 @@ assert!(response.success());
 ```
 
 */
-  pub fn remove_address(self, address: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("address".to_string(), json!(address));
-    self.walletd_call("remove-address", params)
+  pub async fn remove_address(
+    self, 
+    address: &str
+  )-> Result<ApiResponse<RemoveAddress>>
+  {
+    let req =  ApiRequest::new("remove-address");
+    req.params.insert("address".to_string(), json!(address));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 }
 
-#[derive(Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
 pub struct Address {
   pub public: String,
-  pub secret: String,
-  pub id: usize
+  pub secret: String
 }
 
-#[derive(Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
 pub struct AllAddresses {
-  pub addresses: Vec<Address>,
-  pub id: usize
+  pub addresses: Vec<Address>
 }
 
-#[derive(Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
 pub struct RemoveAddress {
-  pub success: bool,
-  pub id: usize
+  pub success: String
 }
 
 

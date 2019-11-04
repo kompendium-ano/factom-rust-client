@@ -7,9 +7,9 @@
 //! A rust client for the Factom network API.
 //! 
 //! Documentation for the api calls are located on the [Factom struct page](struct.Factom.html)
-// pub mod address;
-// pub mod balance;
-// pub mod block;
+pub mod address;
+pub mod balance;
+pub mod block;
 // pub mod chain;
 // pub mod compose;
 pub mod constants;
@@ -35,9 +35,8 @@ pub use hyper::rt::{Future, Stream};
 pub use serde_json::{Value, json};
 pub use serde::{Serialize, Deserialize};
 pub use constants::*; 
-pub use requests::Factom;
 pub use responses::ApiResponse;
-pub use requests::ApiRequest;
+pub use requests::{Factom, ApiRequest, parse};
 
 // use std::collections::HashMap;
 use hyper_tls::HttpsConnector;
