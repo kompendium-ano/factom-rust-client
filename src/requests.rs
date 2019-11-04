@@ -107,7 +107,7 @@ impl Factom {
 
 /// Parses the response and deserialises the API call into an appropriate 
 /// ApiResponse struct
-pub async fn parse_response<T>(fut: ResponseFuture) -> Result<ApiResponse<T>> 
+pub async fn parse<T>(fut: ResponseFuture) -> Result<ApiResponse<T>> 
   where T: DeserializeOwned + Default
 {
   let res = fut.await?;

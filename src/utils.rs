@@ -1,5 +1,5 @@
 use super::*;
-use requests::{ApiRequest, parse_response};
+use requests::{ApiRequest, parse};
 
 // impl Factom {
   /**
@@ -249,39 +249,39 @@ impl Factom {
 
   pub async fn current_minute(self)-> Result<ApiResponse<CurrentMinute>> {
     let req =  ApiRequest::new("current-minute");
-    let res = self.factomd_call(req).await;
-    parse_response(res).await
+    let response = self.factomd_call(req).await;
+    parse(response).await
   } 
 
   pub async fn diagnostics(self) -> Result<ApiResponse<Diagnostics>> {
     let req =  ApiRequest::new("diagnostics");
-    let res = self.factomd_call(req).await;
-    parse_response(res).await
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
   pub async fn entry_credit_rate(self)-> Result<ApiResponse<EcRate>> {
     let req =  ApiRequest::new("entry-credit-rate");
-    let res = self.factomd_call(req).await;
-    parse_response(res).await
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
   pub async fn heights(self)-> Result<ApiResponse<Heights>> {
     let req =  ApiRequest::new("heights");
-    let res = self.factomd_call(req).await;
-    parse_response(res).await
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
   
   pub async fn properties(self)-> Result<ApiResponse<Properties>> {
     let req =  ApiRequest::new("properties");
-    let res = self.factomd_call(req).await;
-    parse_response(res).await
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
   pub async fn receipt(self, hash: &str)-> Result<ApiResponse<Receipt>> {
     let mut req =  ApiRequest::new("receipt");
     req.params.insert("hash".to_string(), json!(hash));
-    let res = self.factomd_call(req).await;
-    parse_response(res).await
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 }
 
