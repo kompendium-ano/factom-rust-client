@@ -1,4 +1,5 @@
 use super::*;
+use std::collections::HashMap;
 
 impl Factom {
 /**
@@ -23,10 +24,14 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn compose_chain(self, extids: Vec<&str>, content: &str, ecpub: &str)
-                        -> impl Future<Item=Response, Error=FetchError>{
-    
-    let mut params = HashMap::new();
+  pub async fn compose_chain(
+    self, 
+    extids: Vec<&str>, 
+    content: &str, 
+    ecpub: &str
+  )-> Result<ApiResponse<Compose>>
+  {
+    let mut req =  ApiRequest::new("compose-chain");
     let hex_content = str_to_hex(content);
     let mut hex_extids = Vec::new();
     for extid in extids{
@@ -38,10 +43,10 @@ assert!(response.success());
         "content": hex_content
       }
     });
-    params.insert("chain".to_string(), chain);
-    params.insert("ecpub".to_string(), json!(ecpub));
-    dbg!(&params);
-    self.walletd_call("compose-chain", params)
+    req.params.insert("chain".to_string(), chain);
+    req.params.insert("ecpub".to_string(), json!(ecpub));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -66,9 +71,15 @@ let response = fetch(query).unwrap();
 assert!(response.success()); 
 ```
 */
-  pub fn compose_entry(self, chainid: &str, extids: Vec<&str>, content: &str, ecpub: &str)
-                        -> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
+  pub async fn compose_entry(
+    self, 
+    chainid: &str, 
+    extids: Vec<&str>, 
+    content: &str, 
+    ecpub: &str
+  ) -> Result<ApiResponse<Compose>>
+  {
+    let mut req =  ApiRequest::new("compose-entry");
     let mut hex_extids = Vec::new();
     for extid in extids {
       hex_extids.push(str_to_hex(extid));
@@ -78,9 +89,10 @@ assert!(response.success());
     "extids": hex_extids,
     "content": str_to_hex(content)
     });
-    params.insert("entry".to_string(), entry);
-    params.insert("ecpub".to_string(), json!(ecpub));
-    self.walletd_call("compose-entry", params)
+    req.params.insert("entry".to_string(), entry);
+    req.params.insert("ecpub".to_string(), json!(ecpub));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -100,10 +112,14 @@ let response = fetch(query).unwrap();
 assert!(response.success()); 
 ```
 */
-  pub fn compose_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("tx-name".to_string(), json!(tx_name));
-    self.walletd_call("compose-transaction", params)
+  pub async fn compose_transaction(
+    self, 
+    tx_name: &str
+  )-> Result<ApiResponse<ComposeTx>>{
+    let mut req =  ApiRequest::new("compose-transaction");
+    req.params.insert("tx-name".to_string(), json!(tx_name));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -172,7 +188,7 @@ let response = fetch(query).unwrap();
 assert!(response.success());
 ```
  */
-  pub fn compose_id_attribute<T>(
+  pub async fn compose_id_attribute<T>(
     self, 
     receiver_chain: &str,
     destination_chain: &str,
@@ -181,25 +197,26 @@ assert!(response.success());
     signer_chainid: &str,
     ecpub: &str,
     force: bool
-  ) -> impl Future<Item=Response, Error=FetchError> where 
+  ) -> Result<ApiResponse<Compose>> where 
     T: Serialize,
   {
-    let mut params = HashMap::new();
-    params.insert("receiver-chainid".to_string(), json!(receiver_chain));
-    params.insert("destination-chainid".to_string(), json!(destination_chain));
-    params.insert("signerkey".to_string(), json!(signer_key));
-    params.insert("signer-chainid".to_string(), json!(signer_chainid));
-    params.insert("ecpub".to_string(), json!(ecpub));
-    params.insert("force".to_string(), json!(force));
+    let mut req =  ApiRequest::new("compose-identity-attribute");
     let mut attr_list = vec!(HashMap::new());
+    req.params.insert("receiver-chainid".to_string(), json!(receiver_chain));
+    req.params.insert("destination-chainid".to_string(), json!(destination_chain));
+    req.params.insert("signerkey".to_string(), json!(signer_key));
+    req.params.insert("signer-chainid".to_string(), json!(signer_chainid));
+    req.params.insert("ecpub".to_string(), json!(ecpub));
+    req.params.insert("force".to_string(), json!(force));
     for attr in attributes {
       let mut map = HashMap::new();
       map.insert("key".to_string(), attr.0);
       map.insert("value".to_string(), attr.1);
       attr_list.push(map);
     }
-    params.insert("attributes".to_string(), json!(attr_list));
-    self.walletd_call("compose-identity-attribute", params)
+    req.params.insert("attributes".to_string(), json!(attr_list));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -263,7 +280,7 @@ let response = fetch(query).unwrap();
 assert!(response.success());
 ```
  */
-  pub fn compose_id_attribute_endorsement(
+  pub async fn compose_id_attribute_endorsement(
     self, 
     destination_chain: &str,
     entry_hash: &str,
@@ -271,16 +288,17 @@ assert!(response.success());
     signer_chainid: &str,
     ecpub: &str,
     force: bool
-  ) -> impl Future<Item=Response, Error=FetchError> 
+  ) -> Result<ApiResponse<Compose>> 
   {
-    let mut params = HashMap::new();
-    params.insert("destination-chainid".to_string(), json!(destination_chain));
-    params.insert("entry-hash".to_string(), json!(entry_hash));
-    params.insert("signerkey".to_string(), json!(signer_key));
-    params.insert("signer-chainid".to_string(), json!(signer_chainid));
-    params.insert("ecpub".to_string(), json!(ecpub));
-    params.insert("force".to_string(), json!(force));
-    self.walletd_call("compose-identity-attribute-endorsement", params)
+    let mut req =  ApiRequest::new("compose-identity-attribute-endorsement");
+    req.params.insert("destination-chainid".to_string(), json!(destination_chain));
+    req.params.insert("entry-hash".to_string(), json!(entry_hash));
+    req.params.insert("signerkey".to_string(), json!(signer_key));
+    req.params.insert("signer-chainid".to_string(), json!(signer_chainid));
+    req.params.insert("ecpub".to_string(), json!(ecpub));
+    req.params.insert("force".to_string(), json!(force));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -329,20 +347,21 @@ let response = fetch(query).unwrap();
 assert!(response.success());
 ```
  */
-  pub fn compose_id_chain(
+  pub async fn compose_id_chain(
     self, 
     name: Vec<&str>,
     pubkeys: Vec<&str>,
     ecpub: &str,
     force: bool
-  ) -> impl Future<Item=Response, Error=FetchError> 
+  ) -> Result<ApiResponse<Compose>> 
   {
-    let mut params = HashMap::new();
-    params.insert("name".to_string(), json!(name));
-    params.insert("pubkeys".to_string(), json!(pubkeys));
-    params.insert("ecpub".to_string(), json!(ecpub));
-    params.insert("force".to_string(), json!(force));
-    self.walletd_call("compose-identity-chain", params)
+    let mut req =  ApiRequest::new("compose-identity-chain");
+    req.params.insert("name".to_string(), json!(name));
+    req.params.insert("pubkeys".to_string(), json!(pubkeys));
+    req.params.insert("ecpub".to_string(), json!(ecpub));
+    req.params.insert("force".to_string(), json!(force));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -394,7 +413,7 @@ let response = fetch(query).unwrap();
 assert!(response.success());
 ```
  */
-  pub fn compose_id_key_replacement(
+  pub async fn compose_id_key_replacement(
     self, 
     chain_id: &str,
     old_key: &str,
@@ -402,16 +421,17 @@ assert!(response.success());
     signer_key: &str,
     ecpub: &str,
     force: bool
-  ) -> impl Future<Item=Response, Error=FetchError> 
+  ) -> Result<ApiResponse<Compose>> 
   {
-    let mut params = HashMap::new();
-    params.insert("chainid".to_string(), json!(chain_id));
-    params.insert("oldkey".to_string(), json!(old_key));
-    params.insert("newkey".to_string(), json!(new_key));
-    params.insert("signerkey".to_string(), json!(signer_key));
-    params.insert("ecpub".to_string(), json!(ecpub));
-    params.insert("force".to_string(), json!(force));
-    self.walletd_call("compose-identity-key-replacement", params)
+    let mut req =  ApiRequest::new("compose-identity-key-replacement");
+    req.params.insert("chainid".to_string(), json!(chain_id));
+    req.params.insert("oldkey".to_string(), json!(old_key));
+    req.params.insert("newkey".to_string(), json!(new_key));
+    req.params.insert("signerkey".to_string(), json!(signer_key));
+    req.params.insert("ecpub".to_string(), json!(ecpub));
+    req.params.insert("force".to_string(), json!(force));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
 }
@@ -423,7 +443,7 @@ assert!(response.success());
 /// compose-identity-chain
 /// compose-identity-key-replacementt
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Compose {
+pub struct Compose {
     commit: Commit,
     reveal: Reveal,
 }
@@ -435,7 +455,7 @@ struct Compose {
 /// compose-identity-chain
 /// compose-identity-key-replacementt
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Commit {
+pub struct Commit {
     jsonrpc: String,
     id: i64,
     // #[serde(rename = "params")]
@@ -450,7 +470,7 @@ struct Commit {
 /// compose-identity-chain
 /// compose-identity-key-replacementt
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct CommitParams {
+pub struct CommitParams {
     message: String,
 }
 
@@ -461,7 +481,7 @@ struct CommitParams {
 /// compose-identity-chain
 /// compose-identity-key-replacementt
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Reveal {
+pub struct Reveal {
     jsonrpc: String,
     id: i64,
     // #[serde(rename = "params")]
@@ -476,13 +496,13 @@ struct Reveal {
 /// compose-identity-chain
 /// compose-identity-key-replacementt
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct RevealParams {
+pub struct RevealParams {
     entry: String,
 }
 
 /// compose-transaction function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct ComposeTx {
+pub struct ComposeTx {
     jsonrpc: String,
     id: i64,
     params: TxParams,
@@ -491,7 +511,7 @@ struct ComposeTx {
 
 /// compose-transaction function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct TxParams {
+pub struct TxParams {
     transaction: String,
 }
 

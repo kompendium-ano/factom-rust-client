@@ -10,10 +10,10 @@
 pub mod address;
 pub mod balance;
 pub mod block;
-// pub mod chain;
-// pub mod compose;
+pub mod chain;
+pub mod compose;
 pub mod constants;
-// pub mod debug;
+pub mod debug;
 // pub mod entry;
 // pub mod errors;
 // pub mod generate;

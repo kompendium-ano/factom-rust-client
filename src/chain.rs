@@ -17,10 +17,15 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn chain_head(self, chainid: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("chainid".to_string(), json!(chainid));
-    self.call("chain-head", params)
+  pub async fn chain_head(
+    self, 
+    chainid: &str
+  )-> Result<ApiResponse<ChainHead>>
+  {
+    let mut req =  ApiRequest::new("chain-head");
+    req.params.insert("chainid".to_string(), json!(chainid));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -44,10 +49,15 @@ It is possible to be unable to send a commit, if the commit already exists
  error format can be found here: repeated-commit
 
 */
-  pub fn commit_chain(self, message: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("message".to_string(), json!(message));
-    self.call("commit-chain", params)
+  pub async fn commit_chain(
+    self, 
+    message: &str
+  )-> Result<ApiResponse<CommitChain>>
+  {
+    let mut req =  ApiRequest::new("commit-chain");
+    req.params.insert("message".to_string(), json!(message));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -65,23 +75,28 @@ reveal-chain. To successfully create a chain, the reveal-chain must be called
 after the commit-chain.
 
 */
-  pub fn reveal_chain(self, entry: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("entry".to_string(), json!(entry));
-    self.call("reveal-chain", params)
+  pub async fn reveal_chain(
+    self, 
+    entry: &str
+  )-> Result<ApiResponse<RevealChain>>
+  {
+    let mut req =  ApiRequest::new("reveal-chain");
+    req.params.insert("entry".to_string(), json!(entry));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 }
 
 /// chain-head function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct ChainHead {
+pub struct ChainHead {
     chainhead: String,
     chaininprocesslist: bool,
 }
 
 /// commit-chain function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct CommitChain {
+pub struct CommitChain {
     message: String,
     txid: String,
     entryhash: String,
@@ -90,7 +105,7 @@ struct CommitChain {
 
 /// reveal-chain function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct RevealChain {
+pub struct RevealChain {
     message: String,
     entryhash: String,
     chainid: String,

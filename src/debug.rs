@@ -17,8 +17,12 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
  */
-  pub fn holding_queue(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.debug_call("holding-queue", HashMap::new())
+  pub async fn holding_queue(self)
+    -> Result<ApiResponse<HoldingQueue>>
+  {
+    let req =  ApiRequest::new("holding-queue");
+    let response = self.debug_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -37,8 +41,12 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
  */
-  pub fn network_info(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.debug_call("network-info", HashMap::new())
+  pub async fn network_info(self)
+    -> Result<ApiResponse<NetworkInfo>>
+  {
+    let req =  ApiRequest::new("network-info");
+    let response = self.debug_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -56,8 +64,12 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
  */
-  pub fn predictive_fer(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.debug_call("predictive-fer", HashMap::new())
+  pub async fn predictive_fer(self)
+    -> Result<ApiResponse<PredictiveFER>>
+  {
+    let req =  ApiRequest::new("predictive-fer");
+    let response = self.debug_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -75,8 +87,12 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
  */
-  pub fn audit_servers(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.debug_call("audit-servers", HashMap::new())
+  pub async fn audit_servers(self)
+    -> Result<ApiResponse<AuditServers>>
+  {
+    let req =  ApiRequest::new("audit-servers");
+    let response = self.debug_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -94,8 +110,12 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
  */
-  pub fn federated_servers(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.debug_call("federated-servers", HashMap::new())
+  pub async fn federated_servers(self)
+    -> Result<ApiResponse<FederatedServers>>
+  {
+    let req =  ApiRequest::new("federated-servers");
+    let response = self.debug_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -117,8 +137,12 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
  */
-  pub fn configuration(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.debug_call("configuration", HashMap::new())
+  pub async fn configuration(self)
+    -> Result<ApiResponse<Configuration>>
+  {
+    let req =  ApiRequest::new("configuration");
+    let response = self.debug_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -135,8 +159,12 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
  */
-  pub fn process_list(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.debug_call("process-list", HashMap::new())
+  pub async fn process_list(self)
+    -> Result<ApiResponse<ProcessList>>
+  {
+    let req =  ApiRequest::new("process-list");
+    let response = self.debug_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -155,8 +183,12 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
  */
-  pub fn authorities(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.debug_call("authorities", HashMap::new())
+  pub async fn authorities(self)
+    -> Result<ApiResponse<Authorities>>
+  {
+    let req =  ApiRequest::new("authorities");
+    let response = self.debug_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -175,8 +207,12 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
  */
-  pub fn reload_configuration(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.debug_call("reload-configuration", HashMap::new())
+  pub async fn reload_configuration(self)
+    -> Result<ApiResponse<Configuration>>
+  {
+    let req =  ApiRequest::new("reload-configuration");
+    let response = self.debug_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -194,8 +230,12 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
  */
-  pub fn drop_rate(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.debug_call("drop-rate", HashMap::new())
+  pub async fn drop_rate(self)
+    -> Result<ApiResponse<DropRate>>
+  {
+    let req =  ApiRequest::new("drop-rate");
+    let response = self.debug_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -213,10 +253,15 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
  */
-  pub fn set_drop_rate(self, drop_rate: usize)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("DropRate".to_string(), json!(drop_rate)); 
-    self.debug_call("set-drop-rate", params)
+  pub async fn set_drop_rate(
+    self, 
+    drop_rate: usize
+  )-> Result<ApiResponse<DropRate>>
+  {
+    let mut req =  ApiRequest::new("set-drop-rate");
+    req.params.insert("DropRate".to_string(), json!(drop_rate)); 
+    let response = self.debug_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -234,8 +279,11 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
  */
-  pub fn delay(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.debug_call("delay", HashMap::new())
+  pub async fn delay(self)
+    -> Result<ApiResponse<Delay>>{
+    let req =  ApiRequest::new("delay");
+    let response = self.debug_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -252,10 +300,15 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
  */
-  pub fn set_delay(self, delay: usize)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("Delay".to_string(), json!(delay)); 
-    self.debug_call("set-delay", params)
+  pub async fn set_delay(
+    self, 
+    delay: usize
+  )-> Result<ApiResponse<Delay>>
+  {
+    let mut req =  ApiRequest::new("set-delay");
+    req.params.insert("Delay".to_string(), json!(delay)); 
+    let response = self.debug_call(req).await;
+    parse(response).await
   }
 
   /**
@@ -273,8 +326,11 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
  */
-  pub fn summary(self)-> impl Future<Item=Response, Error=FetchError>{ 
-    self.debug_call("summary", HashMap::new())
+  pub async fn summary(self)
+    -> Result<ApiResponse<Summary>>{ 
+    let req =  ApiRequest::new("summary");
+    let response = self.debug_call(req).await;
+    parse(response).await
   }
 
   /**
@@ -291,20 +347,24 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
  */
-  pub fn messages(self)-> impl Future<Item=Response, Error=FetchError>{ 
-    self.debug_call("messages", HashMap::new())
+  pub async fn messages(self)
+    -> Result<ApiResponse<Messages>>
+  { 
+    let req =  ApiRequest::new("messages");
+    let response = self.debug_call(req).await;
+    parse(response).await
   }
 }
 
 /// holding-queue function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct HoldingQueue {
+pub struct HoldingQueue {
   #[serde(rename = "NetworkNumber")]
   messages: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct NetworkInfo {
+pub struct NetworkInfo {
   #[serde(rename = "NetworkNumber")]
   network_number: i64,
   #[serde(rename = "NetworkName")]
@@ -314,25 +374,25 @@ struct NetworkInfo {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct PredictiveFER {
+pub struct PredictiveFER {
     #[serde(rename = "PredictiveFER")]
     predictive_fer: i64,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct AuditServers {
+pub struct AuditServers {
     #[serde(rename = "AuditServers")]
     audit_servers: Vec<::serde_json::Value>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct FederatedServers {
+pub struct FederatedServers {
     #[serde(rename = "FederatedServers")]
     federated_servers: Vec<FederatedServer>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct FederatedServer {
+pub struct FederatedServer {
     #[serde(rename = "ChainID")]
     chain_id: String,
     #[serde(rename = "Name")]
@@ -345,7 +405,7 @@ struct FederatedServer {
 
 /// configuration and reload-configuration functions
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Configuration {
+pub struct Configuration {
     #[serde(rename = "App")]
     app: App,
     #[serde(rename = "Peer")]
@@ -359,7 +419,7 @@ struct Configuration {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct App {
+pub struct App {
     #[serde(rename = "PortNumber")]
     port_number: i64,
     #[serde(rename = "HomeDir")]
@@ -445,7 +505,7 @@ struct App {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Peer {
+pub struct Peer {
     #[serde(rename = "AddPeers")]
     add_peers: ::serde_json::Value,
     #[serde(rename = "ConnectPeers")]
@@ -463,7 +523,7 @@ struct Peer {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Log {
+pub struct Log {
     #[serde(rename = "LogPath")]
     log_path: String,
     #[serde(rename = "LogLevel")]
@@ -473,7 +533,7 @@ struct Log {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Wallet {
+pub struct Wallet {
     #[serde(rename = "Address")]
     address: String,
     #[serde(rename = "Port")]
@@ -491,7 +551,7 @@ struct Wallet {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Walletd {
+pub struct Walletd {
     #[serde(rename = "WalletRpcUser")]
     wallet_rpc_user: String,
     #[serde(rename = "WalletRpcPass")]
@@ -509,19 +569,19 @@ struct Walletd {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct ProcessList {
+pub struct ProcessList {
     #[serde(rename = "ProcessList")]
     process_list: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Authorities {
+pub struct Authorities {
     #[serde(rename = "Authorities")]
     authorities: Vec<Authority>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Authority {
+pub struct Authority {
     #[serde(rename = "AuthorityChainID")]
     authority_chain_id: String,
     #[serde(rename = "ManagementChainID")]
@@ -540,26 +600,26 @@ struct Authority {
 
 /// drop-rate and set-drop-rate functions
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct DropRate {
+pub struct DropRate {
     #[serde(rename = "DropRate")]
     drop_rate: i64,
 }
 
 /// delay and set-delay functions
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Delay {
+pub struct Delay {
     #[serde(rename = "Delay")]
     delay: i64,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Summary {
+pub struct Summary {
     #[serde(rename = "Summary")]
     summary: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Messages {
+pub struct Messages {
     #[serde(rename = "Messages")]
     messages: Vec<String>,
 }
