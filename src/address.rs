@@ -76,7 +76,7 @@ assert!(response.success());
     address: &str
   )-> Result<ApiResponse<RemoveAddress>>
   {
-    let req =  ApiRequest::new("remove-address");
+    let mut req =  ApiRequest::new("remove-address");
     req.params.insert("address".to_string(), json!(address));
     let response = self.walletd_call(req).await;
     parse(response).await

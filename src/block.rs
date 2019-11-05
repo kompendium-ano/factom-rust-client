@@ -59,7 +59,7 @@ assert!(response.success());
     height: u32
   )-> Result<ApiResponse<ABlockHeightResult>>
   {
-    let req =  ApiRequest::new("ablock-by-height");
+    let mut req =  ApiRequest::new("ablock-by-height");
     req.params.insert("height".to_string(), json!(height));
     let response = self.factomd_call(req).await;
     parse(response).await
@@ -84,7 +84,7 @@ assert!(response.success());
   keymr: &str
   )-> Result<ApiResponse<ABlockResult>>
   {
-    let req =  ApiRequest::new("admin-block");
+    let mut req =  ApiRequest::new("admin-block");
     req.params.insert("keymr".to_string(), json!(keymr));
     let response = self.factomd_call(req).await;
     parse(response).await
@@ -118,7 +118,7 @@ assert!(response.success());
     target: AnchorType
   )-> Result<ApiResponse<Anchor>>
   {
-    let req =  ApiRequest::new("anchors");
+    let mut req =  ApiRequest::new("anchors");
     match target {
       AnchorType::Hash(h) => {req.params.insert("hash".to_string(), json!(h));},
       AnchorType::Height(i) => {req.params.insert("height".to_string(), json!(i));}
@@ -146,8 +146,8 @@ assert!(response.success());
     height: u32
   )-> Result<ApiResponse<DBlockHeightResult>>
   {
+    let mut req =  ApiRequest::new("dblock-by-height");
     req.params.insert("height".to_string(), json!(height));
-    let req =  ApiRequest::new("dblock-by-height");
     let response = self.factomd_call(req).await;
     parse(response).await
   }
@@ -176,7 +176,7 @@ assert!(response.success());
     keymr: &str
   )-> Result<ApiResponse<DBlock>>
   {
-    let req =  ApiRequest::new("directory-block");
+    let mut req =  ApiRequest::new("directory-block");
     req.params.insert("keymr".to_string(), json!(keymr));
     let response = self.factomd_call(req).await;
     parse(response).await
@@ -226,7 +226,7 @@ assert!(response.success());
     height: u32
   )-> Result<ApiResponse<EBlockHeightResult>>
   {
-    let req =  ApiRequest::new("ecblock-by-height");
+    let mut req =  ApiRequest::new("ecblock-by-height");
     req.params.insert("height".to_string(), json!(height));
     let response = self.factomd_call(req).await;
     parse(response).await
@@ -255,7 +255,7 @@ assert!(response.success());
     keymr: &str
   )-> Result<ApiResponse<EBlock>>
   {
-    let req =  ApiRequest::new("entry-block");
+    let mut req =  ApiRequest::new("entry-block");
     req.params.insert("keymr".to_string(), json!(keymr));
     let response = self.factomd_call(req).await;
     parse(response).await
@@ -284,7 +284,7 @@ assert!(response.success());
     keymr: &str
   )-> Result<ApiResponse<EcBlockResult>>
   {
-    let req =  ApiRequest::new("entrycredit-block");
+    let mut req =  ApiRequest::new("entrycredit-block");
     req.params.insert("keymr".to_string(), json!(keymr));
     let response = self.factomd_call(req).await;
     parse(response).await
@@ -311,7 +311,7 @@ assert!(response.success());
   )
   -> Result<ApiResponse<FBlockResult>>
   {
-    let req =  ApiRequest::new("factoid-block");
+    let mut req =  ApiRequest::new("factoid-block");
     req.params.insert("keymr".to_string(), json!(keymr));
     let response = self.factomd_call(req).await;
     parse(response).await
@@ -335,7 +335,7 @@ assert!(response.success());
     height: u32
   )-> Result<ApiResponse<FBlockResult>>
   {
-    let req =  ApiRequest::new("fblock-by-height");
+    let mut req =  ApiRequest::new("fblock-by-height");
     req.params.insert("height".to_string(), json!(height));
     let response = self.factomd_call(req).await;
     parse(response).await
@@ -344,13 +344,13 @@ assert!(response.success());
 
 /// ablock-by-height function
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct ABlockHeightResult {
+pub struct ABlockHeightResult {
     ablock: AblockHeight,
     rawdata: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct AblockHeight {
+pub struct AblockHeight {
     header: Header,
     abentries: Vec<ABHeightentry>,
     backreferencehash: String,
@@ -358,20 +358,20 @@ struct AblockHeight {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct ABHeightentry {
+pub struct ABHeightentry {
     identityadminchainid: String,
     prevdbsig: Prevdbsig,
 }
 
 /// admin block function
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct ABlockResult {
+pub struct ABlockResult {
     ablock: Ablock,
     rawdata: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct Ablock {
+pub struct Ablock {
     header: Header,
     abentries: Vec<Abentry>,
     backreferencehash: String,
@@ -379,7 +379,7 @@ struct Ablock {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct Header {
+pub struct Header {
     prevbackrefhash: String,
     dbheight: i64,
     headerexpansionsize: i64,
@@ -391,14 +391,14 @@ struct Header {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct Abentry {
+pub struct Abentry {
     identityadminchainid: Option<String>,
     prevdbsig: Option<Prevdbsig>,
     minutenumber: Option<i64>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct Prevdbsig {
+pub struct Prevdbsig {
     #[serde(rename = "pub")]
     pub_field: String,
     sig: String,
@@ -441,13 +441,13 @@ pub struct MerkleBranch {
 
 /// dblock-by-height function
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct DBlockHeightResult {
+pub struct DBlockHeightResult {
     dblock: DblockHeight,
     rawdata: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct DblockHeight {
+pub struct DblockHeight {
     header: DBlockHeightHeader,
     dbentries: Vec<Dbentry>,
     dbhash: String,
@@ -455,7 +455,7 @@ struct DblockHeight {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct DBlockHeightHeader {
+pub struct DBlockHeightHeader {
     version: i64,
     networkid: i64,
     bodymr: String,
@@ -468,7 +468,7 @@ struct DBlockHeightHeader {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct Dbentry {
+pub struct Dbentry {
     chainid: String,
     keymr: String,
 }
@@ -476,20 +476,20 @@ struct Dbentry {
 
 /// directory block function
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct DBlock {
+pub struct DBlock {
     header: DBlockHeader,
     entryblocklist: Vec<Entryblocklist>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct DBlockHeader {
+pub struct DBlockHeader {
     prevblockkeymr: String,
     sequencenumber: i64,
     timestamp: i64,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct Entryblocklist {
+pub struct Entryblocklist {
     chainid: String,
     keymr: String,
 }
@@ -502,7 +502,7 @@ pub struct DBlockHead {
 
 /// ecblock-by-height function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct EBlockHeightResult {
+pub struct EBlockHeightResult {
     ecblock: EcBlock,
     rawdata: String,
 }
@@ -514,7 +514,7 @@ pub struct EcBlock {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct ECHeightHeader {
+pub struct ECHeightHeader {
     bodyhash: String,
     prevheaderhash: String,
     prevfullhash: String,
@@ -527,12 +527,12 @@ struct ECHeightHeader {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Body {
+pub struct Body {
     entries: Vec<Entry>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Entry {
+pub struct Entry {
     serverindexnumber: Option<i64>,
     version: Option<i64>,
     millitime: Option<String>,
@@ -545,14 +545,14 @@ struct Entry {
 
 /// entry-block function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct EBlock {
+pub struct EBlock {
     header: EBlockHeader,
     entrylist: Vec<Entrylist>,
 }
 
 /// entry-block function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct EBlockHeader {
+pub struct EBlockHeader {
     blocksequencenumber: i64,
     chainid: String,
     prevkeymr: String,
@@ -562,26 +562,26 @@ struct EBlockHeader {
 
 /// entry-block function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Entrylist {
+pub struct Entrylist {
     entryhash: String,
     timestamp: i64,
 }
 
 /// entrycredit-block function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct EcBlockResult {
+pub struct EcBlockResult {
     ecblock: Ecblock,
     rawdata: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Ecblock {
+pub struct Ecblock {
     header: EcBlockHeader,
     body: Body,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct EcBlockHeader {
+pub struct EcBlockHeader {
     bodyhash: String,
     prevheaderhash: String,
     prevfullhash: String,
@@ -595,13 +595,13 @@ struct EcBlockHeader {
 
 // factoid-block and fblock-by-height functions
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct FBlockResult {
+pub struct FBlockResult {
     fblock: Fblock,
     rawdata: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Fblock {
+pub struct Fblock {
     bodymr: String,
     prevkeymr: String,
     prevledgerkeymr: String,
@@ -614,7 +614,7 @@ struct Fblock {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Transaction {
+pub struct Transaction {
     txid: String,
     blockheight: i64,
     millitimestamp: i64,
@@ -626,20 +626,20 @@ struct Transaction {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Input {
+pub struct Input {
     amount: i64,
     address: String,
     useraddress: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Output {
+pub struct Output {
     amount: i64,
     address: String,
     useraddress: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Sigblock {
+pub struct Sigblock {
     signatures: Vec<String>,
 }

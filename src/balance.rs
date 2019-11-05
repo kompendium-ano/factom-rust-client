@@ -21,7 +21,7 @@ assert!(response.success());
     address: &str
   )-> Result<ApiResponse<Balance>>
   {
-    let req =  ApiRequest::new("entry-credit-balance");
+    let mut req =  ApiRequest::new("entry-credit-balance");
     req.params.insert("address".to_string(), json!(address));
     let response = self.factomd_call(req).await;
     parse(response).await
@@ -48,7 +48,7 @@ assert!(response.success());
     address: &str
   )-> Result<ApiResponse<Balance>>
   {
-    let req =  ApiRequest::new("factoid-balance");
+    let mut req =  ApiRequest::new("factoid-balance");
     req.params.insert("address".to_string(), json!(address));
     let response = self.factomd_call(req).await;
     parse(response).await
@@ -106,7 +106,7 @@ assert!(response.success());
     addresses: Vec<&str>
   )-> Result<ApiResponse<Balances>>
   {
-    let req =  ApiRequest::new("multiple-ec-balances");
+    let mut req =  ApiRequest::new("multiple-ec-balances");
     req.params.insert("addresses".to_string(), json!(addresses));
     let response = self.factomd_call(req).await;
     parse(response).await
@@ -163,7 +163,7 @@ assert!(response.success());
     addresses: Vec<&str>
     )-> Result<ApiResponse<Balances>>
     {
-    let req =  ApiRequest::new("multiple-fct-balances");
+    let mut req =  ApiRequest::new("multiple-fct-balances");
     req.params.insert("addresses".to_string(), json!(addresses));
     let response = self.factomd_call(req).await;
     parse(response).await
@@ -172,21 +172,21 @@ assert!(response.success());
 
 /// entry-credit-balance and factoid-balance functions
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct Balance {
+pub struct Balance {
     balance: i64,
 }
 
 
 /// Struct for deserialising multiple-fct-balances and multiple-ec-balances
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct MultipleBalances {
+pub struct MultipleBalances {
     currentheight: i64,
     lastsavedheight: i64,
     balances: Vec<Balances>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
-struct Balances {
+pub struct Balances {
     ack: i64,
     saved: i64,
     err: String,
