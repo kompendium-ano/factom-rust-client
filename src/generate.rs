@@ -14,8 +14,12 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn generate_ec_address(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.walletd_call("generate-ec-address", HashMap::new())
+  pub async fn generate_ec_address(self)
+    -> Result<ApiResponse<Generate>>
+  {
+    let req =  ApiRequest::new("generate-ec-address");
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -32,8 +36,12 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn generate_factoid_address(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.walletd_call("generate-factoid-address", HashMap::new())
+  pub async fn generate_factoid_address(self)
+    -> Result<ApiResponse<Generate>>
+  {
+    let req =  ApiRequest::new("generate-factoid-address");
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -53,8 +61,12 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn generate_identity_key(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.walletd_call("generate-identity-key", HashMap::new())
+  pub async fn generate_identity_key(self)
+    -> Result<ApiResponse<Generate>>
+    {
+    let req =  ApiRequest::new("generate-identity-key");
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
 }
@@ -62,7 +74,7 @@ assert!(response.success());
 /// Deserialises from generate-ec-address, generate-fct-address and 
 /// generate-identity-key
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Generate {
+pub struct Generate {
     public: String,
     secret: String,
 }

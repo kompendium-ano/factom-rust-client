@@ -17,8 +17,12 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn all_id_keys(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.walletd_call("all-identity-keys", HashMap::new())
+  pub async fn all_id_keys(self)
+    -> Result<ApiResponse<IdKeys>>
+  {
+    let req =  ApiRequest::new("all-identity-keys");
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 /**
 This command will return an identity’s set of public keys (in order of 
@@ -59,16 +63,17 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn active_id_keys(
+  pub async fn active_id_keys(
     self,
     chain_id: &str,
     height: usize
-  )-> impl Future<Item=Response, Error=FetchError>
+  )-> Result<ApiResponse<ActiveIdKeys>>
   {
-    let mut params = HashMap::new();
-    params.insert("chainid".to_string(), json!(chain_id));
-    params.insert("height".to_string(), json!(height));
-    self.walletd_call("active-identity-keys", params)
+    let mut req =  ApiRequest::new("active-identity-keys");
+    req.params.insert("chainid".to_string(), json!(chain_id));
+    req.params.insert("height".to_string(), json!(height));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -94,14 +99,15 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
  */
-  pub fn remove_id_key(
+  pub async fn remove_id_key(
     self,
     public: &str
-  )-> impl Future<Item=Response, Error=FetchError>
+  )-> Result<ApiResponse<RemoveIdKey>>
   {
-    let mut params = HashMap::new();
-    params.insert("public".to_string(), json!(public));
-    self.walletd_call("remove-identity-key", params)
+    let mut req =  ApiRequest::new("remove-identity-key");
+    req.params.insert("public".to_string(), json!(public));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 /**
 Given an identity public key as input, this command will respond with the 
@@ -124,33 +130,34 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
  */
-  pub fn id_key(
+  pub async fn id_key(
     self,
     public: &str
-  )-> impl Future<Item=Response, Error=FetchError>
+  )-> Result<ApiResponse<Key>>
   {
-    let mut params = HashMap::new();
-    params.insert("public".to_string(), json!(public));
-    self.walletd_call("identity-key", params)
+    let mut req =  ApiRequest::new("identity-key");
+    req.params.insert("public".to_string(), json!(public));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 }
 
 /// all-identity-keys function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct IdKeys {
+pub struct IdKeys {
     keys: Vec<Key>,
 }
 
 /// identity-key function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Key {
+pub struct Key {
     public: String,
     secret: String,
 }
 
 /// active-identity-keys function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct ActiveIdKeys {
+pub struct ActiveIdKeys {
     chainid: String,
     height: i64,
     keys: Vec<String>,
@@ -158,7 +165,7 @@ struct ActiveIdKeys {
 
 /// remove-id-key function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct RemoveIdKey {
+pub struct RemoveIdKey {
     success: String,
 }
 

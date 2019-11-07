@@ -22,10 +22,15 @@ spending. If you encounter this error, just skip to the reveal-entry.
 The error format can be found here: repeated-commit
 
 */
-  pub fn commit_entry(self, message: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("message".to_string(), json!(message));
-    self.call("commit-entry", params)
+  pub async fn commit_entry(
+    self, 
+    message: &str
+  )-> Result<ApiResponse<CommitEntry>>
+  {
+    let mut req =  ApiRequest::new("commit-entry");
+    req.params.insert("message".to_string(), json!(message));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -42,10 +47,15 @@ let response = fetch(query).unwrap();
 assert!(response.success()); 
 ```
 */
-  pub fn entry(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("hash".to_string(), json!(hash));
-    self.call("entry", params)
+  pub async fn entry(
+    self, 
+    hash: &str
+  )-> Result<ApiResponse<Entry>>
+  {
+    let mut req =  ApiRequest::new("entry");
+    req.params.insert("hash".to_string(), json!(hash));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 
@@ -63,10 +73,15 @@ let response = fetch(query).unwrap();
 assert!(response.success());   
 ```
 */
-  pub fn raw_data(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("hash".to_string(), json!(hash));
-    self.call("raw-data", params)
+  pub async fn raw_data(
+    self, 
+    hash: &str
+  )-> Result<ApiResponse<RawData>>
+  {
+    let mut req =  ApiRequest::new("raw-data");
+    req.params.insert("hash".to_string(), json!(hash));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -84,8 +99,11 @@ let response = result.unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn pending_entries(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.call("pending-entries", HashMap::new())
+  pub async fn pending_entries(self)
+  -> Result<ApiResponse<Vec<PendingEntry>>>{
+    let mut req =  ApiRequest::new("pending-entries");
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -103,44 +121,49 @@ reveal-entry. To successfully create an entry, the reveal-entry must be called
 after the commit-entry.
 
 */
-  pub fn reveal_entry(self, entry: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("entry".to_string(), json!(entry));
-    self.call("reveal-entry", params)
+  pub async fn reveal_entry(
+    self, 
+    entry: &str
+  )-> Result<ApiResponse<RevealEntry>>
+  {
+    let mut req =  ApiRequest::new("reveal-entry");
+    req.params.insert("entry".to_string(), json!(entry));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 }
 
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct CommitEntry {
+pub struct CommitEntry {
     message: String,
     txid: String,
     entryhash: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct CommitChain {
+pub struct CommitChain {
     chainid: String,
     content: String,
     extids: Vec<String>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct RawData {
+pub struct RawData {
     data: String,
 }
 
 /// pending-entries function returns a Vec of PendingEntry 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct PendingEntry {
+pub struct PendingEntry {
     entryhash: String,
     chainid: String,
     status: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct RevealEntry {
+pub struct RevealEntry {
     message: String,
     entryhash: String,
     chainid: String,
