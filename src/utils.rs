@@ -286,7 +286,7 @@ impl Factom {
 }
 
 /// Converts a string to its hexadecimal representation.
-pub fn to_hex(utf8: &str) -> String {
+pub fn str_to_hex(utf8: &str) -> String {
   let strs: Vec<String> = utf8.as_bytes()
                               .iter()
                               .map(|b| format!("{:02X}", b))

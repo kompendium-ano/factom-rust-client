@@ -1,4 +1,5 @@
 use super::*;
+use std::collections::HashMap;
 
 impl Factom {
 /**
@@ -69,15 +70,21 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn ack(self, hash: &str, chainid: &str, full_transaction: Option<&str>)
-                  -> impl Future<Item=Response, Error=FetchError> {
-    let mut params = HashMap::new();
-    params.insert("hash".to_string(), json!(hash));
-    params.insert("chainid".to_string(), json!(chainid));
+  pub async fn ack(
+    self, 
+    hash: &str, 
+    chainid: &str, 
+    full_transaction: Option<&str>
+  ) -> Result<ApiResponse<Ack>> 
+  {
+    let mut req =  ApiRequest::new("ack");
+    req.params.insert("hash".to_string(), json!(hash));
+    req.params.insert("chainid".to_string(), json!(chainid));
     if let Some(tx) = full_transaction{
-      params.insert("fulltransaction".to_string(), json!(tx));
+      req.params.insert("fulltransaction".to_string(), json!(tx));
     }
-    self.call("ack", params)
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
   /**
@@ -102,10 +109,15 @@ let response = fetch(query).unwrap();
 assert!(response.success()); 
 ```
 */
-  pub fn factoid_submit(self, transaction: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("transaction".to_string(), json!(transaction));
-    self.call("factoid-submit", params)
+  pub async fn factoid_submit(
+    self, 
+    transaction: &str
+  )-> Result<ApiResponse<FctSubmit>>
+  {
+    let mut req =  ApiRequest::new("factoid-submit");
+    req.params.insert("transaction".to_string(), json!(transaction));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -146,10 +158,15 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn transaction(self, hash: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("hash".to_string(), json!(hash));
-    self.call("transaction", params)
+  pub async fn transaction(
+    self, 
+    hash: &str
+  )-> Result<ApiResponse<Transaction>>
+  {
+    let mut req =  ApiRequest::new("transaction");
+    req.params.insert("hash".to_string(), json!(hash));
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -167,12 +184,17 @@ let response = result.unwrap();
 assert!(response.success());   
 ```
 */
-  pub fn pending_transactions(self, address: Option<&str>)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
+  pub async fn pending_transactions(
+    self, 
+    address: Option<&str>
+  )-> Result<ApiResponse<PendingTx>>
+  {
+    let mut req =  ApiRequest::new("pending-transactions");
     if let Some(add) = address {
-      params.insert("address".to_string(), json!(add));
+      req.params.insert("address".to_string(), json!(add));
     }
-    self.call("pending-transactions", params)
+    let response = self.factomd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -194,13 +216,19 @@ let response = fetch(query).expect("Fetching query");
 assert!(response.result);
 
 */
-  pub fn add_ec_output(self, txname: &str, address: &str, amount: u64)
-                        -> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("tx-name".to_string(), json!(txname));
-    params.insert("address".to_string(), json!(address));
-    params.insert("amount".to_string(), json!(amount));
-    self.walletd_call("add-ec-output", params)
+  pub async fn add_ec_output(
+    self, 
+    txname: &str, 
+    address: &str, 
+    amount: u64
+  ) -> Result<ApiResponse<NewTx>>
+  {
+    let mut req =  ApiRequest::new("add-ec-output");
+    req.params.insert("tx-name".to_string(), json!(txname));
+    req.params.insert("address".to_string(), json!(address));
+    req.params.insert("amount".to_string(), json!(amount));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -215,12 +243,17 @@ Run the addfee again, and the feepaid and feerequired will match up
 Add fee is a part of sending a transaction to see a full example check the 
 examples folder.
 */
-  pub fn add_fee(self, txname: &str, address: &str)
-                        -> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("tx-name".to_string(), json!(txname));
-    params.insert("address".to_string(), json!(address));
-    self.walletd_call("add-fee", params)
+  pub async fn add_fee(
+    self, 
+    txname: &str, 
+    address: &str
+  ) -> Result<ApiResponse<Tx>>
+  {
+    let mut req =  ApiRequest::new("add-fee");
+    req.params.insert("tx-name".to_string(), json!(txname));
+    req.params.insert("address".to_string(), json!(address));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -237,13 +270,19 @@ Add input is used in the process of sending a transaction, to see the full
 process as an example check the examples folder.
 
 */
-  pub fn add_input(self, txname: &str, address: &str, amount: u64)
-                        -> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("tx-name".to_string(), json!(txname));
-    params.insert("address".to_string(), json!(address));
-    params.insert("amount".to_string(), json!(amount));
-    self.walletd_call("add-input", params)
+  pub async fn add_input(
+    self, 
+    txname: &str, 
+    address: &str, 
+    amount: u64
+  ) -> Result<ApiResponse<Tx>>
+  {
+    let mut req =  ApiRequest::new("add-input");
+    req.params.insert("tx-name".to_string(), json!(txname));
+    req.params.insert("address".to_string(), json!(address));
+    req.params.insert("amount".to_string(), json!(amount));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -259,13 +298,19 @@ Add Output is used in the transaction process, the full process and an example o
 this function being used can be found in the examples folder
 
 */
-  pub fn add_output(self, txname: &str, address: &str, amount: u64)
-                        -> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("tx-name".to_string(), json!(txname));
-    params.insert("address".to_string(), json!(address));
-    params.insert("amount".to_string(), json!(amount));
-    self.walletd_call("add-output", params)
+  pub async fn add_output(
+    self, 
+    txname: &str, 
+    address: &str, 
+    amount: u64
+  ) -> Result<ApiResponse<Tx>>
+  {
+    let mut req =  ApiRequest::new("add-output");
+    req.params.insert("tx-name".to_string(), json!(txname));
+    req.params.insert("address".to_string(), json!(address));
+    req.params.insert("amount".to_string(), json!(amount));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 /**
 Deletes a working transaction in the wallet. The full transaction will be 
@@ -287,10 +332,15 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn delete_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("tx-name".to_string(), json!(tx_name));
-    self.walletd_call("delete-transaction", params)
+  pub async fn delete_transaction(
+    self, 
+    tx_name: &str
+  )-> Result<ApiResponse<DeleteTx>>
+  {
+    let mut req =  ApiRequest::new("delete-transaction");
+    req.params.insert("tx-name".to_string(), json!(tx_name));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -315,10 +365,15 @@ assert!(response.success());
 fetch(handler.delete_transaction(txname).map(|_| ())).map_err(|_| ()).unwrap();
 ```
 */
-  pub fn new_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("tx-name".to_string(), json!(tx_name));
-    self.walletd_call("new-transaction", params)
+  pub async fn new_transaction(
+    self, 
+    tx_name: &str
+  )-> Result<ApiResponse<NewTx>>
+  {
+    let mut req =  ApiRequest::new("new-transaction");
+    req.params.insert("tx-name".to_string(), json!(tx_name));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 /**
 Signs the transaction. It is now ready to be executed.
@@ -328,10 +383,15 @@ Signs the transaction. It is now ready to be executed.
 sign_transaction is used in the transaction process, the full process can be 
 found in the examples folder
 */
-  pub fn sign_transaction(self, tx_name: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("tx-name".to_string(), json!(tx_name));
-    self.walletd_call("sign-transaction", params)
+  pub async fn sign_transaction(
+    self, 
+    tx_name: &str
+  )-> Result<ApiResponse<Tx>>
+  {
+    let mut req =  ApiRequest::new("sign-transaction");
+    req.params.insert("tx-name".to_string(), json!(tx_name));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -347,11 +407,17 @@ the remaining balance, then using sub fee on the output address.
 sub_fee is used in the transaction process, the full process and an example of 
 this function being used can be found in the examples folder
 */  
-  pub fn sub_fee(self, tx_name: &str, address: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("tx-name".to_string(), json!(tx_name));
-    params.insert("address".to_string(), json!(address));
-    self.walletd_call("sub-fee", params)
+  pub async fn sub_fee(
+    self, 
+    tx_name: &str, 
+    address: &str
+  )-> Result<ApiResponse<Tx>>
+  {
+    let mut req =  ApiRequest::new("sub-fee");
+    req.params.insert("tx-name".to_string(), json!(tx_name));
+    req.params.insert("address".to_string(), json!(address));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -369,8 +435,12 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn tmp_transactions(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.walletd_call("tmp-transactions", HashMap::new())
+  pub async fn tmp_transactions(self)
+    -> Result<ApiResponse<TmpTransactions>>
+  {
+    let req =  ApiRequest::new("tmp-transactions");
+    let response = self.walletd_call(req).await;
+    parse(response).await
   } 
 
 /**
@@ -423,25 +493,28 @@ let id_response = fetch(id_query).unwrap();
 assert!(id_response.success());  
 ```
 */
-  pub fn transactions(self, filter: SearchBy)-> impl Future<Item=Response, Error=FetchError>{
-     
-    let mut params = HashMap::new();
-
+  pub async fn transactions(
+    self, 
+    filter: SearchBy
+  )-> Result<ApiResponse<Transactions>>
+  {
+    let mut req =  ApiRequest::new("transactions");
     match filter {
       SearchBy::Txid(txid) => {
-                params.insert("txid".to_string(), json!(txid));
+                req.params.insert("txid".to_string(), json!(txid));
                 }
       SearchBy::Address(address) => {
-                params.insert("address".to_string(), json!(address));
+                req.params.insert("address".to_string(), json!(address));
                 }
       SearchBy::Range(start, end) => {
                 let mut range = HashMap::new();
                 range.insert("start", json!(start));
                 range.insert("end", json!(end));
-                params.insert("range".to_string(),json!(range));
+                req.params.insert("range".to_string(),json!(range));
                 }
     };      
-    self.walletd_call("transactions", params)
+    let response = self.walletd_call(req).await;
+    parse(response).await
   } 
 } 
 
@@ -454,14 +527,14 @@ pub enum SearchBy{
 
 /// factoid-submit function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct FctSubmit {
+pub struct FctSubmit {
     message: String,
     txid: String,
 }
 
 /// transaction function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Transaction {
+pub struct Transaction {
     factoidtransaction: Factoidtransaction,
     includedintransactionblock: String,
     includedindirectoryblock: String,
@@ -469,7 +542,7 @@ struct Transaction {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Factoidtransaction {
+pub struct Factoidtransaction {
     millitimestamp: i64,
     inputs: Vec<Input>,
     outputs: Vec<Output>,
@@ -480,27 +553,27 @@ struct Factoidtransaction {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Input {
+pub struct Input {
     amount: i64,
     address: String,
     useraddress: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Output {
+pub struct Output {
     amount: i64,
     address: String,
     useraddress: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Sigblock {
+pub struct Sigblock {
     signatures: Vec<String>,
 }
 
 /// pending-transactions function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct PendingTx {
+pub struct PendingTx {
     transactionid: String,
     status: String,
     inputs: Vec<Input>,
@@ -511,7 +584,7 @@ struct PendingTx {
 
 /// ack function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Ack {
+pub struct Ack {
     committxid: String,
     entryhash: String,
     commitdata: Commitdata,
@@ -519,18 +592,18 @@ struct Ack {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Commitdata {
+pub struct Commitdata {
     status: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Entrydata {
+pub struct Entrydata {
     status: String,
 }
 
 /// new-transaction and add-ec-output functions
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct AddEcOutput {
+pub struct NewTx {
     feesrequired: i64,
     signed: bool,
     name: String,
@@ -545,26 +618,26 @@ struct AddEcOutput {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct TxInput {
+pub struct TxInput {
     address: String,
     amount: i64,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct TxOutput {
+pub struct TxOutput {
     address: String,
     amount: i64,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Ecoutput {
+pub struct Ecoutput {
     address: String,
     amount: i64,
 }
 
-// add-input, add-output, add-fee, sub-fee, sign-transaction functions
+/// add-input, add-output, add-fee, sub-fee, sign-transaction functions
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Tx {
+pub struct Tx {
     feespaid: i64,
     feesrequired: i64,
     signed: bool,
@@ -581,7 +654,7 @@ struct Tx {
 
 /// delete-transaction function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct DeleteTx {
+pub struct DeleteTx {
     signed: bool,
     name: String,
     timestamp: i64,
@@ -595,12 +668,12 @@ struct DeleteTx {
 
 /// tmp-transactions function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct TmpTransactions {
+pub struct TmpTransactions {
     transactions: Vec<TmpTransaction>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct TmpTransaction {
+pub struct TmpTransaction {
     #[serde(rename = "tx-name")]
     tx_name: String,
     txid: String,
@@ -611,13 +684,13 @@ struct TmpTransaction {
 
 /// transactions function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Transactions {
+pub struct Transactions {
     transactions: Vec<Txs>,
 }
 
 /// Individual transactions from the transactions function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Txs {
+pub struct Txs {
     blockheight: i64,
     feespaid: i64,
     signed: bool,
