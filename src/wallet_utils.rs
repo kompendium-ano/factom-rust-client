@@ -16,8 +16,10 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn wallet_height(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.walletd_call("get-height", HashMap::new())
+  pub async fn wallet_height(self)-> Result<ApiResponse<PLACEHOLDER>>{
+    let mut req =  ApiRequest::new("get-height");
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
   
 /**
@@ -35,8 +37,10 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn wallet_properties(self)-> impl Future<Item=Response, Error=FetchError>{
-    self.walletd_call("properties", HashMap::new())
+  pub async fn wallet_properties(self)-> Result<ApiResponse<PLACEHOLDER>>{
+    let mut req =  ApiRequest::new("properties");
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -65,11 +69,13 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
  */
-  pub fn sign_data(self, signer: &str, data: &str)-> impl Future<Item=Response, Error=FetchError>{
+  pub async fn sign_data(self, signer: &str, data: &str)-> Result<ApiResponse<PLACEHOLDER>>{
     let mut params = Hashmap::new();
-    params.insert("signer".to_string(), json!(signer));
-    params.insert("data".to_string(), json!(data));
-    self.walletd_call("sign-data", params)
+    req.params.insert("signer".to_string(), json!(signer));
+    req.params.insert("data".to_string(), json!(data));
+    let mut req =  ApiRequest::new("sign-data");
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 }
 
