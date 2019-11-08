@@ -73,15 +73,13 @@ impl Factom {
   pub async fn factomd_call(mut self, mut req: ApiRequest) -> ResponseFuture {
     req.id = self.id;
     let req = self.factomd.body(Body::from(req.json())).unwrap();
-    let future = self.client.request(req);
-    future
+    self.client.request(req)
   }
 
   pub async fn walletd_call(mut self, mut req: ApiRequest) -> ResponseFuture {
     req.id = self.id;
     let req = self.walletd.body(Body::from(req.json())).unwrap();
-    let future = self.client.request(req);
-    future
+    self.client.request(req)
   }
 
   pub async fn debug_call(self, req: ApiRequest) -> ResponseFuture {
