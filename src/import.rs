@@ -1,4 +1,5 @@
 use super::*;
+use std::collections::HashMap;
 
 impl Factom {
   /**
@@ -16,16 +17,21 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn import_addresses(self, addresses: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
+  pub async fn import_addresses(
+    self, 
+    addresses: Vec<&str>
+  )-> Result<ApiResponse<Addresses>>
+  {
+    let mut req =  ApiRequest::new("import-addresses");
     let mut secrets: Vec<HashMap<&str, &str>> = Vec::new();
     for address in addresses{
       let mut tmp = HashMap::new();
       tmp.insert("secret", address);
       secrets.push(tmp);
     }
-    params.insert("addresses".to_string(), json!(secrets));
-    self.walletd_call("import-addresses", params)
+    req.params.insert("addresses".to_string(), json!(secrets));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
   /**
@@ -47,16 +53,21 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn import_identity_keys(self, keys: Vec<&str>)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
+  pub async fn import_identity_keys(
+    self, 
+    keys: Vec<&str>
+  )-> Result<ApiResponse<Keys>>
+  {
+    let mut req =  ApiRequest::new("import-identity-keys");
     let mut secrets: Vec<HashMap<&str, &str>> = Vec::new();
     for address in keys{
       let mut tmp = HashMap::new();
       tmp.insert("secret", address);
       secrets.push(tmp);
     }
-    params.insert("keys".to_string(), json!(secrets));
-    self.walletd_call("import-identity-keys", params)
+    req.params.insert("keys".to_string(), json!(secrets));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 
 /**
@@ -78,37 +89,35 @@ let response = fetch(query).unwrap();
 assert!(response.success());  
 ```
 */
-  pub fn import_koinify(self, phrase: &str)-> impl Future<Item=Response, Error=FetchError>{
-    let mut params = HashMap::new();
-    params.insert("words".to_string(), json!(phrase));
-    self.walletd_call("import-koinify", params)
+  pub async fn import_koinify(
+    self, 
+    phrase: &str
+  )-> Result<ApiResponse<Address>>{
+    let mut req =  ApiRequest::new("import-koinify");
+    req.params.insert("words".to_string(), json!(phrase));
+    let response = self.walletd_call(req).await;
+    parse(response).await
   }
 }
 
 /// import-addresses function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Addresses {
+pub struct Addresses {
     addresses: Vec<Address>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Address {
+pub struct Address {
     public: String,
     secret: String,
 }
 
 /// import-identity-keys function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Keys {
-    keys: Vec<Key>,
+pub struct Keys {
+    keys: Vec<Addresses>,
 }
 
-/// import-koinify function
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Key {
-    public: String,
-    secret: String,
-}
 
 
 
