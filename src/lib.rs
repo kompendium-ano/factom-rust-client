@@ -22,7 +22,6 @@ pub mod import;
 pub mod tx;
 pub mod utils;
 pub mod wallet;
-pub mod wallet_utils;
 pub mod requests;
 pub mod responses;
 // pub mod nodes;
