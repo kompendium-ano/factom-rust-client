@@ -101,7 +101,7 @@ assert!(response.success());
 */
   pub async fn pending_entries(self)
   -> Result<ApiResponse<Vec<PendingEntry>>>{
-    let mut req =  ApiRequest::new("pending-entries");
+    let req =  ApiRequest::new("pending-entries");
     let response = self.factomd_call(req).await;
     parse(response).await
   }
