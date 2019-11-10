@@ -42,7 +42,6 @@ impl ApiRequest {
 }
 
 /// Main struct from which API requests are built
-#[derive(Clone)]
 pub struct Factom{
   pub client: HttpsClient,
   pub factomd: Builder,
@@ -50,6 +49,22 @@ pub struct Factom{
   pub factomd_uri: Uri,
   pub walletd_uri: Uri,
   pub id: usize
+}
+
+impl Clone for Factom {
+  fn clone(&self) -> Self {
+    let client = self.client.clone();
+    let factomd = request_builder(self.factomd_uri.clone());
+    let walletd = request_builder(self.walletd_uri.clone());
+    Factom {
+      client,
+      factomd,
+      walletd,
+      factomd_uri: self.factomd_uri.clone(),
+      walletd_uri: self.walletd_uri.clone(),
+      id: self.id
+    }
+  }
 }
  
 impl Factom {
