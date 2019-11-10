@@ -20,14 +20,14 @@ pub mod generate;
 pub mod identity;
 pub mod import;
 pub mod tx;
-pub mod utils;
-pub mod wallet;
+pub mod factomd;
+pub mod walletd;
 pub mod requests;
 pub mod responses;
 // pub mod nodes;
 
 // pub use futures;
-pub use utils::*;
+pub use factomd::*;
 pub use tokio::prelude::*;
 pub use tokio::runtime::Runtime;
 pub use hyper::rt::{Future, Stream};
