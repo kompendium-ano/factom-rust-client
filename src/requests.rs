@@ -1,18 +1,13 @@
 use super::*; 
 use constants::*;
-use crate::responses::ApiResponse;
-use std::collections::HashMap;
 use serde_json::Value;
 use hyper_tls::HttpsConnector;
-use hyper::{Request, Chunk, Body, Client};
-use serde::{Serialize, de::DeserializeOwned};
+use std::collections::HashMap;
 use futures_util::TryStreamExt;
-use hyper::client::ResponseFuture;
+use crate::responses::ApiResponse;
+use serde::{Serialize, de::DeserializeOwned};
 use http::{Uri, request::Builder, header::CONTENT_TYPE};
-// use tokio::prelude::*;
-// use tokio::runtime::Runtime;
-
-
+use hyper::{Request, Chunk, Body, Client, client::ResponseFuture};
 
 pub enum RequestType{
   Factomd,
@@ -20,7 +15,7 @@ pub enum RequestType{
   Debug
 }
 
-/// Struct is serialized into the JSON body of the request
+/// Generic request struct is serialized into the JSON body 
 #[derive(Serialize, Debug)]
 pub struct ApiRequest {
   pub jsonrpc: &'static str,
@@ -30,14 +25,16 @@ pub struct ApiRequest {
 }
 
 impl ApiRequest {
+  /// Creates a new ApiRequest with the specified json-rpc method
   pub fn new(method: &str) -> ApiRequest {
     ApiRequest {
-      jsonrpc: "2.0",
-      id: 0,
+      jsonrpc: JSONRPC,
+      id: ID,
       method: method.to_string(),
       params: HashMap::new()
     }
   }
+
 
   fn json(self) -> String {
     serde_json::to_string(&self).expect("Serializing json")
@@ -45,7 +42,7 @@ impl ApiRequest {
 }
 
 /// Main struct from which API requests are built
-// #[derive(Clone)]
+#[derive(Clone)]
 pub struct Factom{
   pub client: HttpsClient,
   pub factomd: Builder,
