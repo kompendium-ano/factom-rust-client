@@ -13,4 +13,4 @@ pub const API_VERSION: u8 = 2;
 /// JSON-RPC versioning
 pub const JSONRPC : &str = "2.0";
 /// Default JSON-RPC ID
-pub const ID: u32 = 0;
+pub const ID: usize = 0;

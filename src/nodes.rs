@@ -106,7 +106,7 @@ impl Factom {
                   .map_err(|err| err);
   ```
   */
-  pub fn set_id(mut self, id: u32){
+  pub fn set_id(mut self, id: usize){
     self.id = id;
   }   
 }
