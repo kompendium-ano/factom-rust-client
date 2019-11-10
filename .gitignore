@@ -4,3 +4,4 @@ Cargo.lock
 launch.json
 /assets
 /.vscode
+.directory
