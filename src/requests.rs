@@ -9,7 +9,8 @@ use serde::{Serialize, de::DeserializeOwned};
 use http::{Uri, request::Builder, header::CONTENT_TYPE};
 use hyper::{Request, Chunk, Body, Client, client::ResponseFuture};
 
-pub enum RequestType{
+
+enum RequestType{
   Factomd,
   Walletd,
   Debug
@@ -35,8 +36,9 @@ impl ApiRequest {
     }
   }
 
-
-  fn json(self) -> String {
+  /// Serialises the request into a valid json string, serde will panic 
+  /// upon failure
+  pub fn json(self) -> String {
     serde_json::to_string(&self).expect("Serializing json")
   }
 }
