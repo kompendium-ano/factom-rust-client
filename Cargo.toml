@@ -11,13 +11,18 @@ maintenance = { status = "passively-maintained" }
 description = "Factom API client"
 
 [dependencies]
+bs58 = "0.3.0"
+ed25519-dalek = "0.9.1"
 futures-preview = {version = "0.3.0-alpha.19",  features = ["compat"] } 
 futures-core-preview = "=0.3.0-alpha.19"
 futures-channel-preview = "=0.3.0-alpha.19"
 futures-util-preview = "=0.3.0-alpha.19"
+hex = "0.4.0"
 hyper = {version = "0.13.0-alpha.4", features = ["unstable-stream"] }
 hyper-tls = "0.4.0-alpha.4"
 http = "0.1.19"
+rand = "0.6.5"
+sha2 = "0.8.0"
 tokio = "0.2.0-alpha.6"
 tokio-executor = "=0.2.0-alpha.6"
 

@@ -14,3 +14,29 @@ pub const API_VERSION: u8 = 2;
 pub const JSONRPC : &str = "2.0";
 /// Default JSON-RPC ID
 pub const ID: usize = 0;
+
+/// Factoid RCD address prefix
+pub const RCD_PREFIX: [u8; 1] = [0x1];
+/// Entry Credit public key prefix
+pub const EC_PUBLIC_KEY_PREFIX: [u8; 2] = [89, 42];
+/// Entry Credit secret key prefix
+pub const EC_SECRET_KEY_PREFIX: [u8; 2] = [93, 182];
+/// Factoid public key prefix
+pub const FCT_PUBLIC_KEY_PREFIX: [u8; 2] = [95, 177];
+/// Factoid private key prefix
+pub const FCT_SECRET_KEY_PREFIX: [u8; 2] = [100, 120];
+/// Valid address prefixes
+pub const VALID_PREFIXES: [[u8; 2]; 4] = [
+    EC_PUBLIC_KEY_PREFIX, 
+    EC_SECRET_KEY_PREFIX, 
+    FCT_PUBLIC_KEY_PREFIX, 
+    FCT_SECRET_KEY_PREFIX
+];
+/// Valid pub prefixes
+pub const VALID_PUB_PREFIXES: [&str; 2] = ["FA", "EC"];
+/// Valid sec prefixes
+pub const VALID_SEC_PREFIXES: [&str; 2] = ["Fs", "Es"];
+/// Valid FCT prefixes
+pub const VALID_FCT_PREFIXES: [&str; 2] = ["FA", "Fs"];
+/// Valid EC prefixes
+pub const VALID_EC_PREFIXES: [&str; 2] = ["EC", "Es"];
