@@ -1,6 +1,6 @@
 use super::{*, address::*};
 use ed25519_dalek::Keypair;
-use rand::rngs::OsRng;
+use rand::{CryptoRng, Rng};
 use sha2::Sha512;
 use hex;
 
@@ -84,11 +84,6 @@ pub struct Generate {
 }
 
 impl Generate {
-  fn generate_local_keys() -> Keypair {
-    let mut csprng: OsRng = OsRng::new().unwrap();
-    Keypair::generate::<Sha512, _>(&mut csprng)
-  }
-
   /// Generate a local public/secet FCT keypair.
   /// 
   /// # Warning
@@ -98,20 +93,26 @@ impl Generate {
   /// # Example
   /// ```
   /// use factom::{generate::*, address::*};
+  /// use rand::rngs::OsRng;
   /// 
-  /// let addresses = Generate::generate_local_factoid_addresses();
+  /// let mut csprng: OsRng = OsRng::new().unwrap();
+  /// let addresses = Generate::generate_local_factoid_addresses(&mut csprng);
+  /// 
   /// assert!(is_valid_pub_fct_address(&addresses.public));
   /// assert!(is_valid_sec_fct_address(&addresses.secret));
   /// 
   /// let public_addr = secret_to_public_address(&addresses.secret).unwrap();
   /// assert_eq!(addresses.public, public_addr);
   /// ```
-  pub fn generate_local_factoid_addresses() -> Self {
-    let keys = Self::generate_local_keys();
+  pub fn generate_local_factoid_addresses<R>(csprng: &mut R) -> Self 
+  where 
+    R: CryptoRng + Rng
+  {
+    let keys = Keypair::generate::<Sha512, _>(csprng);
 
     Self {
-        public: key_to_public_fct_address(&hex::encode(keys.public.to_bytes())).unwrap(),
-        secret: key_to_secret_fct_address(&hex::encode(keys.secret.to_bytes())).unwrap(),
+      public: key_to_public_fct_address(&hex::encode(keys.public.to_bytes())).unwrap(),
+      secret: key_to_secret_fct_address(&hex::encode(keys.secret.to_bytes())).unwrap(),
     }
   }
 
@@ -124,20 +125,26 @@ impl Generate {
   /// # Example
   /// ```
   /// use factom::{generate::*, address::*};
+  /// use rand::rngs::OsRng;
   /// 
-  /// let addresses = Generate::generate_local_ec_addresses();
+  /// let mut csprng: OsRng = OsRng::new().unwrap();
+  /// let addresses = Generate::generate_local_ec_addresses(&mut csprng);
+  /// 
   /// assert!(is_valid_pub_ec_address(&addresses.public));
   /// assert!(is_valid_sec_ec_address(&addresses.secret));
   /// 
   /// let public_addr = secret_to_public_address(&addresses.secret).unwrap();
   /// assert_eq!(addresses.public, public_addr);
   /// ```
-  pub fn generate_local_ec_addresses() -> Self {
-    let keys = Self::generate_local_keys();
+  pub fn generate_local_ec_addresses<R>(csprng: &mut R) -> Self 
+  where 
+    R: CryptoRng + Rng
+  {
+    let keys = Keypair::generate::<Sha512, _>(csprng);
 
     Self {
-        public: key_to_public_ec_address(&hex::encode(keys.public.to_bytes())).unwrap(),
-        secret: key_to_secret_ec_address(&hex::encode(keys.secret.to_bytes())).unwrap(),
+      public: key_to_public_ec_address(&hex::encode(keys.public.to_bytes())).unwrap(),
+      secret: key_to_secret_ec_address(&hex::encode(keys.secret.to_bytes())).unwrap(),
     }
   }
 }
@@ -145,10 +152,13 @@ impl Generate {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use rand::rngs::OsRng;
 
   #[test]
   fn gen_local_fct_addr() {
-    let addresses = Generate::generate_local_factoid_addresses();
+    let mut csprng: OsRng = OsRng::new().unwrap();
+    let addresses = Generate::generate_local_factoid_addresses(&mut csprng);
+
     assert!(is_valid_pub_fct_address(&addresses.public));
     assert!(is_valid_sec_fct_address(&addresses.secret));
 
@@ -158,7 +168,9 @@ mod tests {
 
   #[test]
   fn gen_local_ec_addr() {
-    let addresses = Generate::generate_local_ec_addresses();
+    let mut csprng: OsRng = OsRng::new().unwrap();
+    let addresses = Generate::generate_local_ec_addresses(&mut csprng);
+
     assert!(is_valid_pub_ec_address(&addresses.public));
     assert!(is_valid_sec_ec_address(&addresses.secret));
 
