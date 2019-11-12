@@ -392,9 +392,29 @@ pub struct Header {
 
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
 pub struct Abentry {
+    adminid: u32,
+    admincode: String,
     identityadminchainid: Option<String>,
     prevdbsig: Option<Prevdbsig>,
-    minutenumber: Option<i64>,
+    minutenumber: Option<u8>,
+    matryoshkahash: Option<String>,
+    amount: Option<u64>,
+    keypriority: Option<String>,
+    keytype: Option<String>,
+    ecdsapublickey: Option<String>,
+    outputs: Option<Output>,
+    descriptorheight: Option<u32>,
+    descriptorindex: Option<u32>,
+    rcdhash: Option<String>,
+    factoidaddress: Option<String>,
+    efficiency: Option<u16>
+}
+
+#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+pub struct Output {
+    address: String,
+    rcdhash: String,
+    amount: u64
 }
 
 #[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
@@ -618,22 +638,15 @@ pub struct Transaction {
     txid: String,
     blockheight: i64,
     millitimestamp: i64,
-    inputs: Vec<Input>,
-    outputs: Vec<Output>,
-    outecs: Vec<::serde_json::Value>,
+    inputs: Vec<TransactionIO>,
+    outputs: Vec<TransactionIO>,
+    outecs: Vec<TransactionIO>,
     rcds: Vec<String>,
     sigblocks: Vec<Sigblock>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct Input {
-    amount: i64,
-    address: String,
-    useraddress: String,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct Output {
+pub struct TransactionIO {
     amount: i64,
     address: String,
     useraddress: String,
