@@ -24,8 +24,8 @@ impl From<serde_json::Error> for FetchError {
 }
 
 struct ApiError {
-  code: i16,
-  message: &'static str
+  pub code: i16,
+  pub message: &'static str
 }
 
 /// [Potential API errors](https://docs.factom.com/api?json#errors) returned by the server are enumerated by FactomError 

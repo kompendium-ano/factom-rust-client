@@ -103,19 +103,19 @@ assert!(response.success());
 /// import-addresses function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Addresses {
-    addresses: Vec<Address>,
+  pub addresses: Vec<Address>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Address {
-    public: String,
-    secret: String,
+  pub public: String,
+  pub secret: String,
 }
 
 /// import-identity-keys function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Keys {
-    keys: Vec<Addresses>,
+  pub keys: Vec<Addresses>,
 }
 
 

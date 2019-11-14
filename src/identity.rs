@@ -145,27 +145,27 @@ assert!(response.success());
 /// all-identity-keys function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct IdKeys {
-    keys: Vec<Key>,
+  pub keys: Vec<Key>,
 }
 
 /// identity-key function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Key {
-    public: String,
-    secret: String,
+  pub public: String,
+  pub secret: String,
 }
 
 /// active-identity-keys function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ActiveIdKeys {
-    chainid: String,
-    height: i64,
-    keys: Vec<String>,
+  pub chainid: String,
+  pub height: i64,
+  pub keys: Vec<String>,
 }
 
 /// remove-id-key function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct RemoveIdKey {
-    success: String,
+  pub success: String,
 }
 

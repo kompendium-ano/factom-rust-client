@@ -16,6 +16,6 @@ pub struct ApiResponse<T>
 // Generic Factom API Error struct
 #[derive(Deserialize, PartialEq, Default, Debug)]
 pub struct Error {
-  code: i16,
-  message: String
+  pub code: i16,
+  pub message: String
 }
