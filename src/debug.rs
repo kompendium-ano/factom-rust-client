@@ -2,21 +2,20 @@ use super::*;
 
 impl Factom {
 
-/**
-Show current holding messages in the queue.
 
-#Example
-```
-use factom::*;
-
-let factom = Factom::new();
-let query = factom
-    .holding_queue()
-    .map(|response| response).map_err(|err| err);
-let response = fetch(query).unwrap();
-assert!(response.success());  
-```
- */
+/// Show current holding messages in the queue.
+/// 
+/// #Example
+/// ```
+/// use factom::*;
+/// 
+/// let factom = Factom::new();
+/// let query = factom
+///     .holding_queue()
+///     .map(|response| response).map_err(|err| err);
+/// let response = fetch(query).unwrap();
+/// assert!(response.success());  
+/// ```
   pub async fn holding_queue(self)
     -> Result<ApiResponse<HoldingQueue>>
   {
@@ -26,19 +25,19 @@ assert!(response.success());
   }
 
 /**
-Get information on the current network factomd is connected to (TEST, MAIN, etc)
-
-
-#Example
-```
-use factom::*;
-
-let factom = Factom::new();
-let query = factom
-    .network_info()
-    .map(|response| response).map_err(|err| err);
-let response = fetch(query).unwrap();
-assert!(response.success());  
+/// Get information on the current network factomd is connected to (TEST, MAIN, etc)
+/// 
+/// 
+/// #Example
+/// ```
+/// use factom::*;
+/// 
+/// let factom = Factom::new();
+/// let query = factom
+///     .network_info()
+///     .map(|response| response).map_err(|err| err);
+/// let response = fetch(query).unwrap();
+/// assert!(response.success());  
 ```
  */
   pub async fn network_info(self)
@@ -50,18 +49,18 @@ assert!(response.success());
   }
 
 /**
-Get the predicted future entry credit rate.
-
-#Example
-```
-use factom::*;
-
-let factom = Factom::new();
-let query = factom
-    .predictive_fer()
-    .map(|response| response).map_err(|err| err);
-let response = fetch(query).unwrap();
-assert!(response.success());  
+/// Get the predicted future entry credit rate.
+/// 
+/// #Example
+/// ```
+/// use factom::*;
+/// 
+/// let factom = Factom::new();
+/// let query = factom
+///     .predictive_fer()
+///     .map(|response| response).map_err(|err| err);
+/// let response = fetch(query).unwrap();
+/// assert!(response.success());  
 ```
  */
   pub async fn predictive_fer(self)
@@ -73,19 +72,19 @@ assert!(response.success());
   }
 
 /**
-Get a list of the current network audit servers along with their information.
-
-#Example
-```
-use factom::*;
-
-let factom = Factom::new();
-let query = factom
-    .audit_servers()
-    .map(|response| response).map_err(|err| err);
-let response = fetch(query).unwrap();
-assert!(response.success());  
-```
+/// Get a list of the current network audit servers along with their information.
+/// 
+/// #Example
+/// ```
+/// use factom::*;
+/// 
+/// let factom = Factom::new();
+/// let query = factom
+///     .audit_servers()
+///     .map(|response| response).map_err(|err| err);
+/// let response = fetch(query).unwrap();
+/// assert!(response.success());  
+/// ```
  */
   pub async fn audit_servers(self)
     -> Result<ApiResponse<AuditServers>>
@@ -96,18 +95,18 @@ assert!(response.success());
   }
 
 /**
-Get a list of the current network federated servers along with their information.
-
-#Example
-```
-use factom::*;
-
-let factom = Factom::new();
-let query = factom
-    .federated_servers()
-    .map(|response| response).map_err(|err| err);
-let response = fetch(query).unwrap();
-assert!(response.success());  
+/// Get a list of the current network federated servers along with their information.
+/// 
+/// #Example
+/// ```
+/// use factom::*;
+/// 
+/// let factom = Factom::new();
+/// let query = factom
+///     .federated_servers()
+///     .map(|response| response).map_err(|err| err);
+/// let response = fetch(query).unwrap();
+/// assert!(response.success());  
 ```
  */
   pub async fn federated_servers(self)
@@ -119,24 +118,24 @@ assert!(response.success());
   }
 
 /**
-Get the current configuration state from factomd.conf.
-
-NOTE: If a tag is commented out, this call will return the default value for it.
-E.g: In the Example Response “ExchangeRate” is set to “0”. factomd.config default
- does not have an “ExchangeRate” tag. That is why it is set to “0”.
-
-#Example
-```
-use factom::*;
-
-let factom = Factom::new();
-let query = factom
-    .configuration()
-    .map(|response| response).map_err(|err| err);
-let response = fetch(query).unwrap();
-assert!(response.success());  
-```
- */
+/// Get the current configuration state from factomd.conf.
+/// 
+/// NOTE: If a tag is commented out, this call will return the default value for it.
+/// E.g: In the Example Response “ExchangeRate” is set to “0”. factomd.config default
+///  does not have an “ExchangeRate” tag. That is why it is set to “0”.
+/// 
+/// #Example
+/// ```
+/// use factom::*;
+/// 
+/// let factom = Factom::new();
+/// let query = factom
+///     .configuration()
+///     .map(|response| response).map_err(|err| err);
+/// let response = fetch(query).unwrap();
+/// assert!(response.success());  
+/// ```
+///  */
   pub async fn configuration(self)
     -> Result<ApiResponse<Configuration>>
   {
@@ -146,17 +145,17 @@ assert!(response.success());
   }
 
 /**
-
-#Example
-```
-use factom::*;
-
-let factom = Factom::new();
-let query = factom
-    .process_list()
-    .map(|response| response).map_err(|err| err);
-let response = fetch(query).unwrap();
-assert!(response.success());  
+/// 
+/// #Example
+/// ```
+/// use factom::*;
+/// 
+/// let factom = Factom::new();
+/// let query = factom
+///     .process_list()
+///     .map(|response| response).map_err(|err| err);
+/// let response = fetch(query).unwrap();
+/// assert!(response.success());  
 ```
  */
   pub async fn process_list(self)
@@ -168,19 +167,19 @@ assert!(response.success());
   }
 
 /**
-List of authority servers in the management chain.
-Get the process list known to the current factomd instance.
-
-#Example
-```
-use factom::*;
-
-let factom = Factom::new();
-let query = factom
-    .authorities()
-    .map(|response| response).map_err(|err| err);
-let response = fetch(query).unwrap();
-assert!(response.success());  
+/// List of authority servers in the management chain.
+/// Get the process list known to the current factomd instance.
+/// 
+/// #Example
+/// ```
+/// use factom::*;
+/// 
+/// let factom = Factom::new();
+/// let query = factom
+///     .authorities()
+///     .map(|response| response).map_err(|err| err);
+/// let response = fetch(query).unwrap();
+/// assert!(response.success());  
 ```
  */
   pub async fn authorities(self)
@@ -192,19 +191,19 @@ assert!(response.success());
   }
 
 /**
-Causes factomd to re-read the configuration from the config file. Note: This 
-may cause consensus problems and could be impractical even in testing.
-
-#Example
-```
-use factom::*;
-
-let factom = Factom::new();
-let query = factom
-    .reload_configuration()
-    .map(|response| response).map_err(|err| err);
-let response = fetch(query).unwrap();
-assert!(response.success());  
+/// Causes factomd to re-read the configuration from the config file. Note: This 
+/// may cause consensus problems and could be impractical even in testing.
+/// 
+/// #Example
+/// ```
+/// use factom::*;
+/// 
+/// let factom = Factom::new();
+/// let query = factom
+///     .reload_configuration()
+///     .map(|response| response).map_err(|err| err);
+/// let response = fetch(query).unwrap();
+/// assert!(response.success());  
 ```
  */
   pub async fn reload_configuration(self)
@@ -216,18 +215,18 @@ assert!(response.success());
   }
 
 /**
-Get the current package drop rate for network testing.
-
-#Example
-```
-use factom::*;
-
-let factom = Factom::new();
-let query = factom
-    .drop_rate()
-    .map(|response| response).map_err(|err| err);
-let response = fetch(query).unwrap();
-assert!(response.success());  
+/// Get the current package drop rate for network testing.
+/// 
+/// #Example
+/// ```
+/// use factom::*;
+/// 
+/// let factom = Factom::new();
+/// let query = factom
+///     .drop_rate()
+///     .map(|response| response).map_err(|err| err);
+/// let response = fetch(query).unwrap();
+/// assert!(response.success());  
 ```
  */
   pub async fn drop_rate(self)
@@ -239,19 +238,19 @@ assert!(response.success());
   }
 
 /**
-Change the network drop rate for testing.
-
-#Example
-```
-use factom::*;
-
-let factom = Factom::new();
-let query = factom
-    .set_drop_rate(10)
-    .map(|response| response).map_err(|err| err);
-let response = fetch(query).unwrap();
-assert!(response.success());  
-```
+/// Change the network drop rate for testing.
+/// 
+/// #Example
+/// ```
+/// use factom::*;
+/// 
+/// let factom = Factom::new();
+/// let query = factom
+///     .set_drop_rate(10)
+///     .map(|response| response).map_err(|err| err);
+/// let response = fetch(query).unwrap();
+/// assert!(response.success());  
+/// ```
  */
   pub async fn set_drop_rate(
     self, 
@@ -265,18 +264,18 @@ assert!(response.success());
   }
 
 /**
-Get the current msg delay time for network testing.
-
-#Example
-```
-use factom::*;
-
-let factom = Factom::new();
-let query = factom
-    .delay()
-    .map(|response| response).map_err(|err| err);
-let response = fetch(query).unwrap();
-assert!(response.success());  
+/// Get the current msg delay time for network testing.
+/// 
+/// #Example
+/// ```
+/// use factom::*;
+/// 
+/// let factom = Factom::new();
+/// let query = factom
+///     .delay()
+///     .map(|response| response).map_err(|err| err);
+/// let response = fetch(query).unwrap();
+/// assert!(response.success());  
 ```
  */
   pub async fn delay(self)
@@ -287,17 +286,17 @@ assert!(response.success());
   }
 
 /**
-Set the current msg delay time for network testing.
-#Example
-```
-use factom::*;
-
-let factom = Factom::new();
-let query = factom
-    .set_delay(10)
-    .map(|response| response).map_err(|err| err);
-let response = fetch(query).unwrap();
-assert!(response.success());  
+/// Set the current msg delay time for network testing.
+/// #Example
+/// ```
+/// use factom::*;
+/// 
+/// let factom = Factom::new();
+/// let query = factom
+///     .set_delay(10)
+///     .map(|response| response).map_err(|err| err);
+/// let response = fetch(query).unwrap();
+/// assert!(response.success());  
 ```
  */
   pub async fn set_delay(
@@ -312,18 +311,18 @@ assert!(response.success());
   }
 
   /**
-Get the nodes summary string.
-
-#Example
-```
-use factom::*;
-
-let factom = Factom::new();
-let query = factom
-    .summary()
-    .map(|response| response).map_err(|err| err);
-let response = fetch(query).unwrap();
-assert!(response.success());  
+/// Get the nodes summary string.
+/// 
+/// #Example
+/// ```
+/// use factom::*;
+/// 
+/// let factom = Factom::new();
+/// let query = factom
+///     .summary()
+///     .map(|response| response).map_err(|err| err);
+/// let response = fetch(query).unwrap();
+/// assert!(response.success());  
 ```
  */
   pub async fn summary(self)
@@ -334,17 +333,17 @@ assert!(response.success());
   }
 
   /**
-Show current holding messages in the queue.
-#Example
-```
-use factom::*;
-
-let factom = Factom::new();
-let query = factom
-    .messages()
-    .map(|response| response).map_err(|err| err);
-let response = fetch(query).unwrap();
-assert!(response.success());  
+/// Show current holding messages in the queue.
+/// #Example
+/// ```
+/// use factom::*;
+/// 
+/// let factom = Factom::new();
+/// let query = factom
+///     .messages()
+///     .map(|response| response).map_err(|err| err);
+/// let response = fetch(query).unwrap();
+/// assert!(response.success());  
 ```
  */
   pub async fn messages(self)
@@ -359,7 +358,7 @@ assert!(response.success());
 /// holding-queue function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct HoldingQueue {
-  #[serde(rename = "NetworkNumber")]
+  #[serde(rename = "Messages")]
   messages: String,
 }
 
@@ -376,251 +375,251 @@ pub struct NetworkInfo {
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PredictiveFER {
     #[serde(rename = "PredictiveFER")]
-    predictive_fer: i64,
+  pub predictive_fer: i64,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct AuditServers {
     #[serde(rename = "AuditServers")]
-    audit_servers: Vec<::serde_json::Value>,
+  pub audit_servers: Vec<::serde_json::Value>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct FederatedServers {
     #[serde(rename = "FederatedServers")]
-    federated_servers: Vec<FederatedServer>,
+  pub federated_servers: Vec<FederatedServer>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct FederatedServer {
     #[serde(rename = "ChainID")]
-    chain_id: String,
+  pub chain_id: String,
     #[serde(rename = "Name")]
-    name: String,
+  pub name: String,
     #[serde(rename = "Online")]
-    online: bool,
+  pub online: bool,
     #[serde(rename = "Replace")]
-    replace: ::serde_json::Value,
+  pub replace: ::serde_json::Value,
 }
 
 /// configuration and reload-configuration functions
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Configuration {
     #[serde(rename = "App")]
-    app: App,
+  pub app: App,
     #[serde(rename = "Peer")]
-    peer: Peer,
+  pub peer: Peer,
     #[serde(rename = "Log")]
-    log: Log,
+  pub log: Log,
     #[serde(rename = "Wallet")]
-    wallet: Wallet,
+  pub wallet: Wallet,
     #[serde(rename = "Walletd")]
-    walletd: Walletd,
+  pub walletd: Walletd,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct App {
     #[serde(rename = "PortNumber")]
-    port_number: i64,
+  pub port_number: i64,
     #[serde(rename = "HomeDir")]
-    home_dir: String,
+  pub home_dir: String,
     #[serde(rename = "ControlPanelPort")]
-    control_panel_port: i64,
+  pub control_panel_port: i64,
     #[serde(rename = "ControlPanelFilesPath")]
-    control_panel_files_path: String,
+  pub control_panel_files_path: String,
     #[serde(rename = "ControlPanelSetting")]
-    control_panel_setting: String,
+  pub control_panel_setting: String,
     #[serde(rename = "DBType")]
-    dbtype: String,
+  pub dbtype: String,
     #[serde(rename = "LdbPath")]
-    ldb_path: String,
+  pub ldb_path: String,
     #[serde(rename = "BoltDBPath")]
-    bolt_dbpath: String,
+  pub bolt_dbpath: String,
     #[serde(rename = "DataStorePath")]
-    data_store_path: String,
+  pub data_store_path: String,
     #[serde(rename = "DirectoryBlockInSeconds")]
-    directory_block_in_seconds: i64,
+  pub directory_block_in_seconds: i64,
     #[serde(rename = "ExportData")]
-    export_data: bool,
+  pub export_data: bool,
     #[serde(rename = "ExportDataSubpath")]
-    export_data_subpath: String,
+  pub export_data_subpath: String,
     #[serde(rename = "NodeMode")]
-    node_mode: String,
+  pub node_mode: String,
     #[serde(rename = "IdentityChainID")]
-    identity_chain_id: String,
+  pub identity_chain_id: String,
     #[serde(rename = "LocalServerPrivKey")]
-    local_server_priv_key: String,
+  pub local_server_priv_key: String,
     #[serde(rename = "LocalServerPublicKey")]
-    local_server_public_key: String,
+  pub local_server_public_key: String,
     #[serde(rename = "ExchangeRate")]
-    exchange_rate: i64,
+  pub exchange_rate: i64,
     #[serde(rename = "ExchangeRateChainId")]
-    exchange_rate_chain_id: String,
+  pub exchange_rate_chain_id: String,
     #[serde(rename = "ExchangeRateAuthorityPublicKey")]
-    exchange_rate_authority_public_key: String,
+  pub exchange_rate_authority_public_key: String,
     #[serde(rename = "ExchangeRateAuthorityPublicKeyMainNet")]
-    exchange_rate_authority_public_key_main_net: String,
+  pub exchange_rate_authority_public_key_main_net: String,
     #[serde(rename = "ExchangeRateAuthorityPublicKeyTestNet")]
-    exchange_rate_authority_public_key_test_net: String,
+  pub exchange_rate_authority_public_key_test_net: String,
     #[serde(rename = "ExchangeRateAuthorityPublicKeyLocalNet")]
-    exchange_rate_authority_public_key_local_net: String,
+  pub exchange_rate_authority_public_key_local_net: String,
     #[serde(rename = "Network")]
-    network: String,
+  pub network: String,
     #[serde(rename = "MainNetworkPort")]
-    main_network_port: String,
+  pub main_network_port: String,
     #[serde(rename = "PeersFile")]
-    peers_file: String,
+  pub peers_file: String,
     #[serde(rename = "MainSeedURL")]
-    main_seed_url: String,
+  pub main_seed_url: String,
     #[serde(rename = "MainSpecialPeers")]
-    main_special_peers: String,
+  pub main_special_peers: String,
     #[serde(rename = "TestNetworkPort")]
-    test_network_port: String,
+  pub test_network_port: String,
     #[serde(rename = "TestSeedURL")]
-    test_seed_url: String,
+  pub test_seed_url: String,
     #[serde(rename = "TestSpecialPeers")]
-    test_special_peers: String,
+  pub test_special_peers: String,
     #[serde(rename = "LocalNetworkPort")]
-    local_network_port: String,
+  pub local_network_port: String,
     #[serde(rename = "LocalSeedURL")]
-    local_seed_url: String,
+  pub local_seed_url: String,
     #[serde(rename = "LocalSpecialPeers")]
-    local_special_peers: String,
+  pub local_special_peers: String,
     #[serde(rename = "CustomBootstrapIdentity")]
-    custom_bootstrap_identity: String,
+  pub custom_bootstrap_identity: String,
     #[serde(rename = "CustomBootstrapKey")]
-    custom_bootstrap_key: String,
+  pub custom_bootstrap_key: String,
     #[serde(rename = "FactomdTlsEnabled")]
-    factomd_tls_enabled: bool,
+  pub factomd_tls_enabled: bool,
     #[serde(rename = "FactomdTlsPrivateKey")]
-    factomd_tls_private_key: String,
+  pub factomd_tls_private_key: String,
     #[serde(rename = "FactomdTlsPublicCert")]
-    factomd_tls_public_cert: String,
+  pub factomd_tls_public_cert: String,
     #[serde(rename = "FactomdRpcUser")]
-    factomd_rpc_user: String,
+  pub factomd_rpc_user: String,
     #[serde(rename = "FactomdRpcPass")]
-    factomd_rpc_pass: String,
+  pub factomd_rpc_pass: String,
     #[serde(rename = "ChangeAcksHeight")]
-    change_acks_height: i64,
+  pub change_acks_height: i64,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Peer {
     #[serde(rename = "AddPeers")]
-    add_peers: ::serde_json::Value,
+  pub add_peers: ::serde_json::Value,
     #[serde(rename = "ConnectPeers")]
-    connect_peers: ::serde_json::Value,
+  pub connect_peers: ::serde_json::Value,
     #[serde(rename = "Listeners")]
-    listeners: ::serde_json::Value,
+  pub listeners: ::serde_json::Value,
     #[serde(rename = "MaxPeers")]
-    max_peers: i64,
+  pub max_peers: i64,
     #[serde(rename = "BanDuration")]
-    ban_duration: i64,
+  pub ban_duration: i64,
     #[serde(rename = "TestNet")]
-    test_net: bool,
+  pub test_net: bool,
     #[serde(rename = "SimNet")]
-    sim_net: bool,
+  pub sim_net: bool,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Log {
     #[serde(rename = "LogPath")]
-    log_path: String,
+  pub log_path: String,
     #[serde(rename = "LogLevel")]
-    log_level: String,
+  pub log_level: String,
     #[serde(rename = "ConsoleLogLevel")]
-    console_log_level: String,
+  pub console_log_level: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Wallet {
     #[serde(rename = "Address")]
-    address: String,
+  pub address: String,
     #[serde(rename = "Port")]
-    port: i64,
+  pub port: i64,
     #[serde(rename = "DataFile")]
-    data_file: String,
+  pub data_file: String,
     #[serde(rename = "RefreshInSeconds")]
-    refresh_in_seconds: String,
+  pub refresh_in_seconds: String,
     #[serde(rename = "BoltDBPath")]
-    bolt_dbpath: String,
+  pub bolt_dbpath: String,
     #[serde(rename = "FactomdAddress")]
-    factomd_address: String,
+  pub factomd_address: String,
     #[serde(rename = "FactomdPort")]
-    factomd_port: i64,
+  pub factomd_port: i64,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Walletd {
     #[serde(rename = "WalletRpcUser")]
-    wallet_rpc_user: String,
+  pub wallet_rpc_user: String,
     #[serde(rename = "WalletRpcPass")]
-    wallet_rpc_pass: String,
+  pub wallet_rpc_pass: String,
     #[serde(rename = "WalletTlsEnabled")]
-    wallet_tls_enabled: bool,
+  pub wallet_tls_enabled: bool,
     #[serde(rename = "WalletTlsPrivateKey")]
-    wallet_tls_private_key: String,
+  pub wallet_tls_private_key: String,
     #[serde(rename = "WalletTlsPublicCert")]
-    wallet_tls_public_cert: String,
+  pub wallet_tls_public_cert: String,
     #[serde(rename = "FactomdLocation")]
-    factomd_location: String,
+  pub factomd_location: String,
     #[serde(rename = "WalletdLocation")]
-    walletd_location: String,
+  pub walletd_location: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ProcessList {
     #[serde(rename = "ProcessList")]
-    process_list: String,
+  pub process_list: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Authorities {
     #[serde(rename = "Authorities")]
-    authorities: Vec<Authority>,
+  pub authorities: Vec<Authority>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Authority {
     #[serde(rename = "AuthorityChainID")]
-    authority_chain_id: String,
+  pub authority_chain_id: String,
     #[serde(rename = "ManagementChainID")]
-    management_chain_id: String,
+  pub management_chain_id: String,
     #[serde(rename = "MatryoshkaHash")]
-    matryoshka_hash: String,
+  pub matryoshka_hash: String,
     #[serde(rename = "SigningKey")]
-    signing_key: String,
+  pub signing_key: String,
     #[serde(rename = "Status")]
-    status: i64,
+  pub status: i64,
     #[serde(rename = "AnchorKeys")]
-    anchor_keys: ::serde_json::Value,
+  pub anchor_keys: ::serde_json::Value,
     #[serde(rename = "KeyHistory")]
-    key_history: ::serde_json::Value,
+  pub key_history: ::serde_json::Value,
 }
 
 /// drop-rate and set-drop-rate functions
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DropRate {
     #[serde(rename = "DropRate")]
-    drop_rate: i64,
+  pub drop_rate: i64,
 }
 
 /// delay and set-delay functions
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Delay {
     #[serde(rename = "Delay")]
-    delay: i64,
+  pub delay: i64,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Summary {
     #[serde(rename = "Summary")]
-    summary: String,
+  pub summary: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Messages {
     #[serde(rename = "Messages")]
-    messages: Vec<String>,
+  pub messages: Vec<String>,
 }
 
