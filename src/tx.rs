@@ -528,179 +528,179 @@ pub enum SearchBy{
 /// factoid-submit function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct FctSubmit {
-    message: String,
-    txid: String,
+  pub message: String,
+  pub txid: String,
 }
 
 /// transaction function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Transaction {
-    factoidtransaction: Factoidtransaction,
-    includedintransactionblock: String,
-    includedindirectoryblock: String,
-    includedindirectoryblockheight: i64,
+  pub factoidtransaction: Factoidtransaction,
+  pub includedintransactionblock: String,
+  pub includedindirectoryblock: String,
+  pub includedindirectoryblockheight: i64,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Factoidtransaction {
-    millitimestamp: i64,
-    inputs: Vec<Input>,
-    outputs: Vec<Output>,
-    outecs: Vec<::serde_json::Value>,
-    rcds: Vec<String>,
-    sigblocks: Vec<Sigblock>,
-    blockheight: i64,
+  pub millitimestamp: i64,
+  pub inputs: Vec<Input>,
+  pub outputs: Vec<Output>,
+  pub outecs: Vec<::serde_json::Value>,
+  pub rcds: Vec<String>,
+  pub sigblocks: Vec<Sigblock>,
+  pub blockheight: i64,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Input {
-    amount: i64,
-    address: String,
-    useraddress: String,
+  pub amount: i64,
+  pub address: String,
+  pub useraddress: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Output {
-    amount: i64,
-    address: String,
-    useraddress: String,
+  pub amount: i64,
+  pub address: String,
+  pub useraddress: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Sigblock {
-    signatures: Vec<String>,
+  pub signatures: Vec<String>,
 }
 
 /// pending-transactions function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PendingTx {
-    transactionid: String,
-    status: String,
-    inputs: Vec<Input>,
-    outputs: Vec<Output>,
-    ecoutputs: Vec<::serde_json::Value>,
-    fees: i64,
+  pub transactionid: String,
+  pub status: String,
+  pub inputs: Vec<Input>,
+  pub outputs: Vec<Output>,
+  pub ecoutputs: Vec<::serde_json::Value>,
+  pub fees: i64,
 }
 
 /// ack function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Ack {
-    committxid: String,
-    entryhash: String,
-    commitdata: Commitdata,
-    entrydata: Entrydata,
+  pub committxid: String,
+  pub entryhash: String,
+  pub commitdata: Commitdata,
+  pub entrydata: Entrydata,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Commitdata {
-    status: String,
+  pub status: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Entrydata {
-    status: String,
+  pub status: String,
 }
 
 /// new-transaction and add-ec-output functions
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct NewTx {
-    feesrequired: i64,
-    signed: bool,
-    name: String,
-    timestamp: i64,
-    totalecoutputs: i64,
-    totalinputs: i64,
-    totaloutputs: i64,
-    inputs: Vec<TxInput>,
-    outputs: Vec<TxOutput>,
-    ecoutputs: Vec<Ecoutput>,
-    txid: String,
+  pub feesrequired: i64,
+  pub signed: bool,
+  pub name: String,
+  pub timestamp: i64,
+  pub totalecoutputs: i64,
+  pub totalinputs: i64,
+  pub totaloutputs: i64,
+  pub inputs: Vec<TxInput>,
+  pub outputs: Vec<TxOutput>,
+  pub ecoutputs: Vec<Ecoutput>,
+  pub txid: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct TxInput {
-    address: String,
-    amount: i64,
+  pub address: String,
+  pub amount: i64,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct TxOutput {
-    address: String,
-    amount: i64,
+  pub address: String,
+  pub amount: i64,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Ecoutput {
-    address: String,
-    amount: i64,
+  pub address: String,
+  pub amount: i64,
 }
 
 /// add-input, add-output, add-fee, sub-fee, sign-transaction functions
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Tx {
-    feespaid: i64,
-    feesrequired: i64,
-    signed: bool,
-    name: String,
-    timestamp: i64,
-    totalecoutputs: i64,
-    totalinputs: i64,
-    totaloutputs: i64,
-    inputs: Vec<TxInput>,
-    outputs: Vec<TxOutput>,
-    ecoutputs: Vec<Ecoutput>,
-    txid: String,
+  pub feespaid: i64,
+  pub feesrequired: i64,
+  pub signed: bool,
+  pub name: String,
+  pub timestamp: i64,
+  pub totalecoutputs: i64,
+  pub totalinputs: i64,
+  pub totaloutputs: i64,
+  pub inputs: Vec<TxInput>,
+  pub outputs: Vec<TxOutput>,
+  pub ecoutputs: Vec<Ecoutput>,
+  pub txid: String,
 }
 
 /// delete-transaction function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DeleteTx {
-    signed: bool,
-    name: String,
-    timestamp: i64,
-    totalecoutputs: i64,
-    totalinputs: i64,
-    totaloutputs: i64,
-    inputs: ::serde_json::Value,
-    outputs: ::serde_json::Value,
-    ecoutputs: ::serde_json::Value,
+  pub signed: bool,
+  pub name: String,
+  pub timestamp: i64,
+  pub totalecoutputs: i64,
+  pub totalinputs: i64,
+  pub totaloutputs: i64,
+  pub inputs: ::serde_json::Value,
+  pub outputs: ::serde_json::Value,
+  pub ecoutputs: ::serde_json::Value,
 }
 
 /// tmp-transactions function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct TmpTransactions {
-    transactions: Vec<TmpTransaction>,
+  pub transactions: Vec<TmpTransaction>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct TmpTransaction {
-    #[serde(rename = "tx-name")]
-    tx_name: String,
-    txid: String,
-    totalinputs: i64,
-    totaloutputs: i64,
-    totalecoutputs: i64,
+  #[serde(rename = "tx-name")]
+  pub tx_name: String,
+  pub txid: String,
+  pub totalinputs: i64,
+  pub totaloutputs: i64,
+  pub totalecoutputs: i64,
 }
 
 /// transactions function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Transactions {
-    transactions: Vec<Txs>,
+  pub transactions: Vec<Txs>,
 }
 
 /// Individual transactions from the transactions function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Txs {
-    blockheight: i64,
-    feespaid: i64,
-    signed: bool,
-    timestamp: i64,
-    totalecoutputs: i64,
-    totalinputs: i64,
-    totaloutputs: i64,
-    inputs: Vec<Input>,
-    outputs: ::serde_json::Value,
-    ecoutputs: Vec<Ecoutput>,
-    txid: String,
+  pub blockheight: i64,
+  pub feespaid: i64,
+  pub signed: bool,
+  pub timestamp: i64,
+  pub totalecoutputs: i64,
+  pub totalinputs: i64,
+  pub totaloutputs: i64,
+  pub inputs: Vec<Input>,
+  pub outputs: ::serde_json::Value,
+  pub ecoutputs: Vec<Ecoutput>,
+  pub txid: String,
 }
 
