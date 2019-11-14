@@ -198,61 +198,61 @@ assert!(response.success());
 /// unlock-wallet function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct UnlockWallet {
-    success: bool,
-    unlockeduntil: i64,
+  pub success: bool,
+  pub unlockeduntil: i64,
 }
 
 /// wallet-backup function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct WalletBackup {
-    #[serde(rename = "wallet-seed")]
-    wallet_seed: String,
-    addresses: Vec<Address>,
+  #[serde(rename = "wallet-seed")]
+  pub wallet_seed: String,
+  pub addresses: Vec<Address>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Address {
-    public: String,
-    secret: String,
+  pub public: String,
+  pub secret: String,
 }
 
 /// wallet-balances function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct WalletBalances {
-    fctaccountbalances: Fctaccountbalances,
-    ecaccountbalances: Ecaccountbalances,
+  pub fctaccountbalances: Fctaccountbalances,
+  pub ecaccountbalances: Ecaccountbalances,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Fctaccountbalances {
-    ack: i64,
-    saved: i64,
+  pub ack: i64,
+  pub saved: i64,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Ecaccountbalances {
-    ack: i64,
-    saved: i64,
+  pub ack: i64,
+  pub saved: i64,
 }
 
 
 /// sign-data function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct SignData {
-    pubkey: String,
-    signature: String,
+  pub pubkey: String,
+  pub signature: String,
 }
 
 /// wallet-properties function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Properties {
-    walletversion: String,
-    walletapiversion: String,
+  pub walletversion: String,
+  pub walletapiversion: String,
 }
 
 /// get-height function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Height {
-    height: i64,
+  pub height: i64,
 }
 

@@ -75,6 +75,6 @@ assert!(response.success());
 /// generate-identity-key
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Generate {
-    public: String,
-    secret: String,
+    pub public: String,
+    pub secret: String,
 }
