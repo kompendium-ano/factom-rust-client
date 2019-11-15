@@ -7,24 +7,31 @@ repository = "https://github.com/MitchellBerry/Factom-Client"
 homepage = "https://github.com/MitchellBerry/Factom-Client"
 license = "Apache-2.0"
 readme = "readme.md"
-maintenance = { status = "passively-maintained" }
+
 description = "Factom API client"
 
 [dependencies]
-futures-preview = {version = "0.3.0-alpha.19",  features = ["compat"] } 
-futures-core-preview = "=0.3.0-alpha.19"
-futures-channel-preview = "=0.3.0-alpha.19"
-futures-util-preview = "=0.3.0-alpha.19"
-hyper = {version = "0.13.0-alpha.4", features = ["unstable-stream"] }
-hyper-tls = "0.4.0-alpha.4"
+url = "2.1.0"
 http = "0.1.19"
-tokio = "0.2.0-alpha.6"
-tokio-executor = "=0.2.0-alpha.6"
-
-serde_json = "1.0.39"
-serde_derive = "1.0.89"
-serde = { version = "1.0.89", features = ["derive"] }
+futures = "0.3.1"
+futures-util-preview = "=0.3.0-alpha.19"
+serde_json = "1.0.41"
+serde_derive = "1.0.102"
+serde = { version = "1.0.102", features = ["derive"] }
+hyper-tls = "0.4.0-alpha.4"
+hyper = {version = "0.13.0-alpha.4", features = ["unstable-stream"] }
+tokio = {version = "0.2.0-alpha.6", optional = true } 
+tokio-executor = {version = "=0.2.0-alpha.6", optional = true }
 
 [dev-dependencies]
 rand = "0.7.2"
 
+[badges]
+travis-ci = { repository = "https://github.com/kompendium-llc/factom-rust-client", branch = "master" }
+codecov = { repository = "https://github.com/kompendium-llc/factom-rust-client", branch = "master", service = "github" }
+maintenance = { status = "passively-maintained" }
+
+[features]
+default = ["tokio", "tokio-executor"]
+
+no-runtime = []
