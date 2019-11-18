@@ -212,14 +212,15 @@ fn chain_head(){
 // Debug Module
 // Cloudflare errors using open node, these can be tested with a local factomd
 // node
-#[test]
-fn holding_queue(){
-  let api = Factom::open_node();
-  let query = api.holding_queue();
-  let response = fetch(query).expect("Fetching Query");
-  dbg!(&response);
-  // assert_eq!(response.result.chainhead, CHAIN_HEAD);
-}
+
+// #[test]
+// fn holding_queue(){
+//   let api = Factom::open_node();
+//   let query = api.holding_queue();
+//   let response = fetch(query).expect("Fetching Query");
+//   dbg!(&response);
+//   // assert_eq!(response.result.chainhead, CHAIN_HEAD);
+// }
 
 
 // Entry Module
