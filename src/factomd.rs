@@ -279,6 +279,7 @@ pub struct Diagnostics {
   pub publickey: String,
   pub role: String,
   pub leaderheight: i64,
+  #[serde(default)]
   pub currentheight: i64,
   pub currentminute: i64,
   pub currentminuteduration: f64,
@@ -294,8 +295,11 @@ pub struct Diagnostics {
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Syncing {
   pub status: String,
+  #[serde(default)]
   pub received: i64,
+  #[serde(default)]
   pub expected: i64,
+  #[serde(default)]
   pub missing: Vec<String>,
 }
 
