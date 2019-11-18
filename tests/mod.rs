@@ -14,21 +14,16 @@ const EC_PUB: &str = "EC2MJzCcHqYJyujnPzjitEaHhtEPVBhmEWUKkv4SVaaKeYcq3fqK";
 // const EC_PRIV: &str = "Es3LS7zYa9DSzZuUC14HDpMinehmzz61JG1XFY62rX5pVDenH8Pk";
 const ABLOCK_KEYMR: &str = "cda746980e7b562d213a871f85a3caf54320a4284b2762961edf62ddf63ef131";
 const ABLOCK_HEIGHT: u32 = 105098;
-
 const DBLOCK_KEYMR: &str = "90b344dabe065bcb38c90948cde8ab388e22364257f811da7e7a7e8102efc33f";
-const DBLOCK_HEIGHT: u32 = 218665;
-
+// const DBLOCK_HEIGHT: u32 = 218665;
 const ECBLOCK_KEYMR: &str = "06a56a6917ff26d118b67117908a58832ad741433a3047ce4ec45f03754aeed6";
 const ECBLOCK_BODYHASH: &str = "c8b7120687c6bc465a5f0fb0517c9bbaf27ee733238aef3f4b79b772a9590030";
-
 const FBLOCK_KEYMR: &str = "32bf997a124dd31c897cca5d92648f8a1fa18626ff396a89cb34a59aaa47c5b3";
 const FBLOCK_HEIGHT: u32 = 218668;
 const FBLOCK_BODYMR: &str = "9886c838cd8eddfaaf809a1425d71c49539e86223d1e624dfd0d65fdc1aa8674";
-
 //pnet chain
 const CHAIN_ID: &str = "a642a8674f46696cc47fdb6b65f9c87b2a19c5ea8123b3d2f0c13b6f33a9d5ef";
 const CHAIN_HEAD: &str = "a1e08aca2848999b0c28eaaddf13d34109f4c18bd46fb15b02e50566ad91a38f";
-
 const ENTRY_HASH: &str = "716526c3279184bca11fc453fa9c2ab2f4488a03c821ee107664c9052f01d733";
 
 // Address module
@@ -215,7 +210,8 @@ fn chain_head(){
 
 
 // Debug Module
-// Cloudflare errors
+// Cloudflare errors using open node, these can be tested with a local factomd
+// node
 #[test]
 fn holding_queue(){
   let api = Factom::open_node();
