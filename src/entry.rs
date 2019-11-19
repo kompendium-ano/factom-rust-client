@@ -117,7 +117,7 @@ impl Factom {
 
 }
 
-#[derive(Default, Debug, Clone, PartialEq, serde_derive::Serialize, serde_derive::Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Entry {
   pub chainid: String,
   pub content: String,
