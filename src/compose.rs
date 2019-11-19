@@ -1,4 +1,5 @@
 use super::*;
+use factomd::str_to_hex;
 use std::collections::HashMap;
 
 impl Factom {
