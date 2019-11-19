@@ -135,8 +135,9 @@ impl Factom {
 /// Creates a https client, this is placed in the Factom struct and is responsible
 /// for making network requests
 pub fn new_client() -> HttpsClient {
-  let https = HttpsConnector::new().expect("TLS initialization");
-  Client::builder().build::<_, hyper::Body>(https)
+  let connector = HttpsConnector::new().expect("TLS initialization");
+  let client = Client::builder().build::<_, hyper::Body>(connector);
+  Rc::new(client)
 }
 
 /// Builds the basis of a request minus the body, this is kept in the Factom
@@ -151,7 +152,7 @@ pub fn request_builder(uri: Uri) -> Builder {
 
 impl Clone for Factom {
   fn clone(&self) -> Self {
-    let client = self.client.clone();
+    let client = Rc::clone(&self.client);
     let factomd = request_builder(self.factomd_uri.clone());
     let walletd = request_builder(self.walletd_uri.clone());
     let debug = request_builder(self.debug_uri.clone());
