@@ -9,7 +9,7 @@ use serde::{Serialize, de::DeserializeOwned};
 use hyper::{Chunk, Body, client::ResponseFuture};
 
 /// Generic request struct is serialized into the JSON body 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, Clone)]
 pub struct ApiRequest {
   pub jsonrpc: &'static str,
   pub id: Wrapping<usize>,
@@ -35,7 +35,7 @@ impl ApiRequest {
   }
 }
 
-pub enum RequestType{
+enum RequestType{
   Factomd,
   Walletd,
   Debug
