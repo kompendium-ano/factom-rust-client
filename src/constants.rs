@@ -14,3 +14,7 @@ pub const API_VERSION: &str = "v2";
 pub const JSONRPC : &str = "2.0";
 /// Default JSON-RPC ID
 pub const ID: usize = 0;
+/// Regex for matching Factoid addresses
+pub const FCT_REGEX: &str = "^FA[123][1-9A-HJ-NP-Za-km-z]{49}";
+/// Regex for matching Entry Credit Addresses
+pub const EC_REGEX: &str = "^EC[123][1-9A-HJ-NP-Za-km-z]{49}";
