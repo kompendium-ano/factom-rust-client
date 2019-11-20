@@ -61,13 +61,14 @@ impl Factom {
   ) -> ResponseFuture 
   {
     req.id = self.id;
-    let mut node_request = match req_type {
+    let node_request = match req_type {
       RequestType::Factomd => self.factomd,
       RequestType::Walletd => self.walletd,
       RequestType::Debug => self.debug
     };
     let json = Body::from(req.json());
-    let req = node_request.body(json)
+    let req = node_request.borrow_mut()
+                          .body(json)
                           .expect("Constructing request body");
     self.client.request(req)
   }
