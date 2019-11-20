@@ -18,9 +18,9 @@ pub struct Factom{
   pub factomd: Rc<RefCell<Builder>>,
   pub walletd: Rc<RefCell<Builder>>,
   pub debug: Rc<RefCell<Builder>>,
-  pub factomd_uri: Uri,
-  pub walletd_uri: Uri,
-  pub debug_uri: Uri,
+  pub factomd_uri: Rc<Uri>,
+  pub walletd_uri: Rc<Uri>,
+  pub debug_uri: Rc<Uri>,
   pub id: Wrapping<usize>
 }
 
@@ -44,9 +44,9 @@ impl Factom {
     let debug_uri = parse_debug_uri(FACTOMD_DEFAULT);
     Factom{
       client: new_client(),
-      factomd: request_builder(factomd_uri.clone()),
-      walletd: request_builder(walletd_uri.clone()),
-      debug: request_builder(debug_uri.clone()),
+      factomd: request_builder(&factomd_uri),
+      walletd: request_builder(&walletd_uri),
+      debug: request_builder(&debug_uri),
       factomd_uri,
       walletd_uri,
       debug_uri,
@@ -65,9 +65,9 @@ impl Factom {
     let debug_uri = parse_debug_uri(OPENNODE_URI);
     Factom{
       client: new_client(),
-      factomd: request_builder(factomd_uri.clone()),
-      walletd: request_builder(walletd_uri.clone()),
-      debug: request_builder(debug_uri.clone()),
+      factomd: request_builder(&factomd_uri),
+      walletd: request_builder(&walletd_uri),
+      debug: request_builder(&debug_uri),
       factomd_uri,
       walletd_uri,
       debug_uri,
@@ -86,9 +86,9 @@ impl Factom {
     let debug_uri = parse_debug_uri(OPENNODE_URI);
     Factom{
       client: new_client(),
-      factomd: request_builder(factomd_uri.clone()),
-      walletd: request_builder(walletd_uri.clone()),
-      debug: request_builder(debug_uri.clone()),
+      factomd: request_builder(&factomd_uri),
+      walletd: request_builder(&walletd_uri),
+      debug: request_builder(&debug_uri),
       factomd_uri,
       walletd_uri,
       debug_uri,
@@ -110,9 +110,9 @@ impl Factom {
     let debug_uri = parse_debug_uri(factomd);
     Factom{
       client: new_client(),
-      factomd: request_builder(factomd_uri.clone()),
-      walletd: request_builder(walletd_uri.clone()),
-      debug: request_builder(debug_uri.clone()),
+      factomd: request_builder(&factomd_uri),
+      walletd: request_builder(&walletd_uri),
+      debug: request_builder(&debug_uri),
       factomd_uri,
       walletd_uri,
       debug_uri,
@@ -142,7 +142,7 @@ fn new_client() -> HttpsClient {
 
 /// Builds the basis of a request minus the body, this is kept in the Factom
 /// struct to avoid rebuilding the request everytime
-fn request_builder(uri: Uri) -> Rc<RefCell<Builder>> {
+fn request_builder(uri: &Uri) -> Rc<RefCell<Builder>> {
   let mut req = Request::builder();
   req.method("POST")
       .header(CONTENT_TYPE, "application/json")
@@ -161,9 +161,9 @@ impl Clone for Factom {
       factomd,
       walletd,
       debug,
-      factomd_uri: self.factomd_uri.clone(),
-      walletd_uri: self.walletd_uri.clone(),
-      debug_uri: self.debug_uri.clone(),
+      factomd_uri: Rc::clone(&self.factomd_uri),
+      walletd_uri: Rc::clone(&self.walletd_uri),
+      debug_uri: Rc::clone(&self.debug_uri),
       id: self.id
     }
   }
@@ -171,7 +171,7 @@ impl Clone for Factom {
 
 /// Parses the host and adds the debug path if not already included 
 /// Panics with a ParseError if provided with an invalid url 
-pub fn parse_debug_uri(host: &str) -> Uri {
+pub fn parse_debug_uri(host: &str) -> Rc<Uri> {
   inner_parse_uri(host, DEBUG)
 }
 
@@ -183,17 +183,17 @@ pub fn parse_debug_uri(host: &str) -> Uri {
 /// let factomd_uri = parse_uri(host);
 /// assert_eq!(factomd_uri, Uri::from_static("http://localhost:7077/v2"));
 /// ```
-pub fn parse_uri(host: &str) -> Uri {
+pub fn parse_uri(host: &str) -> Rc<Uri> {
   inner_parse_uri(host, API_VERSION)
 }
 
-fn inner_parse_uri(host: &str, path: &str) -> Uri {
+fn inner_parse_uri(host: &str, path: &str) -> Rc<Uri> {
   let mut url = Url::parse(host).expect("Parsing Url");
   url.set_path(path);
   let output: Uri = url.into_string()
                         .parse()
                         .expect("Parsing Uri");
-  output
+  Rc::new(output)
 }
 
 // Uri parsing tests, confirm that even when given an incomplete host+path the
@@ -204,18 +204,18 @@ mod tests {
   #[test]
   fn inner_uri_parsing() {
     let test_uri = inner_parse_uri("http://host", "testing");
-    assert_eq!(test_uri, Uri::from_static("http://host/testing"));
+    assert_eq!(test_uri, Rc::new(Uri::from_static("http://host/testing")));
   }
 
   #[test]
   fn uri_parsing() {
     let test_uri = parse_uri("http://host");
-    assert_eq!(test_uri, Uri::from_static("http://host/v2"));
+    assert_eq!(test_uri, Rc::new(Uri::from_static("http://host/v2")));
   }
 
   #[test]
   fn debug_uri_parsing() {
     let test_uri = parse_debug_uri("http://host");
-    assert_eq!(test_uri, Uri::from_static("http://host/debug"));
+    assert_eq!(test_uri, Rc::new(Uri::from_static("http://host/debug")));
   }
 }
