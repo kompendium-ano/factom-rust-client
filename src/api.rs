@@ -15,9 +15,9 @@ use http::{Uri, request::Builder, header::CONTENT_TYPE};
 #[derive(Debug)]
 pub struct Factom{
   pub client: HttpsClient,
-  pub factomd: Builder,
-  pub walletd: Builder,
-  pub debug: Builder,
+  pub factomd: Rc<RefCell<Builder>>,
+  pub walletd: Rc<RefCell<Builder>>,
+  pub debug: Rc<RefCell<Builder>>,
   pub factomd_uri: Uri,
   pub walletd_uri: Uri,
   pub debug_uri: Uri,
@@ -134,7 +134,7 @@ impl Factom {
 
 /// Creates a https client, this is placed in the Factom struct and is responsible
 /// for making network requests
-pub fn new_client() -> HttpsClient {
+fn new_client() -> HttpsClient {
   let connector = HttpsConnector::new().expect("TLS initialization");
   let client = Client::builder().build::<_, hyper::Body>(connector);
   Rc::new(client)
@@ -142,20 +142,20 @@ pub fn new_client() -> HttpsClient {
 
 /// Builds the basis of a request minus the body, this is kept in the Factom
 /// struct to avoid rebuilding the request everytime
-pub fn request_builder(uri: Uri) -> Builder {
+fn request_builder(uri: Uri) -> Rc<RefCell<Builder>> {
   let mut req = Request::builder();
   req.method("POST")
       .header(CONTENT_TYPE, "application/json")
       .uri(uri);
-  req
+  Rc::new(RefCell::new(req))
 }
 
 impl Clone for Factom {
   fn clone(&self) -> Self {
     let client = Rc::clone(&self.client);
-    let factomd = request_builder(self.factomd_uri.clone());
-    let walletd = request_builder(self.walletd_uri.clone());
-    let debug = request_builder(self.debug_uri.clone());
+    let factomd = Rc::clone(&self.factomd);
+    let walletd = Rc::clone(&self.walletd);
+    let debug = Rc::clone(&self.debug);
     Factom {
       client,
       factomd,

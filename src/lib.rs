@@ -31,8 +31,7 @@ pub use tokio::runtime::Runtime;
 pub use responses::ApiResponse;
 pub use requests::{ApiRequest, parse};
 
-
-use std::rc::Rc;
+use std::{rc::Rc, cell::RefCell};
 use serde_json::json;
 use hyper_tls::HttpsConnector;
 use serde::{Serialize, Deserialize};
