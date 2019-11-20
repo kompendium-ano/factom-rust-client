@@ -81,9 +81,9 @@ impl Factom {
   /// * walletd: http://localhost:8089
   /// * debug: https://dev.factomd.net/debug
   pub fn testnet_node()->Factom {
-    let factomd_uri = parse_uri(OPENNODE_URI); 
+    let factomd_uri = parse_uri(DEV_OPENNODE_URI); 
     let walletd_uri = parse_uri(WALLETD_DEFAULT);
-    let debug_uri = parse_debug_uri(OPENNODE_URI);
+    let debug_uri = parse_debug_uri(DEV_OPENNODE_URI);
     Factom{
       client: new_client(),
       factomd: request_builder(&factomd_uri),
