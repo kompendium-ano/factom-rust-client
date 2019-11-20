@@ -25,6 +25,11 @@ tokio-executor = {version = "=0.2.0-alpha.6", optional = true }
 
 [dev-dependencies]
 rand = "0.7.2"
+criterion = "0.3"
+
+[[bench]]
+name = "benches"
+harness = false
 
 [badges]
 travis-ci = { repository = "https://github.com/kompendium-llc/factom-rust-client", branch = "master" }
