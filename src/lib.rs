@@ -28,11 +28,13 @@ pub mod responses;
 pub use api::Factom;
 pub use constants::*; 
 pub use tokio::runtime::Runtime;
+pub use tokio::prelude::*;
 pub use responses::ApiResponse;
-pub use requests::{ApiRequest, parse};
+pub use requests::{ApiRequest, fetch};
 
 use std::{rc::Rc, cell::RefCell};
 use serde_json::json;
+use requests::parse;
 use hyper_tls::HttpsConnector;
 use serde::{Serialize, Deserialize};
 use hyper::{Client, client::HttpConnector, rt::Future};
