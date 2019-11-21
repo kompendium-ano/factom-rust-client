@@ -1,6 +1,6 @@
 use super::*;
-use std::{error::Error, default::Default};
-use std::fmt::{self, Debug, Display};
+use std::default::Default;
+use std::fmt::Debug;
 
 /// JSON responses are deserialized into this struct
 #[derive(Deserialize, Debug, PartialEq)]
