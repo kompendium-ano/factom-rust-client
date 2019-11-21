@@ -22,6 +22,9 @@ pub struct ApiError {
   pub message: String
 }
 
+// TODO: Getting stack overflows implementing Display for the 
+// struct, needs investigation.
+
 // impl<T> Display for  ApiResponse<T> 
 //   where T: Default + Debug + Display
 // {
