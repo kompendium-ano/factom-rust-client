@@ -1,8 +1,4 @@
-use ::factom::{Factom, requests::fetch};
-// use std::iter;
-// use rand::{Rng, thread_rng};
-// use rand::distributions::Alphanumeric;
-
+use ::factom::{requests::fetch, *};
 
 // Hopefully it doesn't need to be said but please don't use these addresses as 
 // they are publicly known! They should be funded on testnet for further usage,
@@ -31,8 +27,8 @@ const RAW_DATA: &str = "000caff62ea5b5aa015c706add7b2463a5be07e1f0537617f5535580
 // Address module
 #[test]
 fn address(){
-  let api = Factom::new();
-  let query = api.address(FCT_PUB);
+  let client = Factom::open_node();
+  let query = factom::address::address(&client, FCT_PUB);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
   assert_eq!(response.result.secret, FCT_PRIV);
@@ -40,8 +36,8 @@ fn address(){
 
 #[test]
 fn all_addresses(){
-  let api = Factom::new();
-  let query = api.all_addresses();
+  let client = Factom::new();
+  let query = address::all_addresses(&client);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
   let address_present = response
@@ -54,12 +50,12 @@ fn all_addresses(){
 
 #[test]
 fn rm_address(){
-  let api = Factom::new();
-  let query = api.clone().generate_factoid_address();
+  let client = Factom::new();
+  let query = generate::generate_factoid_address(&client);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
   let address = response.result.public;
-  let rm_query = api.remove_address(&address);
+  let rm_query = address::remove_address(&client, &address);
   let rm_response = fetch(rm_query).expect("Fetching Query");
   dbg!(&rm_response);
   assert!(rm_response.result.success);
@@ -68,8 +64,8 @@ fn rm_address(){
 // Balance module
 #[test]
 fn balance(){
-  let api = Factom::testnet_node();
-  let query = api.factoid_balance(FCT_PUB);
+  let client = Factom::testnet_node();
+  let query = balance::factoid_balance(&client, FCT_PUB);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
   assert_eq!(response.error.code, 0);
@@ -77,8 +73,8 @@ fn balance(){
 
 #[test]
 fn ec_balance(){
-  let api = Factom::testnet_node();
-  let query = api.entry_credit_balance(EC_PUB);
+  let client = Factom::testnet_node();
+  let query = balance::entry_credit_balance(&client, EC_PUB);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
   assert_eq!(response.error.code, 0);
@@ -86,8 +82,8 @@ fn ec_balance(){
 
 #[test]
 fn multiple_balances(){
-  let api = Factom::testnet_node();
-  let query = api.multiple_fct_balances(vec!(FCT_PUB));
+  let client = Factom::testnet_node();
+  let query = balance::multiple_fct_balances(&client, vec!(FCT_PUB));
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
   assert_eq!(response.error.code, 0);
@@ -95,8 +91,8 @@ fn multiple_balances(){
 
 #[test]
 fn multiple_ec_balances(){
-  let api = Factom::testnet_node();
-  let query = api.multiple_ec_balances(vec!(EC_PUB));
+  let client = Factom::testnet_node();
+  let query = balance::multiple_ec_balances(&client, vec!(EC_PUB));
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
   assert_eq!(response.error.code, 0);
@@ -105,8 +101,8 @@ fn multiple_ec_balances(){
 // Block module
 #[test]
 fn ablock_height(){
-  let api = Factom::testnet_node();
-  let query = api.ablock_by_height(ABLOCK_HEIGHT as u32);
+  let client = Factom::testnet_node();
+  let query = block::ablock_by_height(&client, ABLOCK_HEIGHT as u32);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
   assert_eq!(response.result.ablock.header.dbheight, ABLOCK_HEIGHT as usize);
@@ -114,8 +110,8 @@ fn ablock_height(){
 
 #[test]
 fn admin_block(){
-  let api = Factom::open_node();
-  let query = api.admin_block(ABLOCK_KEYMR);
+  let client = Factom::open_node();
+  let query = block::admin_block(&client, ABLOCK_KEYMR);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
   assert_eq!(response.result.ablock.header.dbheight, ABLOCK_HEIGHT as usize);
@@ -125,16 +121,19 @@ fn admin_block(){
 /// currently is unable to handle a false return
 #[test]
 fn anchors(){
-  let api = Factom::open_node();
-  let query = api.anchors(factom::block::AnchorType::Height(ABLOCK_HEIGHT as usize));
+  let client = Factom::open_node();
+  let query = block::anchors(
+                        &client, 
+                        block::AnchorType::Height(ABLOCK_HEIGHT as usize)
+                      );
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
 }
 
 #[test]
 fn dblock_height(){
-  let api = Factom::testnet_node();
-  let query = api.dblock_by_height(ABLOCK_HEIGHT);
+  let client = Factom::testnet_node();
+  let query = block::dblock_by_height(&client, ABLOCK_HEIGHT);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response.result.dblock.header);
   assert_eq!(response.result.dblock.header.dbheight, ABLOCK_HEIGHT as usize);
@@ -142,8 +141,8 @@ fn dblock_height(){
 
 #[test]
 fn directory_block(){
-  let api = Factom::open_node();
-  let query = api.directory_block(DBLOCK_KEYMR);
+  let client = Factom::open_node();
+  let query = block::directory_block(&client, DBLOCK_KEYMR);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response.result.header);
   assert_eq!(response.result.header.timestamp, 1573694640);
@@ -151,8 +150,8 @@ fn directory_block(){
 
 #[test]
 fn directory_block_head(){
-  let api = Factom::open_node();
-  let query = api.directory_block_head();
+  let client = Factom::open_node();
+  let query = block::directory_block_head(&client);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
   assert_eq!(response.error.code, 0);
@@ -160,8 +159,8 @@ fn directory_block_head(){
 
 #[test]
 fn ecblock_height(){
-  let api = Factom::open_node();
-  let query = api.ecblock_by_height(218668);
+  let client = Factom::open_node();
+  let query = block::ecblock_by_height(&client, 218668);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response.result.ecblock.header);
   assert_eq!(response.result.ecblock.header.bodyhash, ECBLOCK_BODYHASH);
@@ -169,8 +168,8 @@ fn ecblock_height(){
 
 #[test]
 fn ec_block(){
-  let api = Factom::open_node();
-  let query = api.entry_credit_block(ECBLOCK_KEYMR);
+  let client = Factom::open_node();
+  let query = block::entry_credit_block(&client, ECBLOCK_KEYMR);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response.result.ecblock.header);
   assert_eq!(response.result.ecblock.header.bodyhash, ECBLOCK_BODYHASH);
@@ -178,8 +177,8 @@ fn ec_block(){
 
 #[test]
 fn fct_block(){
-  let api = Factom::open_node();
-  let query = api.factoid_block(FBLOCK_KEYMR);
+  let client = Factom::open_node();
+  let query = block::factoid_block(&client, FBLOCK_KEYMR);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response.result.fblock);
   assert_eq!(response.result.fblock.bodymr, FBLOCK_BODYMR);
@@ -187,8 +186,8 @@ fn fct_block(){
 
 #[test]
 fn fctblock_height(){
-  let api = Factom::open_node();
-  let query = api.fblock_by_height(FBLOCK_HEIGHT);
+  let client = Factom::open_node();
+  let query = block::fblock_by_height(&client, FBLOCK_HEIGHT);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response.result.fblock);
   assert_eq!(response.result.fblock.bodymr, FBLOCK_BODYMR);
@@ -196,8 +195,8 @@ fn fctblock_height(){
 
 #[test]
 fn chain_head(){
-  let api = Factom::open_node();
-  let query = api.chain_head(CHAIN_ID);
+  let client = Factom::open_node();
+  let query = chain::chain_head(&client, CHAIN_ID);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
   assert_eq!(response.result.chainhead, CHAIN_HEAD);
@@ -212,13 +211,13 @@ fn chain_head(){
 
 
 // Debug Module
-// Open_node doesn't expose debug functionality, these can be tested with a 
+// Open_node doesn't expose debug functionality, these can all be tested with a 
 //local factomd  node
 
 // #[test]
 // fn holding_queue(){
-//   let api = Factom::new();
-//   let query = api.holding_queue();
+//   let client = Factom::new();
+//   let query = debug::holding_queue(&client);
 //   let response = fetch(query).expect("Fetching Query");
 //   dbg!(&response);
 //   // assert_eq!(response.result.chainhead, CHAIN_HEAD);
@@ -228,8 +227,8 @@ fn chain_head(){
 // Entry Module
 #[test]
 fn entry(){
-  let api = Factom::open_node();
-  let query = api.entry(ENTRY_HASH);
+  let client = Factom::open_node();
+  let query = entry::entry(&client, ENTRY_HASH);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
   assert_eq!(response.result.chainid, CHAIN_ID);
@@ -237,8 +236,8 @@ fn entry(){
 
 #[test]
 fn raw_data(){
-  let api = Factom::open_node();
-  let query = api.raw_data(RAW_DATA_HASH);
+  let client = Factom::open_node();
+  let query = entry::raw_data(&client, RAW_DATA_HASH);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
   assert_eq!(response.result.data, RAW_DATA);  
