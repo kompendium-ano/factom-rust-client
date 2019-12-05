@@ -1,11 +1,11 @@
-use factom::*;
+use factom::{Factom, balance::factoid_balance};
 
 const FCT_PUB: &str = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
 
 #[tokio::main]
 async fn main() {
-  let api = Factom::testnet_node();
-  let query = api.factoid_balance(FCT_PUB);
+  let client = Factom::testnet_node();
+  let query = factoid_balance(&client, FCT_PUB);
   let response = query.await.expect("Fetching query");
   if response.is_err() {
     println!("Error: {}\nCode: {}", response.error.message, response.error.code);
