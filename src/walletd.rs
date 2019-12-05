@@ -1,6 +1,5 @@
 use super::*;
 
-impl Factom {
 /// Return the wallet seed and all addresses in the wallet for backup and offline 
 /// storage.
 /// # Example
@@ -14,13 +13,13 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn wallet_backup(self)
-      -> Result<ApiResponse<WalletBackup>>
-    {
-    let req =  ApiRequest::new("wallet-backup");
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  } 
+pub async fn wallet_backup(api: &Factom)
+    -> Result<ApiResponse<WalletBackup>>
+  {
+  let req =  ApiRequest::new("wallet-backup");
+  let response = walletd_call(api, req).await;
+  parse(response).await
+} 
 
 /// The wallet-balances API is used to query the acknowledged and saved balances for 
 /// all addresses in the currently running factom-walletd. The saved balance is the 
@@ -58,13 +57,13 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-   pub async fn wallet_balances(self)
-  -> Result<ApiResponse<WalletBalances>>
-  {
-    let req =  ApiRequest::new("wallet-balances");
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  } 
+  pub async fn wallet_balances(api: &Factom)
+-> Result<ApiResponse<WalletBalances>>
+{
+  let req =  ApiRequest::new("wallet-balances");
+  let response = walletd_call(api, req).await;
+  parse(response).await
+} 
 
 ///  Unlocks this wallet for the amount of time specified in seconds by timeout. 
 ///  The maximum amount of time a wallet can be unlocked for is 230 seconds (Roughly 
@@ -91,18 +90,18 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn unlock_wallet(
-    self, 
-    passphrase :&str, 
-    timeout: usize
-  ) -> Result<ApiResponse<UnlockWallet>>
-  {
-    let mut req =  ApiRequest::new("unlock-wallet");
-    req.params.insert("passphrase".to_string(), json!(passphrase));
-    req.params.insert("timeout".to_string(), json!(timeout));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
+pub async fn unlock_wallet(
+  api: &Factom, 
+  passphrase :&str, 
+  timeout: usize
+) -> Result<ApiResponse<UnlockWallet>>
+{
+  let mut req =  ApiRequest::new("unlock-wallet");
+  req.params.insert("passphrase".to_string(), json!(passphrase));
+  req.params.insert("timeout".to_string(), json!(timeout));
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
 
 /// Get the current hight of blocks that have been cached by the wallet while syncing.
 /// # Example
@@ -116,14 +115,14 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn wallet_height(self)
-    -> Result<ApiResponse<Height>>
-  {
-    let req =  ApiRequest::new("get-height");
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
-  
+pub async fn wallet_height(api: &Factom)
+  -> Result<ApiResponse<Height>>
+{
+  let req =  ApiRequest::new("get-height");
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
+
 /// Retrieve current properties of factom-walletd, including the wallet and wallet 
 /// API versions.
 /// # Example
@@ -137,13 +136,13 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn wallet_properties(self)
-    -> Result<ApiResponse<Properties>>
-  {
-    let req =  ApiRequest::new("properties");
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
+pub async fn wallet_properties(api: &Factom)
+  -> Result<ApiResponse<Properties>>
+{
+  let req =  ApiRequest::new("properties");
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
 
 ///  Sign arbitrary data using a secret key stored in the wallet using ed25519 
 ///  signatures. signer can be a human readable Factoid Address (FA), Entry Credit 
@@ -169,18 +168,17 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn sign_data(
-    self, 
-    signer: &str, 
-    data: &str
-  )-> Result<ApiResponse<SignData>>
-  {
-    let mut req =  ApiRequest::new("sign-data");
-    req.params.insert("signer".to_string(), json!(signer));
-    req.params.insert("data".to_string(), json!(data));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
+pub async fn sign_data(
+  api: &Factom, 
+  signer: &str, 
+  data: &str
+)-> Result<ApiResponse<SignData>>
+{
+  let mut req =  ApiRequest::new("sign-data");
+  req.params.insert("signer".to_string(), json!(signer));
+  req.params.insert("data".to_string(), json!(data));
+  let response = walletd_call(api, req).await;
+  parse(response).await
 }
 
 /// unlock-wallet function

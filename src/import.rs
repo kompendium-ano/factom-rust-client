@@ -1,8 +1,6 @@
 use super::*;
 use std::collections::HashMap;
 
-impl Factom {
-  /**
 /// Import Factoid and/or Entry Credit address secret keys into the wallet.
 /// # Example
 /// ```
@@ -16,25 +14,23 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-*/
-  pub async fn import_addresses(
-    self, 
-    addresses: Vec<&str>
-  )-> Result<ApiResponse<Addresses>>
-  {
-    let mut req =  ApiRequest::new("import-addresses");
-    let mut secrets: Vec<HashMap<&str, &str>> = Vec::new();
-    for address in addresses{
-      let mut tmp = HashMap::new();
-      tmp.insert("secret", address);
-      secrets.push(tmp);
-    }
-    req.params.insert("addresses".to_string(), json!(secrets));
-    let response = self.walletd_call(req).await;
-    parse(response).await
+pub async fn import_addresses(
+  api: &Factom,
+  addresses: Vec<&str>
+)-> Result<ApiResponse<Addresses>>
+{
+  let mut req =  ApiRequest::new("import-addresses");
+  let mut secrets: Vec<HashMap<&str, &str>> = Vec::new();
+  for address in addresses{
+    let mut tmp = HashMap::new();
+    tmp.insert("secret", address);
+    secrets.push(tmp);
   }
+  req.params.insert("addresses".to_string(), json!(secrets));
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
 
-  /**
 /// Allows a user to add one or more identity keys to the wallet. Using the secret 
 /// keys as input, the command will return the corresponding key pairs that were 
 /// imported. If the wallet is encrypted, it must be unlocked prior to using this 
@@ -52,25 +48,23 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-*/
-  pub async fn import_identity_keys(
-    self, 
-    keys: Vec<&str>
-  )-> Result<ApiResponse<Keys>>
-  {
-    let mut req =  ApiRequest::new("import-identity-keys");
-    let mut secrets: Vec<HashMap<&str, &str>> = Vec::new();
-    for address in keys{
-      let mut tmp = HashMap::new();
-      tmp.insert("secret", address);
-      secrets.push(tmp);
-    }
-    req.params.insert("keys".to_string(), json!(secrets));
-    let response = self.walletd_call(req).await;
-    parse(response).await
+pub async fn import_identity_keys(
+  api: &Factom,
+  keys: Vec<&str>
+)-> Result<ApiResponse<Keys>>
+{
+  let mut req =  ApiRequest::new("import-identity-keys");
+  let mut secrets: Vec<HashMap<&str, &str>> = Vec::new();
+  for address in keys{
+    let mut tmp = HashMap::new();
+    tmp.insert("secret", address);
+    secrets.push(tmp);
   }
+  req.params.insert("keys".to_string(), json!(secrets));
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
 
-/**
 /// Import a Koinify crowd sale address into the wallet. In our examples we used 
 /// the word “yellow” twelve times, note that in your case the master passphrase 
 /// will be different. If the wallet is encrypted, it must be unlocked prior to 
@@ -88,16 +82,14 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-*/
-  pub async fn import_koinify(
-    self, 
-    phrase: &str
-  )-> Result<ApiResponse<Address>>{
-    let mut req =  ApiRequest::new("import-koinify");
-    req.params.insert("words".to_string(), json!(phrase));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
+pub async fn import_koinify(
+  api: &Factom,
+  phrase: &str
+)-> Result<ApiResponse<Address>>{
+  let mut req =  ApiRequest::new("import-koinify");
+  req.params.insert("words".to_string(), json!(phrase));
+  let response = walletd_call(api, req).await;
+  parse(response).await
 }
 
 /// import-addresses function

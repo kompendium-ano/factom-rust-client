@@ -1,8 +1,5 @@
 use super::*;
 
-impl Factom {
-
-
 /// Show current holding messages in the queue.
 /// 
 /// #Example
@@ -16,15 +13,14 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn holding_queue(self)
-    -> Result<ApiResponse<HoldingQueue>>
-  {
-    let req =  ApiRequest::new("holding-queue");
-    let response = self.debug_call(req).await;
-    parse(response).await
-  }
+pub async fn holding_queue(api: &Factom)
+  -> Result<ApiResponse<HoldingQueue>>
+{
+  let req =  ApiRequest::new("holding-queue");
+  let response = debug_call(api, req).await;
+  parse(response).await
+}
 
-/**
 /// Get information on the current network factomd is connected to (TEST, MAIN, etc)
 /// 
 /// 
@@ -38,17 +34,16 @@ impl Factom {
 ///     .map(|response| response).map_err(|err| err);
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
-```
- */
-  pub async fn network_info(self)
-    -> Result<ApiResponse<NetworkInfo>>
-  {
-    let req =  ApiRequest::new("network-info");
-    let response = self.debug_call(req).await;
-    parse(response).await
-  }
+/// ```
 
-/**
+pub async fn network_info(api: &Factom)
+  -> Result<ApiResponse<NetworkInfo>>
+{
+  let req =  ApiRequest::new("network-info");
+  let response = debug_call(api, req).await;
+  parse(response).await
+}
+
 /// Get the predicted future entry credit rate.
 /// 
 /// #Example
@@ -61,17 +56,16 @@ impl Factom {
 ///     .map(|response| response).map_err(|err| err);
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
-```
- */
-  pub async fn predictive_fer(self)
-    -> Result<ApiResponse<PredictiveFER>>
-  {
-    let req =  ApiRequest::new("predictive-fer");
-    let response = self.debug_call(req).await;
-    parse(response).await
-  }
+/// ```
 
-/**
+pub async fn predictive_fer(api: &Factom)
+  -> Result<ApiResponse<PredictiveFER>>
+{
+  let req =  ApiRequest::new("predictive-fer");
+  let response = debug_call(api, req).await;
+  parse(response).await
+}
+
 /// Get a list of the current network audit servers along with their information.
 /// 
 /// #Example
@@ -85,16 +79,15 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
- */
-  pub async fn audit_servers(self)
-    -> Result<ApiResponse<AuditServers>>
-  {
-    let req =  ApiRequest::new("audit-servers");
-    let response = self.debug_call(req).await;
-    parse(response).await
-  }
 
-/**
+pub async fn audit_servers(api: &Factom)
+  -> Result<ApiResponse<AuditServers>>
+{
+  let req =  ApiRequest::new("audit-servers");
+  let response = debug_call(api, req).await;
+  parse(response).await
+}
+
 /// Get a list of the current network federated servers along with their information.
 /// 
 /// #Example
@@ -107,17 +100,16 @@ impl Factom {
 ///     .map(|response| response).map_err(|err| err);
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
-```
- */
-  pub async fn federated_servers(self)
-    -> Result<ApiResponse<FederatedServers>>
-  {
-    let req =  ApiRequest::new("federated-servers");
-    let response = self.debug_call(req).await;
-    parse(response).await
-  }
+/// ```
 
-/**
+pub async fn federated_servers(api: &Factom)
+  -> Result<ApiResponse<FederatedServers>>
+{
+  let req =  ApiRequest::new("federated-servers");
+  let response = debug_call(api, req).await;
+  parse(response).await
+}
+
 /// Get the current configuration state from factomd.conf.
 /// 
 /// NOTE: If a tag is commented out, this call will return the default value for it.
@@ -135,16 +127,14 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-///  */
-  pub async fn configuration(self)
-    -> Result<ApiResponse<Configuration>>
-  {
-    let req =  ApiRequest::new("configuration");
-    let response = self.debug_call(req).await;
-    parse(response).await
-  }
+pub async fn configuration(api: &Factom)
+  -> Result<ApiResponse<Configuration>>
+{
+  let req =  ApiRequest::new("configuration");
+  let response = debug_call(api, req).await;
+  parse(response).await
+}
 
-/**
 /// 
 /// #Example
 /// ```
@@ -156,17 +146,15 @@ impl Factom {
 ///     .map(|response| response).map_err(|err| err);
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
-```
- */
-  pub async fn process_list(self)
-    -> Result<ApiResponse<ProcessList>>
-  {
-    let req =  ApiRequest::new("process-list");
-    let response = self.debug_call(req).await;
-    parse(response).await
-  }
+/// ```
+pub async fn process_list(api: &Factom)
+  -> Result<ApiResponse<ProcessList>>
+{
+  let req =  ApiRequest::new("process-list");
+  let response = debug_call(api, req).await;
+  parse(response).await
+}
 
-/**
 /// List of authority servers in the management chain.
 /// Get the process list known to the current factomd instance.
 /// 
@@ -180,17 +168,15 @@ impl Factom {
 ///     .map(|response| response).map_err(|err| err);
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
-```
- */
-  pub async fn authorities(self)
-    -> Result<ApiResponse<Authorities>>
-  {
-    let req =  ApiRequest::new("authorities");
-    let response = self.debug_call(req).await;
-    parse(response).await
-  }
+/// ```
+pub async fn authorities(api: &Factom)
+  -> Result<ApiResponse<Authorities>>
+{
+  let req =  ApiRequest::new("authorities");
+  let response = debug_call(api, req).await;
+  parse(response).await
+}
 
-/**
 /// Causes factomd to re-read the configuration from the config file. Note: This 
 /// may cause consensus problems and could be impractical even in testing.
 /// 
@@ -204,17 +190,15 @@ impl Factom {
 ///     .map(|response| response).map_err(|err| err);
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
-```
- */
-  pub async fn reload_configuration(self)
-    -> Result<ApiResponse<Configuration>>
-  {
-    let req =  ApiRequest::new("reload-configuration");
-    let response = self.debug_call(req).await;
-    parse(response).await
-  }
+/// ```
+pub async fn reload_configuration(api: &Factom)
+  -> Result<ApiResponse<Configuration>>
+{
+  let req =  ApiRequest::new("reload-configuration");
+  let response = debug_call(api, req).await;
+  parse(response).await
+}
 
-/**
 /// Get the current package drop rate for network testing.
 /// 
 /// #Example
@@ -227,17 +211,15 @@ impl Factom {
 ///     .map(|response| response).map_err(|err| err);
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
-```
- */
-  pub async fn drop_rate(self)
-    -> Result<ApiResponse<DropRate>>
-  {
-    let req =  ApiRequest::new("drop-rate");
-    let response = self.debug_call(req).await;
-    parse(response).await
-  }
+/// ```
+pub async fn drop_rate(api: &Factom)
+  -> Result<ApiResponse<DropRate>>
+{
+  let req =  ApiRequest::new("drop-rate");
+  let response = debug_call(api, req).await;
+  parse(response).await
+}
 
-/**
 /// Change the network drop rate for testing.
 /// 
 /// #Example
@@ -251,19 +233,17 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
- */
-  pub async fn set_drop_rate(
-    self, 
-    drop_rate: usize
-  )-> Result<ApiResponse<DropRate>>
-  {
-    let mut req =  ApiRequest::new("set-drop-rate");
-    req.params.insert("DropRate".to_string(), json!(drop_rate)); 
-    let response = self.debug_call(req).await;
-    parse(response).await
-  }
+pub async fn set_drop_rate(
+  api: &Factom,
+  drop_rate: usize
+)-> Result<ApiResponse<DropRate>>
+{
+  let mut req =  ApiRequest::new("set-drop-rate");
+  req.params.insert("DropRate".to_string(), json!(drop_rate)); 
+  let response = debug_call(api, req).await;
+  parse(response).await
+}
 
-/**
 /// Get the current msg delay time for network testing.
 /// 
 /// #Example
@@ -276,16 +256,15 @@ impl Factom {
 ///     .map(|response| response).map_err(|err| err);
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
-```
- */
-  pub async fn delay(self)
-    -> Result<ApiResponse<Delay>>{
-    let req =  ApiRequest::new("delay");
-    let response = self.debug_call(req).await;
-    parse(response).await
-  }
+/// ```
 
-/**
+pub async fn delay(api: &Factom)
+  -> Result<ApiResponse<Delay>>{
+  let req =  ApiRequest::new("delay");
+  let response = debug_call(api, req).await;
+  parse(response).await
+}
+
 /// Set the current msg delay time for network testing.
 /// #Example
 /// ```
@@ -297,20 +276,18 @@ impl Factom {
 ///     .map(|response| response).map_err(|err| err);
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
-```
- */
-  pub async fn set_delay(
-    self, 
-    delay: usize
-  )-> Result<ApiResponse<Delay>>
-  {
-    let mut req =  ApiRequest::new("set-delay");
-    req.params.insert("Delay".to_string(), json!(delay)); 
-    let response = self.debug_call(req).await;
-    parse(response).await
-  }
+/// ```
+pub async fn set_delay(
+  api: &Factom,
+  delay: usize
+)-> Result<ApiResponse<Delay>>
+{
+  let mut req =  ApiRequest::new("set-delay");
+  req.params.insert("Delay".to_string(), json!(delay)); 
+  let response = debug_call(api, req).await;
+  parse(response).await
+}
 
-  /**
 /// Get the nodes summary string.
 /// 
 /// #Example
@@ -323,16 +300,14 @@ impl Factom {
 ///     .map(|response| response).map_err(|err| err);
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
-```
- */
-  pub async fn summary(self)
-    -> Result<ApiResponse<Summary>>{ 
-    let req =  ApiRequest::new("summary");
-    let response = self.debug_call(req).await;
-    parse(response).await
-  }
+/// ```
+pub async fn summary(api: &Factom)
+  -> Result<ApiResponse<Summary>>{ 
+  let req =  ApiRequest::new("summary");
+  let response = debug_call(api, req).await;
+  parse(response).await
+}
 
-  /**
 /// Show current holding messages in the queue.
 /// #Example
 /// ```
@@ -344,16 +319,15 @@ impl Factom {
 ///     .map(|response| response).map_err(|err| err);
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
-```
- */
-  pub async fn messages(self)
-    -> Result<ApiResponse<Messages>>
-  { 
-    let req =  ApiRequest::new("messages");
-    let response = self.debug_call(req).await;
-    parse(response).await
-  }
+/// ```
+pub async fn messages(api: &Factom)
+  -> Result<ApiResponse<Messages>>
+{ 
+  let req =  ApiRequest::new("messages");
+  let response = debug_call(api, req).await;
+  parse(response).await
 }
+
 
 /// holding-queue function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]

@@ -1,7 +1,6 @@
 use super::*;
 use std::collections::HashMap;
 
-impl Factom {
 /// This api call is used to find the status of a transaction, whether it be a 
 /// factoid, reveal entry, or commit entry. When using this, you must specify the 
 /// type of the transaction by giving the chainid field 1 of 3 values:
@@ -68,22 +67,22 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn ack(
-    self, 
-    hash: &str, 
-    chainid: &str, 
-    full_transaction: Option<&str>
-  ) -> Result<ApiResponse<Ack>> 
-  {
-    let mut req =  ApiRequest::new("ack");
-    req.params.insert("hash".to_string(), json!(hash));
-    req.params.insert("chainid".to_string(), json!(chainid));
-    if let Some(tx) = full_transaction{
-      req.params.insert("fulltransaction".to_string(), json!(tx));
-    }
-    let response = self.factomd_call(req).await;
-    parse(response).await
+pub async fn ack(
+  api: &Factom, 
+  hash: &str, 
+  chainid: &str, 
+  full_transaction: Option<&str>
+) -> Result<ApiResponse<Ack>> 
+{
+  let mut req =  ApiRequest::new("ack");
+  req.params.insert("hash".to_string(), json!(hash));
+  req.params.insert("chainid".to_string(), json!(chainid));
+  if let Some(tx) = full_transaction{
+    req.params.insert("fulltransaction".to_string(), json!(tx));
   }
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
 
 /// Submit a factoid transaction. The transaction hex encoded string is 
 /// documented here: 
@@ -105,16 +104,16 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success()); 
 /// ```
-  pub async fn factoid_submit(
-    self, 
-    transaction: &str
-  )-> Result<ApiResponse<FctSubmit>>
-  {
-    let mut req =  ApiRequest::new("factoid-submit");
-    req.params.insert("transaction".to_string(), json!(transaction));
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
+pub async fn factoid_submit(
+  api: &Factom, 
+  transaction: &str
+)-> Result<ApiResponse<FctSubmit>>
+{
+  let mut req =  ApiRequest::new("factoid-submit");
+  req.params.insert("transaction".to_string(), json!(transaction));
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
 
 /// Retrieve details of a factoid transaction using a transaction’s hash 
 /// (or corresponding transaction id).
@@ -152,16 +151,16 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn transaction(
-    self, 
-    hash: &str
-  )-> Result<ApiResponse<Transaction>>
-  {
-    let mut req =  ApiRequest::new("transaction");
-    req.params.insert("hash".to_string(), json!(hash));
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
+pub async fn transaction(
+  api: &Factom, 
+  hash: &str
+)-> Result<ApiResponse<Transaction>>
+{
+  let mut req =  ApiRequest::new("transaction");
+  req.params.insert("hash".to_string(), json!(hash));
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
 
 /// Returns an array of factoid transactions that have not yet been recorded in the 
 /// blockchain, but are known to the system.
@@ -176,18 +175,18 @@ impl Factom {
 /// let response = result.unwrap();
 /// assert!(response.success());   
 /// ```
-  pub async fn pending_transactions(
-    self, 
-    address: Option<&str>
-  )-> Result<ApiResponse<PendingTx>>
-  {
-    let mut req =  ApiRequest::new("pending-transactions");
-    if let Some(add) = address {
-      req.params.insert("address".to_string(), json!(add));
-    }
-    let response = self.factomd_call(req).await;
-    parse(response).await
+pub async fn pending_transactions(
+  api: &Factom, 
+  address: Option<&str>
+)-> Result<ApiResponse<PendingTx>>
+{
+  let mut req =  ApiRequest::new("pending-transactions");
+  if let Some(add) = address {
+    req.params.insert("address".to_string(), json!(add));
   }
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
 
 /// When adding entry credit outputs, the amount given is in factoshis, not entry credits. This means math is required to determine the correct amount of factoshis to pay to get X EC.
 /// 
@@ -206,20 +205,20 @@ impl Factom {
 /// let response = fetch(query).expect("Fetching query");
 /// assert!(response.result);
 /// 
-  pub async fn add_ec_output(
-    self, 
-    txname: &str, 
-    address: &str, 
-    amount: u64
-  ) -> Result<ApiResponse<NewTx>>
-  {
-    let mut req =  ApiRequest::new("add-ec-output");
-    req.params.insert("tx-name".to_string(), json!(txname));
-    req.params.insert("address".to_string(), json!(address));
-    req.params.insert("amount".to_string(), json!(amount));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
+pub async fn add_ec_output(
+  api: &Factom, 
+  txname: &str, 
+  address: &str, 
+  amount: u64
+) -> Result<ApiResponse<NewTx>>
+{
+  let mut req =  ApiRequest::new("add-ec-output");
+  req.params.insert("tx-name".to_string(), json!(txname));
+  req.params.insert("address".to_string(), json!(address));
+  req.params.insert("amount".to_string(), json!(amount));
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
 
 /// Addfee is a shortcut and safeguard for adding the required additional factoshis to covert the fee. The fee is displayed in the returned transaction after each step, but addfee should be used instead of manually adding the additional input. This will help to prevent overpaying.
 /// 
@@ -231,18 +230,18 @@ impl Factom {
 /// 
 /// Add fee is a part of sending a transaction to see a full example check the 
 /// examples folder.
-  pub async fn add_fee(
-    self, 
-    txname: &str, 
-    address: &str
-  ) -> Result<ApiResponse<Tx>>
-  {
-    let mut req =  ApiRequest::new("add-fee");
-    req.params.insert("tx-name".to_string(), json!(txname));
-    req.params.insert("address".to_string(), json!(address));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
+pub async fn add_fee(
+  api: &Factom, 
+  txname: &str, 
+  address: &str
+) -> Result<ApiResponse<Tx>>
+{
+  let mut req =  ApiRequest::new("add-fee");
+  req.params.insert("tx-name".to_string(), json!(txname));
+  req.params.insert("address".to_string(), json!(address));
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
 
 /// Adds an input to the transaction from the given address. The public address is 
 /// given, and the wallet must have the private key associated with the address to 
@@ -255,20 +254,20 @@ impl Factom {
 /// 
 /// Add input is used in the process of sending a transaction, to see the full 
 /// process as an example check the examples folder.
-  pub async fn add_input(
-    self, 
-    txname: &str, 
-    address: &str, 
-    amount: u64
-  ) -> Result<ApiResponse<Tx>>
-  {
-    let mut req =  ApiRequest::new("add-input");
-    req.params.insert("tx-name".to_string(), json!(txname));
-    req.params.insert("address".to_string(), json!(address));
-    req.params.insert("amount".to_string(), json!(amount));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
+pub async fn add_input(
+  api: &Factom, 
+  txname: &str, 
+  address: &str, 
+  amount: u64
+) -> Result<ApiResponse<Tx>>
+{
+  let mut req =  ApiRequest::new("add-input");
+  req.params.insert("tx-name".to_string(), json!(txname));
+  req.params.insert("address".to_string(), json!(address));
+  req.params.insert("amount".to_string(), json!(amount));
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
 
 /// Adds a factoid address output to the transaction. Keep in mind the output is 
 /// done in factoshis. 1 factoid is 1,000,000,000 factoshis.
@@ -280,20 +279,20 @@ impl Factom {
 /// 
 /// Add Output is used in the transaction process, the full process and an example of 
 /// this function being used can be found in the examples folder
-  pub async fn add_output(
-    self, 
-    txname: &str, 
-    address: &str, 
-    amount: u64
-  ) -> Result<ApiResponse<Tx>>
-  {
-    let mut req =  ApiRequest::new("add-output");
-    req.params.insert("tx-name".to_string(), json!(txname));
-    req.params.insert("address".to_string(), json!(address));
-    req.params.insert("amount".to_string(), json!(amount));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
+pub async fn add_output(
+  api: &Factom, 
+  txname: &str, 
+  address: &str, 
+  amount: u64
+) -> Result<ApiResponse<Tx>>
+{
+  let mut req =  ApiRequest::new("add-output");
+  req.params.insert("tx-name".to_string(), json!(txname));
+  req.params.insert("address".to_string(), json!(address));
+  req.params.insert("amount".to_string(), json!(amount));
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
 /// Deletes a working transaction in the wallet. The full transaction will be 
 /// returned, and then deleted.
 /// # Example
@@ -312,16 +311,16 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn delete_transaction(
-    self, 
-    tx_name: &str
-  )-> Result<ApiResponse<DeleteTx>>
-  {
-    let mut req =  ApiRequest::new("delete-transaction");
-    req.params.insert("tx-name".to_string(), json!(tx_name));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
+pub async fn delete_transaction(
+  api: &Factom, 
+  tx_name: &str
+)-> Result<ApiResponse<DeleteTx>>
+{
+  let mut req =  ApiRequest::new("delete-transaction");
+  req.params.insert("tx-name".to_string(), json!(tx_name));
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
 
 /// This will create a new transaction. The txid is in flux until the final 
 /// transaction is signed. Until then, it should not be used or recorded.
@@ -343,32 +342,32 @@ impl Factom {
 /// assert!(response.success());
 /// fetch(handler.delete_transaction(txname).map(|_| ())).map_err(|_| ()).unwrap();
 /// ```
-  pub async fn new_transaction(
-    self, 
-    tx_name: &str
-  )-> Result<ApiResponse<NewTx>>
-  {
-    let mut req =  ApiRequest::new("new-transaction");
-    req.params.insert("tx-name".to_string(), json!(tx_name));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
+pub async fn new_transaction(
+  api: &Factom, 
+  tx_name: &str
+)-> Result<ApiResponse<NewTx>>
+{
+  let mut req =  ApiRequest::new("new-transaction");
+  req.params.insert("tx-name".to_string(), json!(tx_name));
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
 /// Signs the transaction. It is now ready to be executed.
 /// 
 /// # Example
 /// 
 /// sign_transaction is used in the transaction process, the full process can be 
 /// found in the examples folder
-  pub async fn sign_transaction(
-    self, 
-    tx_name: &str
-  )-> Result<ApiResponse<Tx>>
-  {
-    let mut req =  ApiRequest::new("sign-transaction");
-    req.params.insert("tx-name".to_string(), json!(tx_name));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
+pub async fn sign_transaction(
+  api: &Factom, 
+  tx_name: &str
+)-> Result<ApiResponse<Tx>>
+{
+  let mut req =  ApiRequest::new("sign-transaction");
+  req.params.insert("tx-name".to_string(), json!(tx_name));
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
 
 /// When paying from a transaction, you can also make the receiving transaction 
 /// pay for it. Using sub fee, you can use the receiving address in the parameters, 
@@ -381,18 +380,18 @@ impl Factom {
 /// 
 /// sub_fee is used in the transaction process, the full process and an example of 
 /// this function being used can be found in the examples folder
-  pub async fn sub_fee(
-    self, 
-    tx_name: &str, 
-    address: &str
-  )-> Result<ApiResponse<Tx>>
-  {
-    let mut req =  ApiRequest::new("sub-fee");
-    req.params.insert("tx-name".to_string(), json!(tx_name));
-    req.params.insert("address".to_string(), json!(address));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
+pub async fn sub_fee(
+  api: &Factom, 
+  tx_name: &str, 
+  address: &str
+)-> Result<ApiResponse<Tx>>
+{
+  let mut req =  ApiRequest::new("sub-fee");
+  req.params.insert("tx-name".to_string(), json!(tx_name));
+  req.params.insert("address".to_string(), json!(address));
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
 
 /// Lists all the current working transactions in the wallet. These are transactions 
 /// that are not yet sent.
@@ -407,13 +406,13 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn tmp_transactions(self)
-    -> Result<ApiResponse<TmpTransactions>>
-  {
-    let req =  ApiRequest::new("tmp-transactions");
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  } 
+pub async fn tmp_transactions(api: &Factom)
+  -> Result<ApiResponse<TmpTransactions>>
+{
+  let req =  ApiRequest::new("tmp-transactions");
+  let response = walletd_call(api, req).await;
+  parse(response).await
+} 
 
 /// There are a few ways to search for a transaction
 /// 
@@ -464,29 +463,28 @@ impl Factom {
 /// let id_response = fetch(id_query).unwrap();
 /// assert!(id_response.success());  
 /// ```
-  pub async fn transactions(
-    self, 
-    filter: SearchBy
-  )-> Result<ApiResponse<Transactions>>
-  {
-    let mut req =  ApiRequest::new("transactions");
-    match filter {
-      SearchBy::Txid(txid) => {
-                req.params.insert("txid".to_string(), json!(txid));
-                }
-      SearchBy::Address(address) => {
-                req.params.insert("address".to_string(), json!(address));
-                }
-      SearchBy::Range(start, end) => {
-                let mut range = HashMap::new();
-                range.insert("start", json!(start));
-                range.insert("end", json!(end));
-                req.params.insert("range".to_string(),json!(range));
-                }
-    };      
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  } 
+pub async fn transactions(
+  api: &Factom, 
+  filter: SearchBy
+)-> Result<ApiResponse<Transactions>>
+{
+  let mut req =  ApiRequest::new("transactions");
+  match filter {
+    SearchBy::Txid(txid) => {
+              req.params.insert("txid".to_string(), json!(txid));
+              }
+    SearchBy::Address(address) => {
+              req.params.insert("address".to_string(), json!(address));
+              }
+    SearchBy::Range(start, end) => {
+              let mut range = HashMap::new();
+              range.insert("start", json!(start));
+              range.insert("end", json!(end));
+              req.params.insert("range".to_string(),json!(range));
+              }
+  };      
+  let response = walletd_call(api, req).await;
+  parse(response).await
 } 
 
 /// Search options for the transactions function

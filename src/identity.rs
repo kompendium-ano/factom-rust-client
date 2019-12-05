@@ -1,7 +1,5 @@
 use super ::*;
 
-impl Factom {
-
 /// Returns all of the identity key pairs that are currently stored in the wallet. 
 /// If the wallet is encrypted, it must be unlocked prior to using this command.
 /// 
@@ -16,13 +14,13 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn all_id_keys(self)
-    -> Result<ApiResponse<IdKeys>>
-  {
-    let req =  ApiRequest::new("all-identity-keys");
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
+pub async fn all_id_keys(api: &Factom)
+  -> Result<ApiResponse<IdKeys>>
+{
+  let req =  ApiRequest::new("all-identity-keys");
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
 /// This command will return an identity’s set of public keys (in order of 
 /// decreasing priority) that were active at a specific block, or at the most 
 /// recent height if the "height" parameter is not included. This is useful for 
@@ -60,18 +58,18 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn active_id_keys(
-    self,
-    chain_id: &str,
-    height: usize
-  )-> Result<ApiResponse<ActiveIdKeys>>
-  {
-    let mut req =  ApiRequest::new("active-identity-keys");
-    req.params.insert("chainid".to_string(), json!(chain_id));
-    req.params.insert("height".to_string(), json!(height));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
+pub async fn active_id_keys(
+  api: &Factom,
+  chain_id: &str,
+  height: usize
+)-> Result<ApiResponse<ActiveIdKeys>>
+{
+  let mut req =  ApiRequest::new("active-identity-keys");
+  req.params.insert("chainid".to_string(), json!(chain_id));
+  req.params.insert("height".to_string(), json!(height));
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
 
 ///  **Be careful using this function! Ensure that you have backups of important keys 
 ///  before removing them.** Given an identity public key, this command deletes the 
@@ -94,17 +92,17 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn remove_id_key(
-    self,
-    public: &str
-  )-> Result<ApiResponse<RemoveIdKey>>
-  {
-    let mut req =  ApiRequest::new("remove-identity-key");
-    req.params.insert("public".to_string(), json!(public));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
-  
+pub async fn remove_id_key(
+  api: &Factom,
+  public: &str
+)-> Result<ApiResponse<RemoveIdKey>>
+{
+  let mut req =  ApiRequest::new("remove-identity-key");
+  req.params.insert("public".to_string(), json!(public));
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
+
 /// Given an identity public key as input, this command will respond with the 
 /// corresponding public/private key pair from the wallet. If the desired identity 
 /// key isn’t currently stored in the wallet, an error is returned to indicate this. 
@@ -124,17 +122,17 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn id_key(
-    self,
-    public: &str
-  )-> Result<ApiResponse<Key>>
-  {
-    let mut req =  ApiRequest::new("identity-key");
-    req.params.insert("public".to_string(), json!(public));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
+pub async fn id_key(
+  api: &Factom,
+  public: &str
+)-> Result<ApiResponse<Key>>
+{
+  let mut req =  ApiRequest::new("identity-key");
+  req.params.insert("public".to_string(), json!(public));
+  let response = walletd_call(api, req).await;
+  parse(response).await
 }
+
 
 /// all-identity-keys function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]

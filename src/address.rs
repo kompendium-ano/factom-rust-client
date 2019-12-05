@@ -1,6 +1,5 @@
 use super::*;
 
-impl Factom {
 ///Retrieve the public and private parts of a Factoid or Entry Credit address 
 ///stored in the wallet.
 ///
@@ -15,16 +14,16 @@ impl Factom {
 ///let response = fetch(query).unwrap();
 ///assert!(response.success());
 ///```
-  pub async fn address(
-    self, 
-    address: &str
-  )-> Result<ApiResponse<Address>>
-  {
-    let mut req =  ApiRequest::new("address");
-    req.params.insert("address".to_string(), json!(address));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
+pub async fn address(
+  api: &Factom, 
+  address: &str
+)-> Result<ApiResponse<Address>>
+{
+  let mut req =  ApiRequest::new("address");
+  req.params.insert("address".to_string(), json!(address));
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
 
 ///Retrieve all of the Factoid and Entry Credit addresses stored in the wallet.
 ///
@@ -38,13 +37,13 @@ impl Factom {
 ///let response = fetch(query).unwrap();
 ///assert!(response.success());
 ///```  
-  pub async fn all_addresses(self)
-    -> Result<ApiResponse<AllAddresses>> 
-  {
-    let req =  ApiRequest::new("all-addresses");
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
+pub async fn all_addresses(api: &Factom)
+  -> Result<ApiResponse<AllAddresses>> 
+{
+  let req =  ApiRequest::new("all-addresses");
+  let response = requests::walletd_call(api, req).await;
+  parse(response).await
+}
 
 /// Be careful using this function! Ensure that you have backups of important keys 
 /// before removing them. Given a factoid or entry-credit address, this command 
@@ -64,16 +63,15 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());
 /// ```
-  pub async fn remove_address(
-    self, 
-    address: &str
-  )-> Result<ApiResponse<RemoveAddress>>
-  {
-    let mut req =  ApiRequest::new("remove-address");
-    req.params.insert("address".to_string(), json!(address));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
+pub async fn remove_address(
+  api: &Factom, 
+  address: &str
+)-> Result<ApiResponse<RemoveAddress>>
+{
+  let mut req =  ApiRequest::new("remove-address");
+  req.params.insert("address".to_string(), json!(address));
+  let response = requests::walletd_call(api, req).await;
+  parse(response).await
 }
 
 /// address function

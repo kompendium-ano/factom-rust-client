@@ -1,6 +1,6 @@
 use super::*;
 
-impl Factom{
+
 
 /// Return its current balance for a specific entry credit address.
 /// # Example
@@ -15,16 +15,16 @@ impl Factom{
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn entry_credit_balance(
-    self, 
-    address: &str
-  )-> Result<ApiResponse<Balance>>
-  {
-    let mut req =  ApiRequest::new("entry-credit-balance");
-    req.params.insert("address".to_string(), json!(address));
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
+pub async fn entry_credit_balance(
+  api: &Factom, 
+  address: &str
+)-> Result<ApiResponse<Balance>>
+{
+  let mut req =  ApiRequest::new("entry-credit-balance");
+  req.params.insert("address".to_string(), json!(address));
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
 
 /// This call returns the number of Factoshis (Factoids *10^-8) that are 
 /// currently available at the address specified.
@@ -40,16 +40,16 @@ impl Factom{
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn factoid_balance(
-    self, 
-    address: &str
-  )-> Result<ApiResponse<Balance>>
-  {
-    let mut req =  ApiRequest::new("factoid-balance");
-    req.params.insert("address".to_string(), json!(address));
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
+pub async fn factoid_balance(
+  api: &Factom, 
+  address: &str
+)-> Result<ApiResponse<Balance>>
+{
+  let mut req =  ApiRequest::new("factoid-balance");
+  req.params.insert("address".to_string(), json!(address));
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
 
 /// The multiple-ec-balances API is used to query the acknowledged and saved 
 /// balances for a list of entry credit addresses.
@@ -96,16 +96,16 @@ impl Factom{
 /// let response = result.unwrap();
 /// assert!(response.success());   
 /// ```
-  pub async fn multiple_ec_balances(
-    self, 
-    addresses: Vec<&str>
-  )-> Result<ApiResponse<Balances>>
-  {
-    let mut req =  ApiRequest::new("multiple-ec-balances");
-    req.params.insert("addresses".to_string(), json!(addresses));
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
+pub async fn multiple_ec_balances(
+  api: &Factom, 
+  addresses: Vec<&str>
+)-> Result<ApiResponse<Balances>>
+{
+  let mut req =  ApiRequest::new("multiple-ec-balances");
+  req.params.insert("addresses".to_string(), json!(addresses));
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
 
 /// The multiple-fct-balances API is used to query the acknowledged and saved 
 /// balances in factoshis (a factoshi is 10^8 factoids) not factoids(FCT) for a 
@@ -151,17 +151,17 @@ impl Factom{
 /// let response = result.unwrap();
 /// assert!(response.success());   
 /// ```
-  pub async fn multiple_fct_balances(
-    self, 
-    addresses: Vec<&str>
-    )-> Result<ApiResponse<Balances>>
-    {
-    let mut req =  ApiRequest::new("multiple-fct-balances");
-    req.params.insert("addresses".to_string(), json!(addresses));
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
+pub async fn multiple_fct_balances(
+  api: &Factom, 
+  addresses: Vec<&str>
+  )-> Result<ApiResponse<Balances>>
+  {
+  let mut req =  ApiRequest::new("multiple-fct-balances");
+  req.params.insert("addresses".to_string(), json!(addresses));
+  let response = factomd_call(api, req).await;
+  parse(response).await
 }
+
 
 /// entry-credit-balance and factoid-balance functions
 #[derive(Default, Debug, Copy, Clone, PartialEq, Serialize, Deserialize)]

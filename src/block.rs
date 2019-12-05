@@ -1,5 +1,4 @@
 //! The Block module contains all api methods which query block data
-
 use super::*;
 
 /// Anchortype is a required argument in the anchors function 
@@ -8,7 +7,6 @@ pub enum AnchorType {
   Height(usize)
 }
 
-impl Factom {
 /// Retrieve administrative blocks for any given height.
 /// 
 /// The admin block contains data related to the identities within the factom 
@@ -32,15 +30,14 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());
 /// ```
-  pub async fn ablock_by_height(self, height: u32)
-    -> Result<ApiResponse<ABlockHeightResult>>
-  {
-    let mut req =  ApiRequest::new("ablock-by-height");
-    req.params.insert("height".to_string(), json!(height));
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
-
+pub async fn ablock_by_height(api: &Factom, height: u32)
+  -> Result<ApiResponse<ABlockHeightResult>>
+{
+  let mut req =  ApiRequest::new("ablock-by-height");
+  req.params.insert("height".to_string(), json!(height));
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
 
 /// Retrieve a specified admin block given its merkle root key.
 /// # Example
@@ -55,14 +52,14 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn admin_block(self, keymr: &str)
-    -> Result<ApiResponse<ABlockResult>>
-  {
-    let mut req =  ApiRequest::new("admin-block");
-    req.params.insert("keymr".to_string(), json!(keymr));
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
+pub async fn admin_block(api: &Factom, keymr: &str)
+  -> Result<ApiResponse<ABlockResult>>
+{
+  let mut req =  ApiRequest::new("admin-block");
+  req.params.insert("keymr".to_string(), json!(keymr));
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
 
 
 ///  Retrieve information about the directory block anchors that have been confirmed 
@@ -85,17 +82,17 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn anchors(self, target: AnchorType)
-    -> Result<ApiResponse<Anchor>>
-  {
-    let mut req =  ApiRequest::new("anchors");
-    match target {
-      AnchorType::Hash(h) => {req.params.insert("hash".to_string(), json!(h));},
-      AnchorType::Height(i) => {req.params.insert("height".to_string(), json!(i));}
-    }
-    let response = self.factomd_call(req).await;
-    parse(response).await
+pub async fn anchors(api: &Factom, target: AnchorType)
+  -> Result<ApiResponse<Anchor>>
+{
+  let mut req =  ApiRequest::new("anchors");
+  match target {
+    AnchorType::Hash(h) => {req.params.insert("hash".to_string(), json!(h));},
+    AnchorType::Height(i) => {req.params.insert("height".to_string(), json!(i));}
   }
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
 
 
 /// Retrieve a directory block given only its height.
@@ -111,15 +108,15 @@ impl Factom {
 /// assert!(response.success());  
 /// ```
 pub async fn dblock_by_height(
-    self, 
-    height: u32
-  )-> Result<ApiResponse<DBlockHeightResult>>
-  {
-    let mut req =  ApiRequest::new("dblock-by-height");
-    req.params.insert("height".to_string(), json!(height));
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
+  api: &Factom, 
+  height: u32
+)-> Result<ApiResponse<DBlockHeightResult>>
+{
+  let mut req =  ApiRequest::new("dblock-by-height");
+  req.params.insert("height".to_string(), json!(height));
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
 
 /// Every directory block has a KeyMR (Key Merkle Root), which can be used to 
 /// retrieve it. The response will contain information that can be used to 
@@ -138,14 +135,14 @@ pub async fn dblock_by_height(
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());    
 /// ```
-  pub async fn directory_block(self, keymr: &str)
-    -> Result<ApiResponse<DBlock>>
-  {
-    let mut req =  ApiRequest::new("directory-block");
-    req.params.insert("keymr".to_string(), json!(keymr));
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
+pub async fn directory_block(api: &Factom, keymr: &str)
+  -> Result<ApiResponse<DBlock>>
+{
+  let mut req =  ApiRequest::new("directory-block");
+  req.params.insert("keymr".to_string(), json!(keymr));
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
 /// The directory block head is the last known directory block by factom, or in 
 /// other words, the most recently recorded block. This can be used to grab the 
 /// latest block and the information required to traverse the entire blockchain. 
@@ -160,13 +157,13 @@ pub async fn dblock_by_height(
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-   pub async fn directory_block_head(self)
-    -> Result<ApiResponse<DBlockHead>>
-  {
-    let req =  ApiRequest::new("directory-block-head");
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
+  pub async fn directory_block_head(api: &Factom)
+  -> Result<ApiResponse<DBlockHead>>
+{
+  let req =  ApiRequest::new("directory-block-head");
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
 
 /// Retrieve the entry credit block for any given height. These blocks contain 
 /// entry credit transaction information.
@@ -181,14 +178,14 @@ pub async fn dblock_by_height(
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn ecblock_by_height(self, height: u32)
-    -> Result<ApiResponse<EBlockHeightResult>>
-  {
-    let mut req =  ApiRequest::new("ecblock-by-height");
-    req.params.insert("height".to_string(), json!(height));
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
+pub async fn ecblock_by_height(api: &Factom, height: u32)
+  -> Result<ApiResponse<EBlockHeightResult>>
+{
+  let mut req =  ApiRequest::new("ecblock-by-height");
+  req.params.insert("height".to_string(), json!(height));
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
 
 /// Retrieve a specified entry block given its merkle root key. The entry block 
 /// contains 0 to many entries
@@ -205,14 +202,14 @@ pub async fn dblock_by_height(
 /// assert!(response.success());  
 /// 
 /// ```
-  pub async fn entry_block(self, keymr: &str)
-    -> Result<ApiResponse<EBlock>>
-  {
-    let mut req =  ApiRequest::new("entry-block");
-    req.params.insert("keymr".to_string(), json!(keymr));
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
+pub async fn entry_block(api: &Factom, keymr: &str)
+  -> Result<ApiResponse<EBlock>>
+{
+  let mut req =  ApiRequest::new("entry-block");
+  req.params.insert("keymr".to_string(), json!(keymr));
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
 
 /// Retrieve a specified entrycredit block given its merkle root key. The numbers 
 /// are minute markers.
@@ -228,14 +225,14 @@ pub async fn dblock_by_height(
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn entry_credit_block(self, keymr: &str)
-    -> Result<ApiResponse<EcBlockResult>>
-  {
-    let mut req =  ApiRequest::new("entrycredit-block");
-    req.params.insert("keymr".to_string(), json!(keymr));
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
+pub async fn entry_credit_block(api: &Factom, keymr: &str)
+  -> Result<ApiResponse<EcBlockResult>>
+{
+  let mut req =  ApiRequest::new("entrycredit-block");
+  req.params.insert("keymr".to_string(), json!(keymr));
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
 
 /// Retrieve a specified factoid block given its merkle root key.
 /// # Example
@@ -250,15 +247,15 @@ pub async fn dblock_by_height(
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn factoid_block(self, keymr: &str)
-  -> Result<ApiResponse<FBlockResult>>
-  {
-    let mut req =  ApiRequest::new("factoid-block");
-    req.params.insert("keymr".to_string(), json!(keymr));
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
-  
+pub async fn factoid_block(api: &Factom, keymr: &str)
+-> Result<ApiResponse<FBlockResult>>
+{
+  let mut req =  ApiRequest::new("factoid-block");
+  req.params.insert("keymr".to_string(), json!(keymr));
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
+
 /// Retrieve the factoid block for any given height. These blocks contain factoid transaction information.
 /// # Example
 /// ```
@@ -270,15 +267,15 @@ pub async fn dblock_by_height(
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 ///```
-  pub async fn fblock_by_height(self, height: u32)
-    -> Result<ApiResponse<FBlockResult>>
-  {
-    let mut req =  ApiRequest::new("fblock-by-height");
-    req.params.insert("height".to_string(), json!(height));
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
+pub async fn fblock_by_height(api: &Factom, height: u32)
+  -> Result<ApiResponse<FBlockResult>>
+{
+  let mut req =  ApiRequest::new("fblock-by-height");
+  req.params.insert("height".to_string(), json!(height));
+  let response = factomd_call(api, req).await;
+  parse(response).await
 }
+
 
 /// ablock-by-height function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]

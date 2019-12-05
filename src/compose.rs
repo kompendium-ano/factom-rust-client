@@ -2,8 +2,6 @@ use super::*;
 use factomd::str_to_hex;
 use std::collections::HashMap;
 
-impl Factom {
-/**
 /// This method, compose-chain, will return the appropriate API calls to create a 
 /// chain in factom. You must first call the commit-chain, then the reveal-chain 
 /// API calls. To be safe, wait a few seconds after calling commit.
@@ -24,31 +22,31 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-*/
-  pub async fn compose_chain(
-    self, 
-    extids: Vec<&str>, 
-    content: &str, 
-    ecpub: &str
-  )-> Result<ApiResponse<Compose>>
-  {
-    let mut req =  ApiRequest::new("compose-chain");
-    let hex_content = str_to_hex(content);
-    let mut hex_extids = Vec::new();
-    for extid in extids{
-      hex_extids.push(str_to_hex(extid));
-    }
-    let chain = json!({
-      "firstentry": {
-        "extids": hex_extids,
-        "content": hex_content
-      }
-    });
-    req.params.insert("chain".to_string(), chain);
-    req.params.insert("ecpub".to_string(), json!(ecpub));
-    let response = self.walletd_call(req).await;
-    parse(response).await
+
+pub async fn compose_chain(
+  api: &Factom, 
+  extids: Vec<&str>, 
+  content: &str, 
+  ecpub: &str
+)-> Result<ApiResponse<Compose>>
+{
+  let mut req =  ApiRequest::new("compose-chain");
+  let hex_content = str_to_hex(content);
+  let mut hex_extids = Vec::new();
+  for extid in extids{
+    hex_extids.push(str_to_hex(extid));
   }
+  let chain = json!({
+    "firstentry": {
+      "extids": hex_extids,
+      "content": hex_content
+    }
+  });
+  req.params.insert("chain".to_string(), chain);
+  req.params.insert("ecpub".to_string(), json!(ecpub));
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
 
 /**
 /// This method, compose-entry, will return the appropriate API calls to create an 
@@ -72,31 +70,30 @@ impl Factom {
 /// assert!(response.success()); 
 /// ```
 */
-  pub async fn compose_entry(
-    self, 
-    chainid: &str, 
-    extids: Vec<&str>, 
-    content: &str, 
-    ecpub: &str
-  ) -> Result<ApiResponse<Compose>>
-  {
-    let mut req =  ApiRequest::new("compose-entry");
-    let mut hex_extids = Vec::new();
-    for extid in extids {
-      hex_extids.push(str_to_hex(extid));
-    }
-    let entry = json!({
-    "chainid": chainid,
-    "extids": hex_extids,
-    "content": str_to_hex(content)
-    });
-    req.params.insert("entry".to_string(), entry);
-    req.params.insert("ecpub".to_string(), json!(ecpub));
-    let response = self.walletd_call(req).await;
-    parse(response).await
+pub async fn compose_entry(
+  api: &Factom, 
+  chainid: &str, 
+  extids: Vec<&str>, 
+  content: &str, 
+  ecpub: &str
+) -> Result<ApiResponse<Compose>>
+{
+  let mut req =  ApiRequest::new("compose-entry");
+  let mut hex_extids = Vec::new();
+  for extid in extids {
+    hex_extids.push(str_to_hex(extid));
   }
+  let entry = json!({
+  "chainid": chainid,
+  "extids": hex_extids,
+  "content": str_to_hex(content)
+  });
+  req.params.insert("entry".to_string(), entry);
+  req.params.insert("ecpub".to_string(), json!(ecpub));
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
 
-/**
 /// Compose transaction marshals the transaction into a hex encoded string. The 
 /// string can be inputted into the factomd API factoid-submit to be sent to 
 /// the network.
@@ -111,19 +108,17 @@ impl Factom {
 ///       .map(|response| response).map_err(|err| err);
 /// let response = fetch(query).unwrap();
 /// assert!(response.success()); 
-```
-*/
-  pub async fn compose_transaction(
-    self, 
-    tx_name: &str
-  )-> Result<ApiResponse<ComposeTx>>{
-    let mut req =  ApiRequest::new("compose-transaction");
-    req.params.insert("tx-name".to_string(), json!(tx_name));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
+/// ```
+pub async fn compose_transaction(
+  api: &Factom, 
+  tx_name: &str
+)-> Result<ApiResponse<ComposeTx>>{
+  let mut req =  ApiRequest::new("compose-transaction");
+  req.params.insert("tx-name".to_string(), json!(tx_name));
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
 
-/**
 /// This request allows one identity to state an attribute about another identity 
 /// and publish that entry to any existing chain. An attribute is a set of generic 
 /// key:value pairs that can be assigned to an identity and is flexible enough to 
@@ -188,39 +183,38 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());
 /// ```
-///  */
-   pub async fn compose_id_attribute<T>(
-     self, 
-    receiver_chain: &str,
-    destination_chain: &str,
-    attributes: Vec<(T, T)>,
-    signer_key: &str,
-    signer_chainid: &str,
-    ecpub: &str,
-    force: bool
-  ) -> Result<ApiResponse<Compose>> where 
-    T: Serialize,
-  {
-    let mut req =  ApiRequest::new("compose-identity-attribute");
-    let mut attr_list = vec!(HashMap::new());
-    req.params.insert("receiver-chainid".to_string(), json!(receiver_chain));
-    req.params.insert("destination-chainid".to_string(), json!(destination_chain));
-    req.params.insert("signerkey".to_string(), json!(signer_key));
-    req.params.insert("signer-chainid".to_string(), json!(signer_chainid));
-    req.params.insert("ecpub".to_string(), json!(ecpub));
-    req.params.insert("force".to_string(), json!(force));
-    for attr in attributes {
-      let mut map = HashMap::new();
-      map.insert("key".to_string(), attr.0);
-      map.insert("value".to_string(), attr.1);
-      attr_list.push(map);
-    }
-    req.params.insert("attributes".to_string(), json!(attr_list));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
 
-/**
+  pub async fn compose_id_attribute<T>(
+    api: &Factom, 
+  receiver_chain: &str,
+  destination_chain: &str,
+  attributes: Vec<(T, T)>,
+  signer_key: &str,
+  signer_chainid: &str,
+  ecpub: &str,
+  force: bool
+) -> Result<ApiResponse<Compose>> where 
+  T: Serialize,
+{
+  let mut req =  ApiRequest::new("compose-identity-attribute");
+  let mut attr_list = vec!(HashMap::new());
+  req.params.insert("receiver-chainid".to_string(), json!(receiver_chain));
+  req.params.insert("destination-chainid".to_string(), json!(destination_chain));
+  req.params.insert("signerkey".to_string(), json!(signer_key));
+  req.params.insert("signer-chainid".to_string(), json!(signer_chainid));
+  req.params.insert("ecpub".to_string(), json!(ecpub));
+  req.params.insert("force".to_string(), json!(force));
+  for attr in attributes {
+    let mut map = HashMap::new();
+    map.insert("key".to_string(), attr.0);
+    map.insert("value".to_string(), attr.1);
+    attr_list.push(map);
+  }
+  req.params.insert("attributes".to_string(), json!(attr_list));
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
+
 /// This method helps you endorse an attribute that has already been registered on 
 /// the Factom blockchain. To do this, you’ll need to create a structured entry on 
 /// to the Identity chain. The compose-identity-attribute-endorsement method will 
@@ -280,29 +274,28 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());
 /// ```
-///  */
-  pub async fn compose_id_attribute_endorsement(
-    self, 
-    destination_chain: &str,
-    entry_hash: &str,
-    signer_key: &str,
-    signer_chainid: &str,
-    ecpub: &str,
-    force: bool
-  ) -> Result<ApiResponse<Compose>> 
-  {
-    let mut req =  ApiRequest::new("compose-identity-attribute-endorsement");
-    req.params.insert("destination-chainid".to_string(), json!(destination_chain));
-    req.params.insert("entry-hash".to_string(), json!(entry_hash));
-    req.params.insert("signerkey".to_string(), json!(signer_key));
-    req.params.insert("signer-chainid".to_string(), json!(signer_chainid));
-    req.params.insert("ecpub".to_string(), json!(ecpub));
-    req.params.insert("force".to_string(), json!(force));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
 
-/**
+pub async fn compose_id_attribute_endorsement(
+  api: &Factom, 
+  destination_chain: &str,
+  entry_hash: &str,
+  signer_key: &str,
+  signer_chainid: &str,
+  ecpub: &str,
+  force: bool
+) -> Result<ApiResponse<Compose>> 
+{
+  let mut req =  ApiRequest::new("compose-identity-attribute-endorsement");
+  req.params.insert("destination-chainid".to_string(), json!(destination_chain));
+  req.params.insert("entry-hash".to_string(), json!(entry_hash));
+  req.params.insert("signerkey".to_string(), json!(signer_key));
+  req.params.insert("signer-chainid".to_string(), json!(signer_chainid));
+  req.params.insert("ecpub".to_string(), json!(ecpub));
+  req.params.insert("force".to_string(), json!(force));
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
+
 /// The compose-identity-chain method will return the appropriate API calls to 
 /// create an identity chain in factom. The chain will be constructed based on the 
 /// name and public keys that you send in the request. The response you receive is 
@@ -347,25 +340,23 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());
 /// ```
-///  */
-  pub async fn compose_id_chain(
-    self, 
-    name: Vec<&str>,
-    pubkeys: Vec<&str>,
-    ecpub: &str,
-    force: bool
-  ) -> Result<ApiResponse<Compose>> 
-  {
-    let mut req =  ApiRequest::new("compose-identity-chain");
-    req.params.insert("name".to_string(), json!(name));
-    req.params.insert("pubkeys".to_string(), json!(pubkeys));
-    req.params.insert("ecpub".to_string(), json!(ecpub));
-    req.params.insert("force".to_string(), json!(force));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
+pub async fn compose_id_chain(
+  api: &Factom, 
+  name: Vec<&str>,
+  pubkeys: Vec<&str>,
+  ecpub: &str,
+  force: bool
+) -> Result<ApiResponse<Compose>> 
+{
+  let mut req =  ApiRequest::new("compose-identity-chain");
+  req.params.insert("name".to_string(), json!(name));
+  req.params.insert("pubkeys".to_string(), json!(pubkeys));
+  req.params.insert("ecpub".to_string(), json!(ecpub));
+  req.params.insert("force".to_string(), json!(force));
+  let response = walletd_call(api, req).await;
+  parse(response).await
+}
 
-/**
 /// Replacing one of an identity’s keys is done by adding a structured entry onto 
 /// the identity’s chain. This will need to be done if you feel that a key was 
 /// compromised or has been in use for too long. The compose-identity-key-replacement 
@@ -413,29 +404,28 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());
 /// ```
-///  */
-  pub async fn compose_id_key_replacement(
-    self, 
-    chain_id: &str,
-    old_key: &str,
-    new_key: &str,
-    signer_key: &str,
-    ecpub: &str,
-    force: bool
-  ) -> Result<ApiResponse<Compose>> 
-  {
-    let mut req =  ApiRequest::new("compose-identity-key-replacement");
-    req.params.insert("chainid".to_string(), json!(chain_id));
-    req.params.insert("oldkey".to_string(), json!(old_key));
-    req.params.insert("newkey".to_string(), json!(new_key));
-    req.params.insert("signerkey".to_string(), json!(signer_key));
-    req.params.insert("ecpub".to_string(), json!(ecpub));
-    req.params.insert("force".to_string(), json!(force));
-    let response = self.walletd_call(req).await;
-    parse(response).await
-  }
 
+pub async fn compose_id_key_replacement(
+  api: &Factom, 
+  chain_id: &str,
+  old_key: &str,
+  new_key: &str,
+  signer_key: &str,
+  ecpub: &str,
+  force: bool
+) -> Result<ApiResponse<Compose>> 
+{
+  let mut req =  ApiRequest::new("compose-identity-key-replacement");
+  req.params.insert("chainid".to_string(), json!(chain_id));
+  req.params.insert("oldkey".to_string(), json!(old_key));
+  req.params.insert("newkey".to_string(), json!(new_key));
+  req.params.insert("signerkey".to_string(), json!(signer_key));
+  req.params.insert("ecpub".to_string(), json!(ecpub));
+  req.params.insert("force".to_string(), json!(force));
+  let response = walletd_call(api, req).await;
+  parse(response).await
 }
+
 
 /// Struct for deserialising the results of the functions: compose-chain
 /// compose-entry
@@ -459,7 +449,6 @@ pub struct Compose {
 pub struct Commit {
   pub jsonrpc: String,
   pub id: i64,
-  // #[serde(rename = "params")]
   pub params: CommitParams,
   pub method: String,
 }
@@ -485,7 +474,6 @@ pub struct CommitParams {
 pub struct Reveal {
   pub jsonrpc: String,
   pub id: i64,
-  // #[serde(rename = "params")]
   pub params: RevealParams,
   pub method: String,
 }
@@ -515,4 +503,3 @@ pub struct ComposeTx {
 pub struct TxParams {
   pub transaction: String,
 }
-

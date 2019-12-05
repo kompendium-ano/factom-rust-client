@@ -1,7 +1,5 @@
 use super::*;
-use requests::{ApiRequest, parse};
 
-impl Factom {
 /// The current-minute API call returns:
 /// 
 /// * `leaderheight` returns the current block height.
@@ -36,11 +34,12 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn current_minute(self)-> Result<ApiResponse<CurrentMinute>> {
-    let req =  ApiRequest::new("current-minute");
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  } 
+pub async fn current_minute(api: &Factom)-> Result<ApiResponse<CurrentMinute>> {
+  let req =  ApiRequest::new("current-minute");
+  let response = factomd_call(api, req).await;
+  parse(response).await
+} 
+
 ///  * Retrieve basic system information along with a description of the node’s 
 ///  * current perception of the network. This includes the node’s role, the current 
 ///  * leader block height, block minute, syncing status, authority set, currently 
@@ -117,11 +116,12 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn diagnostics(self) -> Result<ApiResponse<Diagnostics>> {
-    let req =  ApiRequest::new("diagnostics");
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
+pub async fn diagnostics(api: &Factom) -> Result<ApiResponse<Diagnostics>> {
+  let req =  ApiRequest::new("diagnostics");
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
+
 /// Returns the number of Factoshis (Factoids *10^-8) that purchase a single 
 /// Entry Credit. The minimum factoid fees are also determined by this rate, along 
 /// with how complex the factoid transaction is.
@@ -136,11 +136,12 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn entry_credit_rate(self)-> Result<ApiResponse<EcRate>> {
-    let req =  ApiRequest::new("entry-credit-rate");
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
+pub async fn entry_credit_rate(api: &Factom)-> Result<ApiResponse<EcRate>> {
+  let req =  ApiRequest::new("entry-credit-rate");
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
+
 /// Returns various heights that allows you to view the state of the blockchain. 
 /// The heights returned provide a lot of information regarding the state of factomd, 
 /// but not all are needed by most applications. The heights also indicate the 
@@ -173,11 +174,12 @@ impl Factom {
 /// let response = result.unwrap();
 /// assert!(response.success());   
 /// ```
-  pub async fn heights(self)-> Result<ApiResponse<Heights>> {
-    let req =  ApiRequest::new("heights");
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
+pub async fn heights(api: &Factom)-> Result<ApiResponse<Heights>> {
+  let req =  ApiRequest::new("heights");
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
+
 /// Retrieve current properties of the Factom system, including the software and 
 /// the API versions.
 /// # Example
@@ -190,11 +192,12 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());   
 /// ```
-  pub async fn properties(self)-> Result<ApiResponse<Properties>> {
-    let req =  ApiRequest::new("properties");
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
+pub async fn properties(api: &Factom)-> Result<ApiResponse<Properties>> {
+  let req =  ApiRequest::new("properties");
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
+
 /// Retrieve a receipt providing cryptographically verifiable proof that information 
 /// was recorded in the factom blockchain and that this was subsequently anchored 
 /// in the bitcoin blockchain.
@@ -209,16 +212,17 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn receipt(
-    self, 
-    hash: &str
-  )-> Result<ApiResponse<Receipt>> 
-  {
-    let mut req =  ApiRequest::new("receipt");
-    req.params.insert("hash".to_string(), json!(hash));
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
+pub async fn receipt(
+  api: &Factom, 
+  hash: &str
+)-> Result<ApiResponse<Receipt>> 
+{
+  let mut req =  ApiRequest::new("receipt");
+  req.params.insert("hash".to_string(), json!(hash));
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
+
 /// Send a raw hex encoded binary message to the Factom network. This is mostly 
 /// just for debugging and testing.
 /// # Example
@@ -232,16 +236,15 @@ impl Factom {
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-  pub async fn send_raw_message(
-    self, 
-    msg: &str
-  )-> Result<ApiResponse<Receipt>> 
-  {
-    let mut req =  ApiRequest::new("send-raw-message");
-    req.params.insert("message".to_string(), json!(msg));
-    let response = self.factomd_call(req).await;
-    parse(response).await
-  }
+pub async fn send_raw_message(
+  api: &Factom, 
+  msg: &str
+)-> Result<ApiResponse<Receipt>> 
+{
+  let mut req =  ApiRequest::new("send-raw-message");
+  req.params.insert("message".to_string(), json!(msg));
+  let response = factomd_call(api, req).await;
+  parse(response).await
 }
 
 /// Converts a string to its hexadecimal representation.
@@ -251,10 +254,6 @@ pub fn str_to_hex(utf8: &str) -> String {
                               .map(|b| format!("{:02X}", b))
                               .collect();
   strs.join("")
-}
-
-pub fn to_static_str(s: String) -> &'static str {
-  Box::leak(s.into_boxed_str())
 }
 
 /// current-minute function
@@ -377,55 +376,46 @@ pub struct Merklebranch {
   pub top: String,
 }
 
-
 #[cfg(test)]
 mod tests {
   use super::*;
   #[test]
-    fn current_minute() {
-      let rt = Runtime::new().expect("Initialising Runtime");
-      let api = Factom::open_node();
-      let query = api.current_minute();
-      let res = rt.block_on(query).expect("Runtime blocking thread");
-      assert!(res.result.directoryblockheight > 1)
-    }
+  fn current_minute_test() {
+    let client = Factom::open_node();
+    let query = current_minute(&client);
+    let response = fetch(query).expect("Fetching query");
+    assert!(response.result.directoryblockheight > 1)
+  }
 
-    #[test]
-    fn diagnostics() {
-      let rt = Runtime::new().expect("Initialising Runtime");
-      let api = Factom::open_node();
-      let query = api.diagnostics();
-      let res = rt.block_on(query).expect("Runtime blocking thread");
-      dbg!(res.result.leaderheight);
-      assert!(res.result.leaderheight > 1)
-    }
+  #[test]
+  fn diagnostics_test() {
+    let client = Factom::open_node();
+    let query = diagnostics(&client);
+    let response = fetch(query).expect("Fetching query");
+    assert!(response.result.leaderheight > 1)
+  }
 
-    #[test]
-    fn entry_credit_rate() {
-      let rt = Runtime::new().expect("Initialising Runtime");
-      let api = Factom::open_node();
-      let query = api.entry_credit_rate();
-      let res = rt.block_on(query).expect("Runtime blocking thread");
-      assert!(res.result.rate > 1)
-    }
+  #[test]
+  fn entry_credit_rate_test() {
+    let client = Factom::open_node();
+    let query = entry_credit_rate(&client);
+    let response = fetch(query).expect("Fetching query");
+    assert!(response.result.rate > 1)
+  }
 
-    #[test]
-    fn heights() {
-      let rt = Runtime::new().expect("Initialising Runtime");
-      let api = Factom::open_node();
-      let query = api.heights();
-      let res = rt.block_on(query).expect("Runtime blocking thread");
-      assert!(res.result.directoryblockheight > 1)
-    }
-    
-    #[test]
-    fn properties() {
-      let rt = Runtime::new().expect("Initialising Runtime");
-      let api = Factom::open_node();
-      let query = api.properties();
-      let res = rt.block_on(query).expect("Runtime blocking thread");
-      assert!(res.result.factomdversion.len() > 1)
-    }
-
-    
+  #[test]
+  fn heights_test() {
+    let client = Factom::open_node();
+    let query = heights(&client);
+    let response = fetch(query).expect("Fetching query");
+    assert!(response.result.directoryblockheight > 1)
+  }
+  
+  #[test]
+  fn properties_test() {
+    let client = Factom::open_node();
+    let query = properties(&client);
+    let response = fetch(query).expect("Fetching query");
+    assert!(response.result.factomdversion.len() > 1)
+  } 
 }
