@@ -1,9 +1,10 @@
 use super::*;
 use std::default::Default;
-use std::fmt::Debug;
+use std::error::Error;
+use std::fmt::{self, Debug, Display};
 
 /// JSON responses are deserialized into this struct
-#[derive(Deserialize, Debug, PartialEq)]
+#[derive(Deserialize, Debug, PartialEq, Default)]
 pub struct ApiResponse<T>
   where T: Default
 {
@@ -22,31 +23,28 @@ pub struct ApiError {
   pub message: String
 }
 
-// TODO: Getting stack overflows implementing Display for the 
-// struct, needs investigation.
+impl<T> Display for  ApiResponse<T> 
+  where T: Default + Debug + Display
+{
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+      write!(f, "id: {}\nresult: {}\n error: {}", 
+                self.id, self.result, self.error)
+  }
+}
 
-// impl<T> Display for  ApiResponse<T> 
-//   where T: Default + Debug + Display
-// {
-//   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-//       write!(f, "id: {}\nresult: {}\n error: {}", 
-//                   self.id, self.result, self.error)
-//   }
-// }
+impl Display for  ApiError {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+      write!(f, "{}", self)
+  }
+}
 
-// impl Display for  ApiError {
-//   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-//       write!(f, "{}", self)
-//   }
-// }
-
-// impl<T> Error for ApiResponse<T> 
-//   where T: Default + Debug + Display
-// {
-//   fn description(&self) -> &str {
-//     &self.error.message
-//   }
-// }
+impl<T> Error for ApiResponse<T> 
+  where T: Default + Debug + Display
+{
+  fn description(&self) -> &str {
+    &self.error.message
+  }
+}
 
 impl<T> ApiResponse<T>
   where T: Default
