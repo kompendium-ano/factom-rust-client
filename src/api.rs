@@ -1,9 +1,9 @@
 use super::*;
 use url::Url;
 use constants::*;
-use hyper::Request;
+
 use std::num::Wrapping;
-use http::{Uri, request::Builder, header::CONTENT_TYPE};
+use http::Uri;
 
 /// Main struct from which API requests are built
 /// * client holds the hyper http client with a https connector
@@ -15,9 +15,6 @@ use http::{Uri, request::Builder, header::CONTENT_TYPE};
 #[derive(Debug)]
 pub struct Factom{
   pub client: HttpsClient,
-  pub factomd: Rc<RefCell<Builder>>,
-  pub walletd: Rc<RefCell<Builder>>,
-  pub debug: Rc<RefCell<Builder>>,
   pub factomd_uri: Rc<Uri>,
   pub walletd_uri: Rc<Uri>,
   pub debug_uri: Rc<Uri>,
@@ -44,9 +41,6 @@ impl Factom {
     let debug_uri = parse_debug_uri(FACTOMD_DEFAULT);
     Factom{
       client: new_client(),
-      factomd: request_builder(&factomd_uri),
-      walletd: request_builder(&walletd_uri),
-      debug: request_builder(&debug_uri),
       factomd_uri,
       walletd_uri,
       debug_uri,
@@ -65,9 +59,6 @@ impl Factom {
     let debug_uri = parse_debug_uri(OPENNODE_URI);
     Factom{
       client: new_client(),
-      factomd: request_builder(&factomd_uri),
-      walletd: request_builder(&walletd_uri),
-      debug: request_builder(&debug_uri),
       factomd_uri,
       walletd_uri,
       debug_uri,
@@ -86,9 +77,6 @@ impl Factom {
     let debug_uri = parse_debug_uri(DEV_OPENNODE_URI);
     Factom{
       client: new_client(),
-      factomd: request_builder(&factomd_uri),
-      walletd: request_builder(&walletd_uri),
-      debug: request_builder(&debug_uri),
       factomd_uri,
       walletd_uri,
       debug_uri,
@@ -110,9 +98,6 @@ impl Factom {
     let debug_uri = parse_debug_uri(factomd);
     Factom{
       client: new_client(),
-      factomd: request_builder(&factomd_uri),
-      walletd: request_builder(&walletd_uri),
-      debug: request_builder(&debug_uri),
       factomd_uri,
       walletd_uri,
       debug_uri,
@@ -140,27 +125,11 @@ fn new_client() -> HttpsClient {
   Rc::new(client)
 }
 
-/// Builds the basis of a request minus the body, this is kept in the Factom
-/// struct to avoid rebuilding the request everytime
-fn request_builder(uri: &Uri) -> Rc<RefCell<Builder>> {
-  let mut req = Request::builder();
-  req.method("POST")
-      .header(CONTENT_TYPE, "application/json")
-      .uri(uri);
-  Rc::new(RefCell::new(req))
-}
-
 impl Clone for Factom {
   fn clone(&self) -> Self {
     let client = Rc::clone(&self.client);
-    let factomd = Rc::clone(&self.factomd);
-    let walletd = Rc::clone(&self.walletd);
-    let debug = Rc::clone(&self.debug);
     Factom {
       client,
-      factomd,
-      walletd,
-      debug,
       factomd_uri: Rc::clone(&self.factomd_uri),
       walletd_uri: Rc::clone(&self.walletd_uri),
       debug_uri: Rc::clone(&self.debug_uri),
