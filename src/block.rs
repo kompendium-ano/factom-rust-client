@@ -294,7 +294,9 @@ pub struct AblockHeight {
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ABHeightentry {
+  #[serde(default)]
   pub identityadminchainid: String,
+  #[serde(default)]
   pub prevdbsig: Prevdbsig,
 }
 
