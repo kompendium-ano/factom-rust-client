@@ -1,7 +1,6 @@
 #![forbid(unsafe_code)]
 #![doc(html_logo_url = "https://seeklogo.com/images/F/factom-fct-logo-08400C829C-seeklogo.com.png",
- html_favicon_url = "https://www.factom.com/wp-content/uploads/2019/06/cropped-factom_favicon_azul-05-192x192.png",
- html_playground_url = "https://play.rust-lang.org/")]
+ html_favicon_url = "https://www.factom.com/wp-content/uploads/2019/06/cropped-factom_favicon_azul-05-192x192.png")]
 
 //! A rust client for the Factom network API.
 //!
@@ -32,9 +31,9 @@ pub use tokio::prelude::*;
 pub use responses::ApiResponse;
 pub use requests::{ApiRequest, fetch};
 
-use std::{rc::Rc, cell::RefCell};
+use std::rc::Rc;
 use serde_json::json;
-use requests::parse;
+use requests::{parse, factomd_call, walletd_call, debug_call};
 use hyper_tls::HttpsConnector;
 use serde::{Serialize, Deserialize};
 use hyper::{Client, client::HttpConnector, rt::Future};
