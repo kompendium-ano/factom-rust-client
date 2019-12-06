@@ -5,7 +5,7 @@ You can fuzz both the api client library and the factomd/factom-walletd binaries
 To run a simulate the factom network locally: 
 
 ```bash
-factomd --count=32 --net=alot+ --enablenet=false --network=LOCAL
+factomd --count=32 --net=alot+ --enablenet=false --network=LOCAL  -journaling=true
 ```
 
 
