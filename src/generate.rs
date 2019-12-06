@@ -11,7 +11,7 @@ use super::*;
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-pub async fn generate_ec_address(api: &Factom)
+pub async fn ec_address(api: &Factom)
   -> Result<ApiResponse<Generate>>
 {
   let req =  ApiRequest::new("generate-ec-address");
@@ -31,7 +31,7 @@ pub async fn generate_ec_address(api: &Factom)
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-pub async fn generate_factoid_address(api: &Factom)
+pub async fn factoid_address(api: &Factom)
   -> Result<ApiResponse<Generate>>
 {
   let req =  ApiRequest::new("generate-factoid-address");
@@ -54,7 +54,7 @@ pub async fn generate_factoid_address(api: &Factom)
 /// let response = fetch(query).unwrap();
 /// assert!(response.success());  
 /// ```
-pub async fn generate_identity_key(api: &Factom)
+pub async fn identity_key(api: &Factom)
   -> Result<ApiResponse<Generate>>
   {
   let req =  ApiRequest::new("generate-identity-key");
