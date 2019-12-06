@@ -1,7 +1,5 @@
 use super::*;
 
-
-
 /// Return its current balance for a specific entry credit address.
 /// # Example
 /// ```
@@ -26,19 +24,22 @@ pub async fn entry_credit_balance(
   parse(response).await
 }
 
-/// This call returns the number of Factoshis (Factoids *10^-8) that are 
+///  This call returns the number of Factoshis (Factoids *10^-8) that are 
 /// currently available at the address specified.
+/// 
 /// # Example
 /// ```
 /// use factom::*;
 /// 
-/// let address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
-/// let factom = Factom::new();
-/// let query = factom
-///       .factoid_balance(address)
-///       .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+///async fn main() {
+///  let client = Factom::testnet_node();
+///  let fct_address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
+///  let response = balance::factoid_balance(&client, fct_address)
+///                            .await
+///                            .expect("Fetching query");
+///  assert!(response.result.balance > 0);
+/// }
 /// ```
 pub async fn factoid_balance(
   api: &Factom, 
@@ -87,14 +88,16 @@ pub async fn factoid_balance(
 /// ```
 /// use factom::*;
 /// 
-/// let addresses: Vec<&str> = 
-/// vec!["EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx"];
-/// let factom = Factom::new();
-/// let query = factom.multiple_ec_balances(addresses)
-///             .map(|response| response).map_err(|err| err);
-/// let result = fetch(query);
-/// let response = result.unwrap();
-/// assert!(response.success());   
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::testnet_node();
+/// let ec_address = "EC2MJzCcHqYJyujnPzjitEaHhtEPVBhmEWUKkv4SVaaKeYcq3fqK";
+///   let fct_address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
+///   let response = balance::multiple_ec_balances(&client, vec![ec_address])
+///                             .await
+///                             .expect("Fetching query");
+///   assert!(!response.is_err());
+/// }
 /// ```
 pub async fn multiple_ec_balances(
   api: &Factom, 
@@ -143,13 +146,15 @@ pub async fn multiple_ec_balances(
 /// ```
 /// use factom::*;
 /// 
-/// let addresses: Vec<&str> = vec!["FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q"];
-/// let factom = Factom::new();
-/// let query = factom.multiple_fct_balances(addresses)
-///             .map(|response| response).map_err(|err| err);
-/// let result = fetch(query);
-/// let response = result.unwrap();
-/// assert!(response.success());   
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::testnet_node();
+///   let fct_address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
+///   let response = balance::multiple_fct_balances(&client, vec![fct_address])
+///                             .await
+///                             .expect("Fetching query");
+///   assert!(!response.is_err());
+/// }
 /// ```
 pub async fn multiple_fct_balances(
   api: &Factom, 
