@@ -1,19 +1,21 @@
 use super::*;
 
-///Retrieve the public and private parts of a Factoid or Entry Credit address 
+/// Retrieve the public and private parts of a Factoid or Entry Credit address 
 ///stored in the wallet.
 ///
 ///# Example
 ///```
-///use factom::*;
-///let api = Factom::testnet_open_node();
-///let my_address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
-///let query = factom
-///            .address(my_address)
-///            .map(|response| response).map_err(|err| err);
-///let response = fetch(query).unwrap();
-///assert!(response.success());
-///```
+/// use factom::*;
+/// 
+///#[tokio::main]
+///async fn main() {
+///  let client = Factom::new();
+///  let my_address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
+///  let query = address::address(&client, my_address);
+///  let response = query.await.expect("Fetching query");
+///  assert_eq!(response.result.public, my_address);
+/// } 
+/// ```
 pub async fn address(
   api: &Factom, 
   address: &str
@@ -29,14 +31,21 @@ pub async fn address(
 ///
 ///# Example
 ///```
-///use factom::*;
-///let api = Factom::testnet_open_node();
-///let query = factom
-///            .all_addresses()
-///            .map(|response| response).map_err(|err| err);
-///let response = fetch(query).unwrap();
-///assert!(response.success());
-///```  
+/// use factom::*;
+/// 
+///#[tokio::main]
+///async fn main() {
+///  let client = Factom::new();
+///  let my_address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
+///  let query = address::all_addresses(&client);
+///  let response = query.await.expect("Fetching query");
+///  assert!(response
+///           .result
+///           .addresses
+///           .iter()
+///           .any(|address| address.public == my_address));
+/// }
+/// ``` 
 pub async fn all_addresses(api: &Factom)
   -> Result<ApiResponse<AllAddresses>> 
 {
@@ -55,13 +64,18 @@ pub async fn all_addresses(api: &Factom)
 /// # Example
 /// ```
 /// use factom::*;
-/// let api = Factom::testnet_open_node();
-/// let my_address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
-/// let query = factom
-///             .remove_address(my_address)
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());
+/// 
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::new();
+///   let new_address = generate::factoid_address(&client)
+///                          .await
+///                          .expect("Fetching query");
+///   let rm_address = address::remove_address(&client, &new_address.result.public)
+///                             .await
+///                             .expect("Fetching query");
+///   assert!(&rm_address.result.success);
+///  }
 /// ```
 pub async fn remove_address(
   api: &Factom, 
