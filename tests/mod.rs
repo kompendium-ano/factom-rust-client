@@ -1,4 +1,6 @@
-use ::factom::{requests::fetch, *};
+use ::factom::*;
+use std::iter;
+use rand::{Rng, thread_rng, distributions::Alphanumeric};
 
 // Hopefully it doesn't need to be said but please don't use these addresses as 
 // they are publicly known! They should be funded on testnet for further usage,
@@ -24,6 +26,24 @@ const CHAIN_HEAD: &str = "13db4ce09f6affa27ba86412d3bbc56fb48f2ec167e7a5b99dfe9d
 const ENTRY_HASH: &str = "716526c3279184bca11fc453fa9c2ab2f4488a03c821ee107664c9052f01d733";
 const RAW_DATA_HASH: &str = "0ae2ab2cf543eed52a13a5a405bded712444cc8f8b6724a00602e1c8550a4ec2";
 const RAW_DATA: &str = "000caff62ea5b5aa015c706add7b2463a5be07e1f0537617f553558090f23c7f5600420040e57283e4618f13b18c2be8d14926999331ef4ab905639a82d748634201cd85ae1c22b6186a72eee3f4ae12b8f6fa9c73a8a98b5eae238ed6133424bcef062f0e7b224150494d6574686f64223a2268747470733a2f2f706f6c6f6e6965782e636f6d2f7075626c69633f636f6d6d616e643d72657475726e4f72646572426f6f6b5c753030323663757272656e6379506169723d4254435f4e58545c753030323664657074683d34222c2252657475726e44617461223a227b5c2261736b735c223a5b5b5c22302e30303030313334315c222c343437342e37323033353739345d2c5b5c22302e30303030313334325c222c363038302e39363930373133355d2c5b5c22302e30303030313334355c222c31343831342e38353833353730375d2c5b5c22302e30303030313337385c222c38303030305d5d2c5c22626964735c223a5b5b5c22302e30303030313332375c222c363032382e303333313537355d2c5b5c22302e30303030313332365c222c3236302e34333839313430335d2c5b5c22302e30303030313332355c222c3130393931352e30363731363938315d2c5b5c22302e30303030313332335c222c31323030305d5d2c5c22697346726f7a656e5c223a5c22305c227d222c2254696d657374616d70223a313435303134373830317d";
+
+const ID_CHAIN: &str = "3b69dabe22c014af9a9bc9dfa7917ce4602a03579597ddf184d8de56702512ae";
+const ID_HEIGHT: usize = 163419;
+const ID_PRIV: &str = "idsec2rWrfNTD1x9HPPesA3fz8dmMNZdjmSBULHx8VTXE1J4D9icmAK";
+const ID_PUB: &str = "idpub2g25nPNZ2kf6KGTjthYdHT3nykDbwEUEPyGJ52fo55SHwtAvLA";
+
+const KOINIFY: &str = "yellow yellow yellow yellow yellow yellow yellow yellow yellow yellow yellow yellow";
+const KOINIFY_PUB: &str = "FA3cih2o2tjEUsnnFR4jX1tQXPpSXFwsp3rhVp6odL5PNCHWvZV1";
+
+const TESTNET_CHAIN: &str = "72a2fa10b81a8bffde58ea206254f0eaa7928e9e09a4144efb3ba0bb7be26d52";
+
+fn random_string(len: usize)-> String {
+  let mut rng = thread_rng();
+  iter::repeat(())
+          .map(|()| rng.sample(Alphanumeric))
+          .take(len)
+          .collect()
+}
 
 // Address module
 #[test]
@@ -203,27 +223,204 @@ fn chain_head(){
   assert_eq!(response.result.chainhead, CHAIN_HEAD);
 }
 
-// TODO:
-// #[test]
-// fn commit_chain
+// factom-walletd needs to be run with a command to testnet open node
+// > factom-walletd -s https://dev.factomd.net/
+#[test]
+fn create_chain(){
+  let client = Factom::testnet_node();
+  let rand_ext_id = &random_string(12);
+  let ext_ids = vec!("Api Client", "Test Chain", rand_ext_id);
+  let content = random_string(32);
+  
+  let compose_query = compose::compose_chain(&client, ext_ids, &content, EC_PUB);
+  let compose_response = fetch(compose_query).expect("Fetching Query");
+  dbg!(&compose_response);
+  
+  let commit = compose_response.result.commit.params.message;
+  let commit_query = chain::commit_chain(&client, &commit);
+  let commit_response = fetch(commit_query).expect("Fetching Query");
+  dbg!(&commit_response);
+  let reveal = compose_response.result.reveal.params.entry;
+  let reveal_query = chain::reveal_chain(&client, &reveal);
+  let reveal_response = fetch(reveal_query).expect("Fetching Query");
+  dbg!(&reveal_response);
+  assert!(!reveal_response.is_err());
+}
 
-// #[test]
-// fn reveal_chain
+#[test]
+fn create_entry(){
+  let client = Factom::testnet_node();
+  let rand_ext_id = &random_string(12);
+  let ext_ids = vec!("Api Client", "Test Entry", rand_ext_id);
+  let content = random_string(32);
+  
+  let compose_query = compose::compose_entry(&client,
+                                            TESTNET_CHAIN,
+                                            ext_ids, 
+                                            &content, 
+                                            EC_PUB);
+  let compose_response = fetch(compose_query).expect("Fetching Query");
+  dbg!(&compose_response);
+  assert!(!compose_response.is_err());
+
+  let commit = compose_response.result.commit.params.message;
+  let commit_query = entry::commit_entry(&client, &commit);
+  let commit_response = fetch(commit_query).expect("Fetching Query");
+  dbg!(&commit_response);
+  assert!(!commit_response.is_err());
+  
+  let reveal = compose_response.result.reveal.params.entry;
+  let reveal_query = entry::reveal_entry(&client, &reveal);
+  let reveal_response = fetch(reveal_query).expect("Fetching Query");
+  dbg!(&reveal_response);
+  assert!(!reveal_response.is_err());
+}
+
+// Todo: Full transaction
+
+// Todo: Compose an Identity Chain
+
+// Todo: Compose identity attribute
+
 
 
 // Debug Module
 // Open_node doesn't expose debug functionality, these can all be tested with a 
-//local factomd  node
+//local factomd  node running a debug network with a command such as factomd -network=LOCAL
+#[test]
+fn holding_queue(){
+  let client = Factom::new();
+  let query = debug::holding_queue(&client);
+  let response = fetch(query).expect("Fetching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
 
-// #[test]
-// fn holding_queue(){
-//   let client = Factom::new();
-//   let query = debug::holding_queue(&client);
-//   let response = fetch(query).expect("Fetching Query");
-//   dbg!(&response);
-//   // assert_eq!(response.result.chainhead, CHAIN_HEAD);
-// }
+#[test]
+fn network_info(){
+  let client = Factom::new();
+  let query = debug::network_info(&client);
+  let response = fetch(query).expect("Fetching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
 
+#[test]
+fn predictive_fer(){
+  let client = Factom::new();
+  let query = debug::predictive_fer(&client);
+  let response = fetch(query).expect("Fetching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn audit_servers(){
+  let client = Factom::new();
+  let query = debug::audit_servers(&client);
+  let response = fetch(query).expect("Fetching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn federated_servers(){
+  let client = Factom::new();
+  let query = debug::federated_servers(&client);
+  let response = fetch(query).expect("Fetching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn configuration(){
+  let client = Factom::new();
+  let query = debug::configuration(&client);
+  let response = fetch(query).expect("Fetching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn process_list(){
+  let client = Factom::new();
+  let query = debug::process_list(&client);
+  let response = fetch(query).expect("Fetching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn authorities(){
+  let client = Factom::new();
+  let query = debug::authorities(&client);
+  let response = fetch(query).expect("Fetching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn reload_configuration(){
+  let client = Factom::new();
+  let query = debug::reload_configuration(&client);
+  let response = fetch(query).expect("Fetching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn drop_rate(){
+  let client = Factom::new();
+  let query = debug::network_info(&client);
+  let response = fetch(query).expect("Fetching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn set_drop_rate(){
+  let client = Factom::new();
+  let query = debug::set_drop_rate(&client, 10);
+  let response = fetch(query).expect("Fetching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn delay(){
+  let client = Factom::new();
+  let query = debug::delay(&client);
+  let response = fetch(query).expect("Fetching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn set_delay(){
+  let client = Factom::new();
+  let query = debug::set_delay(&client, 10);
+  let response = fetch(query).expect("Fetching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn summary(){
+  let client = Factom::new();
+  let query = debug::summary(&client);
+  let response = fetch(query).expect("Fetching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn messages(){
+  let client = Factom::new();
+  let query = debug::messages(&client);
+  let response = fetch(query).expect("Fetching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
 
 // Entry Module
 #[test]
@@ -243,3 +440,295 @@ fn raw_data(){
   dbg!(&response);
   assert_eq!(response.result.data, RAW_DATA);  
 }
+
+#[test]
+fn pending_entries(){
+  let client = Factom::open_node();
+  let query = entry::pending_entries(&client);
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(!response.is_err());  
+}
+
+// factomd module
+#[test]
+fn current_minute(){
+  let client = Factom::open_node();
+  let query = factomd::current_minute(&client);
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn diagnostics(){
+  let client = Factom::open_node();
+  let query = factomd::diagnostics(&client);
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn entry_credit_rate(){
+  let client = Factom::open_node();
+  let query = factomd::entry_credit_rate(&client);
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn heights(){
+  let client = Factom::open_node();
+  let query = factomd::heights(&client);
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn properties(){
+  let client = Factom::open_node();
+  let query = factomd::properties(&client);
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn receipt(){
+  let client = Factom::open_node();
+  let query = factomd::receipt(&client, ENTRY_HASH);
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn send_raw_message(){
+  let client = Factom::open_node();
+  let query = factomd::send_raw_message(&client, ENTRY_HASH);
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+// generate module
+#[test]
+fn generate_factoid_address(){
+  let client = Factom::new();
+  let query = generate::generate_factoid_address(&client);
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn generate_ec_address(){
+  let client = Factom::new();
+  let query = generate::generate_ec_address(&client);
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn generate_identity_key(){
+  let client = Factom::new();
+  let query = generate::generate_identity_key(&client);
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+// identity module
+#[test]
+fn all_id_keys(){
+  let client = Factom::new();
+  let query = identity::all_id_keys(&client);
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn active_id_keys(){
+  let client = Factom::open_node();
+  let query = identity::active_id_keys(&client, ID_CHAIN, Some(ID_HEIGHT));
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn remove_id_key(){
+  let client = Factom::new();
+  let gen_query = generate::generate_identity_key(&client);
+  let response = fetch(gen_query).expect("Fectching Query");
+  let key = response.result.public;
+  let rm_query = identity::remove_id_key(&client, &key);
+  let response = fetch(rm_query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(response.result.success)
+}
+
+#[test]
+fn id_key(){
+  let client = Factom::new();
+  let gen_query = generate::generate_identity_key(&client);
+  let response = fetch(gen_query).expect("Fectching Query");
+  let key = response.result.public;
+  let key_query = identity::id_key(&client, &key);
+  let response = fetch(key_query).expect("Fectching Query");
+  dbg!(&response);
+  let rm_query = identity::remove_id_key(&client, &key);
+  fetch(rm_query).expect("Fectching Query");
+  assert_eq!(response.result.public, key.clone());
+}
+
+
+// import module
+#[test]
+fn import_addresses(){
+  let client = Factom::new();
+  let query = import::import_addresses(&client, vec!(FCT_PRIV));
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+  let query = address::remove_address(&client, FCT_PUB);
+  fetch(query).expect("Fectching Query");
+}
+
+#[test]
+fn import_id_keys(){
+  let client = Factom::new();
+  let query = import::import_identity_keys(&client, vec!(ID_PRIV));
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+  let query = identity::remove_id_key(&client, ID_PUB);
+  fetch(query).expect("Fectching Query");
+}
+
+#[test]
+fn import_koinify(){
+  let client = Factom::new();
+  let query = import::import_koinify(&client, KOINIFY);
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+  let query = address::remove_address(&client, KOINIFY_PUB);
+  fetch(query).expect("Fectching Query");
+}
+
+// tx module
+const ACK_HASH: &str = "e96cca381bf25f6dd4dfdf9f7009ff84ee6edaa3f47f9ccf06d2787482438f4b";
+const ACK_CHAIN: &str = "f9164cd66af9d5773b4523a510b5eefb9a5e626480feeb6671ef2d17510ca300";
+const ACK_COMMITTXID: &str = "4876ffeb8f95b72911b4a5115dc8a9fbb89d874db2263a75a9062f37bbbf1fa7";
+
+const FCT_TX_ID: &str = "774ec19ff567b202ca2702b1f3411901ccae8995df46517c134ab3560100c848";
+const FCT_TX_TIMESTAMP: usize = 1575574473164;
+
+#[test]
+fn ack(){
+  let client = Factom::open_node();
+  let query = tx::ack(&client, ACK_HASH, ACK_CHAIN, None);
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert_eq!(response.result.committxid, ACK_COMMITTXID);
+}
+
+#[test]
+fn transaction(){
+  let client = Factom::open_node();
+  let query = tx::transaction(&client, FCT_TX_ID);
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert_eq!(response.result.factoidtransaction.millitimestamp, FCT_TX_TIMESTAMP);
+}
+
+#[test]
+fn pending_transactions(){
+  let client = Factom::open_node();
+  let query = tx::pending_transactions(&client, None);
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn new_and_delete_transaction(){
+  let client = Factom::new();
+  let tx_name = "api-client-test-tx";
+  let query = tx::new_transaction(&client, tx_name);
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+  let query = tx::delete_transaction(&client, tx_name);
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn transactions(){
+  let client = Factom::open_node();
+  let search = tx::SearchBy::Address(FCT_PUB);
+  let query = tx::transactions(&client, search);
+  let response = fetch(query).expect("Fectching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+// Walletd module
+#[test]
+fn wallet_backup() {
+  let client = Factom::new();
+  let query = walletd::wallet_backup(&client);
+  let response = fetch(query).expect("Fetching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+
+#[test]
+fn wallet_balances() {
+  let client = Factom::new();
+  let query = walletd::wallet_balances(&client);
+  let response = fetch(query).expect("Fetching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn wallet_height() {
+  let client = Factom::new();
+  let query = walletd::wallet_height(&client);
+  let response = fetch(query).expect("Fetching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+#[test]
+fn wallet_properties() {
+  let client = Factom::new();
+  let query = walletd::wallet_properties(&client);
+  let response = fetch(query).expect("Fetching Query");
+  dbg!(&response);
+  assert!(!response.is_err());
+}
+
+// Not working
+
+// #[test]
+// fn sign_data() {
+//   let client = Factom::new();
+//   let query = walletd::sign_data(&client, FCT_PUB, SAMPLE_DATA);
+//   let response = fetch(query).expect("Fetching Query");
+//   dbg!(&response);
+//   assert!(!response.is_err());
+// }
+
+
+
