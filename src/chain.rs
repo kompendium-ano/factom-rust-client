@@ -84,6 +84,7 @@ pub struct CommitChain {
   pub message: String,
   pub txid: String,
   pub entryhash: String,
+  #[serde(alias = "chainidhash")]
   pub chainid: String,
 }
 
@@ -92,5 +93,6 @@ pub struct CommitChain {
 pub struct RevealChain {
   pub message: String,
   pub entryhash: String,
+  #[serde(alias = "chainidhash")]
   pub chainid: String,
 }
