@@ -328,12 +328,11 @@ pub async fn messages(api: &Factom)
   parse(response).await
 }
 
-
 /// holding-queue function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct HoldingQueue {
   #[serde(rename = "Messages")]
-  messages: String,
+  messages: Option<String>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
