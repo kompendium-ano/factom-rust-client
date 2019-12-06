@@ -61,12 +61,15 @@ pub async fn all_id_keys(api: &Factom)
 pub async fn active_id_keys(
   api: &Factom,
   chain_id: &str,
-  height: usize
+  height: Option<usize>
 )-> Result<ApiResponse<ActiveIdKeys>>
 {
   let mut req =  ApiRequest::new("active-identity-keys");
   req.params.insert("chainid".to_string(), json!(chain_id));
-  req.params.insert("height".to_string(), json!(height));
+  match height {
+    Some(height) => req.params.insert("height".to_string(), json!(height)),
+    None => None
+  };
   let response = walletd_call(api, req).await;
   parse(response).await
 }
@@ -158,6 +161,6 @@ pub struct ActiveIdKeys {
 /// remove-id-key function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct RemoveIdKey {
-  pub success: String,
+  pub success: bool,
 }
 
