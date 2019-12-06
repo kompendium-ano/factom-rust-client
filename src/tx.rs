@@ -178,7 +178,7 @@ pub async fn transaction(
 pub async fn pending_transactions(
   api: &Factom, 
   address: Option<&str>
-)-> Result<ApiResponse<PendingTx>>
+)-> Result<ApiResponse<Vec<PendingTx>>>
 {
   let mut req =  ApiRequest::new("pending-transactions");
   if let Some(add) = address {
@@ -507,30 +507,37 @@ pub struct Transaction {
   pub factoidtransaction: Factoidtransaction,
   pub includedintransactionblock: String,
   pub includedindirectoryblock: String,
-  pub includedindirectoryblockheight: i64,
+  pub includedindirectoryblockheight: usize,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Factoidtransaction {
-  pub millitimestamp: i64,
+  pub millitimestamp: usize,
   pub inputs: Vec<Input>,
   pub outputs: Vec<Output>,
   pub outecs: Vec<::serde_json::Value>,
   pub rcds: Vec<String>,
   pub sigblocks: Vec<Sigblock>,
-  pub blockheight: i64,
+  pub blockheight: usize,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Input {
-  pub amount: i64,
+  pub amount: usize,
   pub address: String,
   pub useraddress: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Output {
-  pub amount: i64,
+  pub amount: usize,
+  pub address: String,
+  pub useraddress: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct EcOutput {
+  pub amount: usize,
   pub address: String,
   pub useraddress: String,
 }
@@ -542,13 +549,18 @@ pub struct Sigblock {
 
 /// pending-transactions function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct PendingTxs {
+  pub pendingtx: Vec<PendingTx>
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PendingTx {
   pub transactionid: String,
   pub status: String,
-  pub inputs: Vec<Input>,
-  pub outputs: Vec<Output>,
-  pub ecoutputs: Vec<::serde_json::Value>,
-  pub fees: i64,
+  pub inputs: Option<Vec<Input>>,
+  pub outputs: Option<Vec<Output>>,
+  pub ecoutputs: Option<Vec<EcOutput>>,
+  pub fees: usize,
 }
 
 /// ack function
@@ -573,7 +585,7 @@ pub struct Entrydata {
 /// new-transaction and add-ec-output functions
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct NewTx {
-  pub feesrequired: i64,
+  pub feesrequired: usize,
   pub signed: bool,
   pub name: String,
   pub timestamp: i64,
