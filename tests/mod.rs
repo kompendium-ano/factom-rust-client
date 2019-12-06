@@ -72,7 +72,7 @@ fn all_addresses(){
 #[test]
 fn rm_address(){
   let client = Factom::new();
-  let query = generate::generate_factoid_address(&client);
+  let query = generate::factoid_address(&client);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
   let address = response.result.public;
@@ -518,7 +518,7 @@ fn send_raw_message(){
 #[test]
 fn generate_factoid_address(){
   let client = Factom::new();
-  let query = generate::generate_factoid_address(&client);
+  let query = generate::factoid_address(&client);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
   assert!(!response.is_err());
@@ -527,7 +527,7 @@ fn generate_factoid_address(){
 #[test]
 fn generate_ec_address(){
   let client = Factom::new();
-  let query = generate::generate_ec_address(&client);
+  let query = generate::ec_address(&client);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
   assert!(!response.is_err());
@@ -536,7 +536,7 @@ fn generate_ec_address(){
 #[test]
 fn generate_identity_key(){
   let client = Factom::new();
-  let query = generate::generate_identity_key(&client);
+  let query = generate::identity_key(&client);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
   assert!(!response.is_err());
@@ -564,7 +564,7 @@ fn active_id_keys(){
 #[test]
 fn remove_id_key(){
   let client = Factom::new();
-  let gen_query = generate::generate_identity_key(&client);
+  let gen_query = generate::identity_key(&client);
   let response = fetch(gen_query).expect("Fectching Query");
   let key = response.result.public;
   let rm_query = identity::remove_id_key(&client, &key);
@@ -576,7 +576,7 @@ fn remove_id_key(){
 #[test]
 fn id_key(){
   let client = Factom::new();
-  let gen_query = generate::generate_identity_key(&client);
+  let gen_query = generate::identity_key(&client);
   let response = fetch(gen_query).expect("Fectching Query");
   let key = response.result.public;
   let key_query = identity::id_key(&client, &key);
@@ -586,7 +586,6 @@ fn id_key(){
   fetch(rm_query).expect("Fectching Query");
   assert_eq!(response.result.public, key.clone());
 }
-
 
 // import module
 #[test]
