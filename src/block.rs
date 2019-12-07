@@ -23,12 +23,16 @@ pub enum AnchorType {
 /// ```
 /// use factom::*;  
 /// 
-/// let factom = Factom::new();
-/// let query = factom.ablock_by_height(2)
-///               .map(|response| response)
-///               .map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();
+///   let height = 220000;
+///   let prevbackrefhash = "dbe20345a773a593d06cce65cf68d976011063208d54927433fac3c2b10f06b2";
+///   let response = block::ablock_by_height(&client, height)
+///                             .await
+///                             .expect("Request");
+///    assert_eq!(response.result.ablock.header.prevbackrefhash, prevbackrefhash);
+/// }
 /// ```
 pub async fn ablock_by_height(api: &Factom, height: u32)
   -> Result<ApiResponse<ABlockHeightResult>>
@@ -43,14 +47,17 @@ pub async fn ablock_by_height(api: &Factom, height: u32)
 /// # Example
 /// ```
 /// use factom::*;
-/// 
-/// let keymr = "9f9b2d68e7f018a272e9331765ac8d353c7f58c6f18685405b5286353b58daee";
-/// let factom = Factom::new();
-/// let query = factom
-///               .admin_block(keymr)
-///               .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();;
+///   let ablock_keymr = "072334d94450296810cb647172812a5dc7ce518d29ecab411d47494d38ca4c88";
+///   let prevbackrefhash = "dbe20345a773a593d06cce65cf68d976011063208d54927433fac3c2b10f06b2";  
+///   let response = block::admin_block(&client, ablock_keymr)
+///                             .await
+///                             .expect("Request");
+///    assert_eq!(response.result.ablock.header.prevbackrefhash, prevbackrefhash);
+/// }
 /// ```
 pub async fn admin_block(api: &Factom, keymr: &str)
   -> Result<ApiResponse<ABlockResult>>
@@ -74,13 +81,15 @@ pub async fn admin_block(api: &Factom, keymr: &str)
 /// ```
 /// use factom::*;
 /// 
-/// let height = Anchor::height(200);
-/// let factom = Factom::new();
-/// let query = factom
-///               .anchor(height)
-///               .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();
+///   let directoryblockheight = 220000;
+///   let response = block::anchors(&client, block::AnchorType::Height(directoryblockheight))
+///                                 .await
+///                                 .expect("API Request");
+///    assert_eq!(response.result.directoryblockheight, directoryblockheight);
+/// }
 /// ```
 pub async fn anchors(api: &Factom, target: AnchorType)
   -> Result<ApiResponse<Anchor>>
@@ -100,12 +109,17 @@ pub async fn anchors(api: &Factom, target: AnchorType)
 /// ```
 /// use factom::*;
 /// 
-/// let factom = Factom::new();
-/// let query = factom
-///       .dblock_by_height(2)
-///       .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();
+///   let height = 220000;
+///   let bodymr = "a575d8f07c725cd8c523c7881121dac330a29b6d5edcf2da0b0f7d2d5cbba256";
+///   let response = block::dblock_by_height(&client, height)
+///                             .await
+///                             .expect("Request");
+///    assert_eq!(response.result.dblock.header.bodymr, bodymr);
+/// }
+
 /// ```
 pub async fn dblock_by_height(
   api: &Factom, 
@@ -127,13 +141,16 @@ pub async fn dblock_by_height(
 /// ```
 /// use factom::*;
 /// 
-/// let keymr = "5b372f4622c682c984dc922983d0c769db33c376d107c74e8023446029592011";
-/// let factom = Factom::new();
-/// let query = factom
-///       .directory_block(keymr)
-///       .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());    
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();
+///   let bodymr = "0f53b422b4ecf6753c4482fe21e958ec5e565ba44bcaa5253d0227bf2789b5dd";
+///   let prevblockkeymr = "86b1b7b9307b45628ef6c9f78d935f77d7bc2b156a8828be98109f72b22792f5";
+///   let response = block::directory_block(&client, bodymr)
+///                             .await
+///                             .expect("Request");
+///    assert_eq!(response.result.header.prevblockkeymr, prevblockkeymr);
+/// }
 /// ```
 pub async fn directory_block(api: &Factom, keymr: &str)
   -> Result<ApiResponse<DBlock>>
@@ -150,12 +167,14 @@ pub async fn directory_block(api: &Factom, keymr: &str)
 /// ```
 /// use factom::*;
 /// 
-/// let factom = Factom::new();
-/// let query = factom
-///       .directory_block_head()
-///       .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();
+///   let response = block::directory_block_head(&client)
+///                             .await
+///                             .expect("Api Request");
+///   assert!(!response.is_err());
+/// }
 /// ```
   pub async fn directory_block_head(api: &Factom)
   -> Result<ApiResponse<DBlockHead>>
@@ -171,12 +190,17 @@ pub async fn directory_block(api: &Factom, keymr: &str)
 /// ```
 /// use factom::*;
 /// 
-/// let factom = Factom::new();
-/// let query = factom
-///       .ecblock_by_height(2)
-///       .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();
+///   let height = 220000;
+///   let bodyhash = "c4b5a9d81028c5a87e7ff1d5ee8e1446f337ac6c57eca185a533cadeb653acee";
+///   let response = block::ecblock_by_height(&client, height)
+///                             .await
+///                             .expect("Request");
+///    assert_eq!(response.result.ecblock.header.bodyhash, bodyhash);
+/// }
+
 /// ```
 pub async fn ecblock_by_height(api: &Factom, height: u32)
   -> Result<ApiResponse<EBlockHeightResult>>
@@ -192,15 +216,18 @@ pub async fn ecblock_by_height(api: &Factom, height: u32)
 /// # Example
 /// ```
 /// use factom::*;
-/// 
-/// let keymr = "1df118c1293858d1111762d6a0df92b12231c72deb14b53bfffc09b867db1f3b";
-/// let factom = Factom::new();
-/// let query = factom
-///       .entry_block(keymr)
-///       .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
-/// 
+
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();
+///   let keymr = "45a6c1ef9e48e84dbbb6911a46262bbb24fe9d1b0123d768c9d9c63170b7b9c3";
+///   let chainid = "a642a8674f46696cc47fdb6b65f9c87b2a19c5ea8123b3d2f0c13b6f33a9d5ef";
+///   let response = block::entry_block(&client, keymr)
+///                             .await
+///                             .expect("Request");
+///    assert_eq!(response.result.header.chainid, chainid);
+/// }
+
 /// ```
 pub async fn entry_block(api: &Factom, keymr: &str)
   -> Result<ApiResponse<EBlock>>
@@ -217,13 +244,16 @@ pub async fn entry_block(api: &Factom, keymr: &str)
 /// ```
 /// use factom::*;
 /// 
-/// let keymr = "9b9e5b67b17f2e2d3d8405ea5fc227f6bf61fcc8c2422b36b11a7fce97018521";
-/// let factom = Factom::new();
-/// let query = factom
-///       .entry_credit_block(keymr)
-///       .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();
+///   let keymr = "a04189d5a050503bddb3bebb9b9eda0d542498c01b2f7820c58b6786441d187b";
+///   let bodyhash = "c4b5a9d81028c5a87e7ff1d5ee8e1446f337ac6c57eca185a533cadeb653acee";
+///   let response = block::entry_credit_block(&client, keymr)
+///                             .await
+///                             .expect("Request");
+///    assert_eq!(response.result.ecblock.header.bodyhash, bodyhash);
+/// }
 /// ```
 pub async fn entry_credit_block(api: &Factom, keymr: &str)
   -> Result<ApiResponse<EcBlockResult>>
@@ -236,16 +266,19 @@ pub async fn entry_credit_block(api: &Factom, keymr: &str)
 
 /// Retrieve a specified factoid block given its merkle root key.
 /// # Example
-/// ```
+/// ``` 
 /// use factom::*;
 /// 
-/// let keymr = "aaaf4db6c1f5b716df0d63dcf9605f599d9e41eb635d8ba3e9ddfbe697ec426c";
-/// let factom = Factom::new();
-/// let query = factom
-///       .factoid_block(keymr)
-///       .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();
+///   let keymr = "08d74c568ada1f89930c02d57cb3269425873f1a55217957b500ad22765a83cc";
+///   let bodymr = "faa064a185a2c677404dcc24e9428e781a19350fc8f21c7daf3d18b1d3f91412";
+///   let response = block::factoid_block(&client, keymr)
+///                             .await
+///                             .expect("Request");
+///    assert_eq!(response.result.fblock.bodymr, bodymr);
+/// }
 /// ```
 pub async fn factoid_block(api: &Factom, keymr: &str)
 -> Result<ApiResponse<FBlockResult>>
@@ -260,12 +293,18 @@ pub async fn factoid_block(api: &Factom, keymr: &str)
 /// # Example
 /// ```
 /// use factom::*;
-/// let factom = Factom::new();
-/// let query = factom
-///       .fblock_by_height(1)
-///       .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();
+///   let height = 220000;
+///   let bodymr = "faa064a185a2c677404dcc24e9428e781a19350fc8f21c7daf3d18b1d3f91412";
+///   let response = block::fblock_by_height(&client, height)
+///                             .await
+///                             .expect("Request");
+///   dbg!(&response);
+///   assert_eq!(response.result.fblock.bodymr, bodymr);
+/// }
 ///```
 pub async fn fblock_by_height(api: &Factom, height: u32)
   -> Result<ApiResponse<FBlockResult>>
@@ -410,7 +449,6 @@ pub struct Dbentry {
   pub chainid: String,
   pub keymr: String,
 }
-
 
 /// directory block function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
