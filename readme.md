@@ -20,8 +20,6 @@ factom = "2.0.0"
 async fn main() {
   let client = Factom::open_node();
   let response = factomd::heights(&client).await.unwrap();
-  dbg!(&response);
-  assert!(response.success());
   assert!(response.result.leaderheight > 0);
 }
 ```
