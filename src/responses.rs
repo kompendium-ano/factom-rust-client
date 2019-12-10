@@ -55,4 +55,10 @@ impl<T> ApiResponse<T>
   pub fn is_err(&self) -> bool {
     self.error.code != 0i16
   }
+  /// Returns a boolean representing whether the api response returned an error
+  /// This function does not deal with network errors, that is handled earlier
+  /// by the Result from running the future query to completion.
+  pub fn success(&self) -> bool {
+    self.error.code == 0i16
+  }
 }
