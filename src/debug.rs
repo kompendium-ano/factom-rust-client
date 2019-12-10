@@ -1,6 +1,21 @@
 use super::*;
 
 /// Show current holding messages in the queue.
+///
+/// # Example
+///
+/// ```no_run
+/// use factom::*;
+/// 
+/// #[tokio::main]
+/// async fn main() {
+///   /// Doctest examples will only work with a local factomd node running
+///   let client = Factom::new();
+///   let response = debug::holding_queue(&client).await.expect("Api Request");
+///   dbg!(&response);
+///   assert!(!response.is_err());
+/// }
+/// ```
 pub async fn holding_queue(api: &Factom)
   -> Result<ApiResponse<HoldingQueue>>
 {
@@ -10,6 +25,21 @@ pub async fn holding_queue(api: &Factom)
 }
 
 /// Get information on the current network factomd is connected to (TEST, MAIN, etc)
+///
+/// # Example
+///
+/// ```no_run
+/// use factom::*;
+/// 
+/// #[tokio::main]
+/// async fn main() {
+///   /// Doctest examples will only work with a local factomd node running
+///   let client = Factom::new();
+///   let response = debug::network_info(&client).await.expect("Api Request");
+///   dbg!(&response);
+///   assert!(!response.is_err());
+/// }
+/// ```
 pub async fn network_info(api: &Factom)
   -> Result<ApiResponse<NetworkInfo>>
 {
@@ -19,6 +49,21 @@ pub async fn network_info(api: &Factom)
 }
 
 /// Get the predicted future entry credit rate.
+/// ///
+/// # Example
+///
+/// ```no_run
+/// use factom::*;
+/// 
+/// #[tokio::main]
+/// async fn main() {
+///   /// Doctest examples will only work with a local factomd node running
+///   let client = Factom::new();
+///   let response = debug::predictive_fer(&client).await.expect("Api Request");
+///   dbg!(&response);
+///   assert!(!response.is_err());
+/// }
+/// ```
 pub async fn predictive_fer(api: &Factom)
   -> Result<ApiResponse<PredictiveFER>>
 {
@@ -28,6 +73,21 @@ pub async fn predictive_fer(api: &Factom)
 }
 
 /// Get a list of the current network audit servers along with their information.
+///
+/// # Example
+///
+/// ```no_run
+/// use factom::*;
+/// 
+/// #[tokio::main]
+/// async fn main() {
+///   /// Doctest examples will only work with a local factomd node running
+///   let client = Factom::new();
+///   let response = debug::audit_servers(&client).await.expect("Api Request");
+///   dbg!(&response);
+///   assert!(!response.is_err());
+/// }
+/// ```
 pub async fn audit_servers(api: &Factom)
   -> Result<ApiResponse<AuditServers>>
 {
@@ -37,6 +97,21 @@ pub async fn audit_servers(api: &Factom)
 }
 
 /// Get a list of the current network federated servers along with their information.
+///
+/// # Example
+///
+/// ```no_run
+/// use factom::*;
+/// 
+/// #[tokio::main]
+/// async fn main() {
+///   /// Doctest examples will only work with a local factomd node running
+///   let client = Factom::new();
+///   let response = debug::federated_servers(&client).await.expect("Api Request");
+///   dbg!(&response);
+///   assert!(!response.is_err());
+/// }
+/// ```
 pub async fn federated_servers(api: &Factom)
   -> Result<ApiResponse<FederatedServers>>
 {
@@ -50,6 +125,21 @@ pub async fn federated_servers(api: &Factom)
 /// NOTE: If a tag is commented out, this call will return the default value for it.
 /// E.g: In the Example Response “ExchangeRate” is set to “0”. factomd.config default
 ///  does not have an “ExchangeRate” tag. That is why it is set to “0”.
+///
+/// # Example
+///
+/// ```no_run
+/// use factom::*;
+/// 
+/// #[tokio::main]
+/// async fn main() {
+///   /// Doctest examples will only work with a local factomd node running
+///   let client = Factom::new();
+///   let response = debug::configuration(&client).await.expect("Api Request");
+///   dbg!(&response);
+///   assert!(!response.is_err());
+/// }
+/// ```
 pub async fn configuration(api: &Factom)
   -> Result<ApiResponse<Configuration>>
 {
@@ -59,6 +149,7 @@ pub async fn configuration(api: &Factom)
 }
 
 /// Get the process list known to the current factomd instance. 
+
 pub async fn process_list(api: &Factom)
   -> Result<ApiResponse<ProcessList>>
 {
@@ -68,6 +159,21 @@ pub async fn process_list(api: &Factom)
 }
 
 /// List of authority servers in the management chain.
+///
+/// # Example
+///
+/// ```no_run
+/// use factom::*;
+/// 
+/// #[tokio::main]
+/// async fn main() {
+///   /// Doctest examples will only work with a local factomd node running
+///   let client = Factom::new();
+///   let response = debug::authorities(&client).await.expect("Api Request");
+///   dbg!(&response);
+///   assert!(!response.is_err());
+/// }
+/// ```
 pub async fn authorities(api: &Factom)
   -> Result<ApiResponse<Authorities>>
 {
@@ -78,6 +184,21 @@ pub async fn authorities(api: &Factom)
 
 /// Causes factomd to re-read the configuration from the config file. Note: This 
 /// may cause consensus problems and could be impractical even in testing.
+///
+/// # Example
+///
+/// ```no_run
+/// use factom::*;
+/// 
+/// #[tokio::main]
+/// async fn main() {
+///   /// Doctest examples will only work with a local factomd node running
+///   let client = Factom::new();
+///   let response = debug::reload_configuration(&client).await.expect("Api Request");
+///   dbg!(&response);
+///   assert!(!response.is_err());
+/// }
+/// ```
 pub async fn reload_configuration(api: &Factom)
   -> Result<ApiResponse<Configuration>>
 {
@@ -87,6 +208,21 @@ pub async fn reload_configuration(api: &Factom)
 }
 
 /// Get the current package drop rate for network testing.
+///
+/// # Example
+///
+/// ```no_run
+/// use factom::*;
+/// 
+/// #[tokio::main]
+/// async fn main() {
+///   /// Doctest examples will only work with a local factomd node running
+///   let client = Factom::new();
+///   let response = debug::drop_rate(&client).await.expect("Api Request");
+///   dbg!(&response);
+///   assert!(!response.is_err());
+/// }
+/// ```
 pub async fn drop_rate(api: &Factom)
   -> Result<ApiResponse<DropRate>>
 {
@@ -96,6 +232,25 @@ pub async fn drop_rate(api: &Factom)
 }
 
 /// Change the network drop rate for testing.
+/// 
+///
+/// # Example
+///
+/// ```no_run
+/// use factom::*;
+/// 
+/// #[tokio::main]
+/// async fn main() {
+///   /// Doctest examples will only work with a local factomd node running
+///   let client = Factom::new();
+///   leet drop_rate = 10;
+///   let response = debug::set_drop_rate(&client, drop_rate)
+///                           .await
+///                           .expect("Api Request");
+///   dbg!(&response);
+///   assert!(!response.is_err());
+/// }
+/// ```
 pub async fn set_drop_rate(
   api: &Factom,
   drop_rate: usize
@@ -108,6 +263,23 @@ pub async fn set_drop_rate(
 }
 
 /// Get the current msg delay time for network testing.
+///
+/// # Example
+///
+/// ```no_run
+/// use factom::*;
+/// 
+/// #[tokio::main]
+/// async fn main() {
+///   /// Doctest examples will only work with a local factomd node running
+///   let client = Factom::new();
+///   let response = debug::delay(&client)
+///                         .await
+///                         .expect("Api Request");
+///   dbg!(&response);
+///   assert!(!response.is_err());
+/// }
+/// ```
 pub async fn delay(api: &Factom)
   -> Result<ApiResponse<Delay>>{
   let req =  ApiRequest::new("delay");
@@ -116,6 +288,24 @@ pub async fn delay(api: &Factom)
 }
 
 /// Set the current msg delay time for network testing.
+///
+/// # Example
+///
+/// ```no_run
+/// use factom::*;
+/// 
+/// #[tokio::main]
+/// async fn main() {
+///   /// Doctest examples will only work with a local factomd node running
+///   let client = Factom::new();
+///   let delay = 10
+///   let response = debug::set_delay(&client, delay)
+///                         .await
+///                         .expect("Api Request");
+///   dbg!(&response);
+///   assert!(!response.is_err());
+/// }
+/// ```
 pub async fn set_delay(
   api: &Factom,
   delay: usize
@@ -128,6 +318,21 @@ pub async fn set_delay(
 }
 
 /// Get the nodes summary string.
+///
+/// # Example
+///
+/// ```no_run
+/// use factom::*;
+/// 
+/// #[tokio::main]
+/// async fn main() {
+///   /// Examples will only work with a local factomd node running
+///   let client = Factom::new();
+///   let response = debug::summary(&client).await.expect("Api Request");
+///   dbg!(&response);
+///   assert!(!response.is_err());
+/// }
+/// ```
 pub async fn summary(api: &Factom)
   -> Result<ApiResponse<Summary>>{ 
   let req =  ApiRequest::new("summary");
@@ -137,6 +342,21 @@ pub async fn summary(api: &Factom)
 
 /// Get a list of messages from the message journal 
 /// (must run factomd with -journaling=true)
+///
+/// # Example
+///
+/// ```no_run
+/// use factom::*;
+/// 
+/// #[tokio::main]
+/// async fn main() {
+///   /// Doctest examples will only work with a local factomd node running
+///   let client = Factom::new();
+///   let response = debug::messages(&client).await.expect("Api Request");
+///   dbg!(&response);
+///   assert!(!response.is_err());
+/// }
+/// ```
 pub async fn messages(api: &Factom)
   -> Result<ApiResponse<Messages>>
 { 
