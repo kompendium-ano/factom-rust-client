@@ -36,9 +36,10 @@ pub async fn address(
 ///#[tokio::main]
 ///async fn main() {
 ///  let client = Factom::new();
+///  let 
 ///  let my_address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
 ///  let query = address::all_addresses(&client);
-///  let response = query.await.expect("Fetching query");
+///  let response = query.await.unwrap();
 ///  assert!(response
 ///           .result
 ///           .addresses
