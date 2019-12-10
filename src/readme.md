@@ -1,20 +1,71 @@
-# Client modules
+# Factom Rust API Client
 
-The Factom-Client api is seperated into modules. Links to their respective functions are below.
+[![Crates.io](https://img.shields.io/crates/v/factom.svg)](https://crates.io/crates/factom)
+[![Build Status](https://travis-ci.com/Kompendium-llc/Factom-Client.svg?branch=master)](https://travis-ci.com/Kompendium-llc/Factom-Client)
+[![dependency status](https://deps.rs/crate/factom/2.0.0/status.svg)](https://deps.rs/crate/factom/2.0.0)
 
-## Address
+## Installation
+
+Add to cargo.toml:
+```toml
+[dependencies]
+factom = "2.0.0"
+```
+
+## Quickstart
+```rust
+// Get current blockheights
+#[tokio::main]
+async fn main() {
+  let client = Factom::open_node();
+  let response = factomd::heights(&client).await.unwrap()
+  dbg!(&response);
+  assert!(response.result.leaderheight > 0);
+}
+```
+## Usage
+See the examples folder for common workflows, or use `cargo run --example` to view the examples you can run. eg `cargo run --example get_balance`
+
+## Runtime
+This library exports the tokio runtime and executor, to use a different runtime modify your `cargo.toml`:
+```toml
+[dependencies]
+factom = {version="2.0.0", features="no-runtime"}
+```
+## Testing
+See the [testing readme]() for instructions on running the test suite.
+
+## Benchmarking
+Benching via criterion is provided, if GNUplot is installed it will also generate 
+plots . This can be used to test the performance of factomd, factom-walletd, 
+network connections and the library functions themselves. See the Benches folder 
+readme for more information.
+
+## Fuzzing
+A fuzzing suite is provided using the rust implentation of 
+[American Fuzzy Lop](http://lcamtuf.coredump.cx/afl/), with appropriate setup 
+this can be used to fuzz both the Factom rust library along with a simulated 
+Factom network. See the Fuzz folder readme for more information.
+
+## Client modules
+The Factom-Client api is seperated into modules. Links to their respective 
+functions are below. Full documentation is hosted at https://docs.rs/factom/
+
+### Address
 
 Relating to Address functions
 
 * [address](ggg-address)
-* [all-addresses](ggg-address)
+* [all-addresses](ggg-all-addresses)
 * [remove-address](ggg-remove-address)
 
-## Api
+### Api
 
-The main api client module holding the Factom struct from which requests are constructed.
+The main api client module holds Factom struct from which requests are constructed.
 
-## Balance
+
+
+### Balance
 
 For balance related functions.
 
@@ -23,7 +74,7 @@ For balance related functions.
 * [multiple-ec-balances](ggg-multiple-ec-balances)
 * [multiple-fct-balances](ggg-multiple-fct-balances)
 
-## Block
+### Block
 
 For functions dealing with block data queries.
 
@@ -39,7 +90,7 @@ For functions dealing with block data queries.
 * [factoid_block](ggg-factoid_block)
 * [fblock_by_height](ggg-fblock_by_height)
 
-## Chain
+### Chain
 
 For functions handling chain data.
 
@@ -47,7 +98,7 @@ For functions handling chain data.
 * [commit_chain](ggg-commit_chain)
 * [reveal_chain](ggg-reveal_chain)
 
-## Compose
+### Compose
 
 Functions that compose transactions, entries and identities.
 
@@ -61,7 +112,7 @@ Functions that compose transactions, entries and identities.
 
 ----
 
-## Constants
+### Constants
 
 Static constants for use within the library.
 
@@ -76,7 +127,7 @@ Static constants for use within the library.
 
 ----
 
-## Debug
+### Debug
 
 Factomd debug functions. Tests exist but are disabled for this module and require running a local factomd node.
 
@@ -98,7 +149,7 @@ Factomd debug functions. Tests exist but are disabled for this module and requir
 
 ----
 
-## Entry
+### Entry
 For querying entires.
 
 * [commit_entry](ggg-commit_entry)
@@ -109,7 +160,7 @@ For querying entires.
 
 ----
 
-## Factomd
+### Factomd
 
 General functions relating to factomd
 
@@ -123,7 +174,7 @@ General functions relating to factomd
 
 ----
 
-## Generate
+### Generate
 
 Functions for generating addresses or identities.
 
@@ -133,7 +184,7 @@ Functions for generating addresses or identities.
 
 ----
 
-## Identity
+### Identity
 
 Relating to identity functions.
 
@@ -144,7 +195,7 @@ Relating to identity functions.
 
 ----
 
-## Import
+### Import
 
 For importing addresses or identities
 
@@ -154,7 +205,7 @@ For importing addresses or identities
 
 ----
 
-## Requests
+### Requests
 
 Request handling functions intrinsic to the factom struct
 
@@ -164,7 +215,7 @@ Request handling functions intrinsic to the factom struct
 
 ---
 
-## Responses
+### Responses
 
 Response handling functions to parse json responses into objects
 
@@ -186,7 +237,7 @@ Response handling functions to parse json responses into objects
 
 ---
 
-## Tx
+### Tx
 
 Functions relating to transactions
 
@@ -205,7 +256,7 @@ Functions relating to transactions
 * [tmp_transactions](ggg-tmp_transactions)
 * [transactions](ggg-transactions)
 
-## Walletd
+### Walletd
 
 General utility functions relating to factom-walletd
 
@@ -214,4 +265,4 @@ General utility functions relating to factom-walletd
 * [unlock_wallet](ggg-unlock_wallet)
 * [wallet_height](ggg-wallet_height)
 * [wallet_properties](ggg-wallet_properties)
-* [sign_data](ggg-sign_data)
+<!-- * [sign_data](ggg-sign_data) -->
