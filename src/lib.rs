@@ -14,7 +14,6 @@ pub mod compose;
 pub mod constants;
 pub mod debug;
 pub mod entry;
-// pub mod errors;
 pub mod generate;
 pub mod identity;
 pub mod import;
@@ -26,8 +25,8 @@ pub mod responses;
 
 pub use api::Factom;
 pub use constants::*; 
-pub use tokio::runtime::Runtime;
 pub use tokio::prelude::*;
+pub use tokio::runtime::Runtime;
 pub use responses::ApiResponse;
 pub use requests::{ApiRequest, fetch};
 
