@@ -6,7 +6,3 @@ rust:
 
 script:
   - cargo build --verbose
-
-matrix:
-  allow_failures:
-    - rust: nightly
