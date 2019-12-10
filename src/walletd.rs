@@ -119,45 +119,6 @@ pub async fn wallet_properties(api: &Factom)
   parse(response).await
 }
 
-// Sign data is not currently in factom-walletd
-
-// ///  Sign arbitrary data using a secret key stored in the wallet using ed25519 
-// ///  signatures. signer can be a human readable Factoid Address (FA), Entry Credit 
-// ///  Address (EC), or Identity Key (idpub). data is a base64-encoded string. 
-// ///  Returns both the public key component and the signature as base64-encoded 
-// ///  strings. Wallet must be unlocked prior to using this command.
-// /// 
-// /// Note: For signing large amounts of data it may be advisable to sign a hash of 
-// /// the data rather than the data itself.
-// /// # Example
-// /// ```
-// /// use factom::*;
-// /// 
-// /// let factom = Factom::new();
-// /// let signer = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
-// /// let data = "Here be data";
-// /// let query = factom
-// ///             .sign_data(
-// ///               signer,
-// ///               data
-// ///             )
-// ///             .map(|response| response).map_err(|err| err);
-// /// let response = fetch(query).unwrap();
-// /// assert!(response.success());  
-// /// ```
-// pub async fn sign_data(
-//   api: &Factom, 
-//   signer: &str, 
-//   data: &str
-// )-> Result<ApiResponse<SignData>>
-// {
-//   let mut req =  ApiRequest::new("sign-data");
-//   req.params.insert("signer".to_string(), json!(signer));
-//   req.params.insert("data".to_string(), json!(data));
-//   let response = walletd_call(api, req).await;
-//   parse(response).await
-// }
-
 /// unlock-wallet function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct UnlockWallet {
