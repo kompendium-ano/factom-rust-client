@@ -89,7 +89,8 @@ impl Factom {
   /// 
   /// # Example
   /// ```
-  /// use factom::Factom::custom_node;
+  /// 
+  /// use factom::custom_node;
   /// let api = custom_node("https://api.factomd.net", "http://localhost:12345");
   /// ```
   pub fn custom_node(factomd: &str, walletd: &str) -> Factom {
@@ -148,8 +149,9 @@ pub fn parse_debug_uri(host: &str) -> Rc<Uri> {
 /// Panics with a ParseError if provided with an invalid url
 /// # Example
 /// ```
-/// let host = "http://localhost:7077"
-/// let factomd_uri = parse_uri(host);
+/// use factom::*;
+/// let host = "http://localhost:7077";
+/// let factomd_uri = api::parse_uri(host);
 /// assert_eq!(factomd_uri, Uri::from_static("http://localhost:7077/v2"));
 /// ```
 pub fn parse_uri(host: &str) -> Rc<Uri> {
