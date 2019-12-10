@@ -105,29 +105,5 @@ pub fn fetch<F: Future>(query: F) -> F::Output {
   rt.block_on(query)
 }
 
-#[cfg(test)]
-mod tests {
-  // use super::*;
-    // #[test]
-    // fn heights() {
-    //   let rt = Runtime::new().expect("Initialising Runtime");
-    //   let api = Factom::open_node();
-    //   let query = api.heights();
-    //   let res = rt.block_on(query).expect("Runtime");
-    //   let query2 = api.properties();
-    //   let res2 = rt.block_on(query2).expect("Runtime");
-    //   dbg!(res2);
-    //   assert!(res.result.directoryblockheight > 1)
-    // }
-
-    // #[test]
-    // fn method_not_found() {
-    //   let rt = Runtime::new().expect("Initialising Runtime");
-    //   let api = Factom::new();
-    //   let query = api.();
-    //   let res = rt.block_on(query).expect("Runtime blocking thread");
-    //   assert_eq!(res.error.code, -32601);
-    // }
-}
 
 
