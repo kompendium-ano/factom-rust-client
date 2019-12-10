@@ -8,21 +8,6 @@ use std::collections::HashMap;
 /// 
 /// Note: The firstentry fields are automatically hex encoded for the server to 
 /// process.
-/// # Example
-/// ```
-/// use factom::*;
-/// 
-/// let ec_address = "EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx";
-/// let extids = vec!("Cargo Test", "test harness");
-/// let content = "Here be the content";
-/// let factom = Factom::new();
-/// let query = factom
-///               .compose_chain(extids, content, ec_address)
-///               .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
-/// ```
-
 pub async fn compose_chain(
   api: &Factom, 
   extids: Vec<&str>, 
@@ -48,28 +33,11 @@ pub async fn compose_chain(
   parse(response).await
 }
 
-/**
 /// This method, compose-entry, will return the appropriate API calls to create an 
 /// entry in factom. You must first call the commit-entry, then the reveal-entry 
 /// API calls. To be safe, wait a few seconds after calling commit.
 /// 
 /// Note: The entry fields are automatically hex encoded for the server to process.
-/// # Example
-/// ```
-/// use factom::*;
-/// 
-/// let chainid = "9dec48601fba6ddb4bcea12066ba0f2b2467f89c788c5a243eb253c3de0f815b";
-/// let ec_address = "EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx";
-/// let extids = vec!("Cargo Test", "test harness");
-/// let content = "Here be the content";
-/// let factom = Factom::new();
-/// let query = factom
-///       .compose_entry(chainid, extids, content, ec_address)
-///       .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success()); 
-/// ```
-*/
 pub async fn compose_entry(
   api: &Factom, 
   chainid: &str, 
@@ -141,39 +109,6 @@ pub async fn compose_transaction(
 /// The response you receive is similar to the compose-entry response. You must 
 /// first call the commit-entry, then the reveal-entry API calls. To be safe, 
 /// wait a few seconds after calling commit.
-/// 
-/// #Example
-/// ```
-/// use factom::*;
-/// use std::collections::Hashmap;
-/// 
-/// let rx_chain = "3b69dabe22c014af9a9bc9dfa7917ce4602a03579597ddf184d8de56702512ae";
-/// let dst_chain = "3b69dabe22c014af9a9bc9dfa7917ce4602a03579597ddf184d8de56702512ae";
-/// let mut attributes = Hashmap::new();
-/// attributes.insert("key".to_string(), "email");
-/// attributes.insert("value".to_string(), "hello@factom.com");
-/// attributes = vec!(attributes);
-/// let signerkey = "idpub2cw4NS4JZowXTwhGeo2tTGNvnjc5n2QvHBURdvVFCKRDuLEnBh";
-/// let signer_chain = "3b69dabe22c014af9a9bc9dfa7917ce4602a03579597ddf184d8de56702512ae";
-/// let ecpub = "EC2ZFTmTv5Fs7UyKZzxY8km4jF635VkhR5KKBMzNP4BK4fPKaVw4";
-/// let force = false;
-/// 
-/// let factom = Factom::new();
-/// let query = factom
-///             .compose_id_attribute(
-///               rx_chain,
-///               dst_chain,
-///               attributes,
-///               signerkey,
-///               signer_chain,
-///               ecpub,
-///               force
-///             )
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());
-/// ```
-
   pub async fn compose_id_attribute<T>(
     api: &Factom, 
   receiver_chain: &str,
@@ -238,33 +173,6 @@ pub async fn compose_transaction(
 /// The response you receive is similar to the compose-entry response. You must 
 /// first call the commit-entry, then the reveal-entry API calls. To be safe, 
 /// wait a few seconds after calling commit.
-/// 
-/// #Example
-/// ```
-/// use factom::*;
-/// 
-/// let entry_hash = "c07f1d89bb6c43e7e3166b9e53672110ff8077c367758fbe4265561c8b91e675";
-/// let dst_chain = "3b69dabe22c014af9a9bc9dfa7917ce4602a03579597ddf184d8de56702512ae";
-/// let signerkey = "idpub2cw4NS4JZowXTwhGeo2tTGNvnjc5n2QvHBURdvVFCKRDuLEnBh";
-/// let signer_chain = "3b69dabe22c014af9a9bc9dfa7917ce4602a03579597ddf184d8de56702512ae";
-/// let ecpub = "EC2ZFTmTv5Fs7UyKZzxY8km4jF635VkhR5KKBMzNP4BK4fPKaVw4";
-/// let force = false;
-/// 
-/// let factom = Factom::new();
-/// let query = factom
-///             .compose_id_attribute_endorsement(
-///               dst_chain,
-///               entry_hash,
-///               signerkey,
-///               signer_chain,
-///               ecpub,
-///               force
-///             )
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());
-/// ```
-
 pub async fn compose_id_attribute_endorsement(
   api: &Factom, 
   destination_chain: &str,
@@ -305,31 +213,6 @@ pub async fn compose_id_attribute_endorsement(
 /// priority key can always just replace a lower priority key that was 
 /// compromised or simply lost. For more information on key replacements, see the 
 /// compose-identity-key-replacement section.
-/// 
-/// #Example
-/// ```
-/// use factom::*;
-/// 
-/// let name = vec!["Factom", "Test", "ID"];
-/// let pubkeys = vec![
-///   "idpub2k8zGYQUfekxehyUKeqPw6QPiJ5hkV3bbc9JBgL7GNrEiqMpQX",
-///   "idpub3fXRj21gXveTk6RKYrpJniWV2pAanQktekEt62yhJUQXyPdvwL",
-///   "idpub2GU1Pcax2PibH8hHZg58fKRiSJKQWQkWYkpmt7VH1jCXBgqp9w"];
-/// let ecpub = "EC2ZFTmTv5Fs7UyKZzxY8km4jF635VkhR5KKBMzNP4BK4fPKaVw4";
-/// let force = false;
-/// 
-/// let factom = Factom::new();
-/// let query = factom
-///             .compose_id_chain(
-///               name,
-///               pubkeys,
-///               ecpub,
-///               force
-///             )
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());
-/// ```
 pub async fn compose_id_chain(
   api: &Factom, 
   name: Vec<&str>,
@@ -368,33 +251,6 @@ pub async fn compose_id_chain(
 /// * signerkey - the public identity key that will sign the entry and authorize the 
 /// replacement. This key must be stored in the wallet already and must be of the 
 /// same or higher priority than the oldkey in the context of the given Identity Chain.
-/// 
-/// #Example
-/// ```
-/// use factom::*;
-/// 
-/// let chain_id = "3b69dabe22c014af9a9bc9dfa7917ce4602a03579597ddf184d8de56702512ae";
-/// let old_key = "idpub2GU1Pcax2PibH8hHZg58fKRiSJKQWQkWYkpmt7VH1jCXBgqp9w";
-/// let new_key = "idpub2cw4NS4JZowXTwhGeo2tTGNvnjc5n2QvHBURdvVFCKRDuLEnBh";
-/// let signer_key = "idpub2GU1Pcax2PibH8hHZg58fKRiSJKQWQkWYkpmt7VH1jCXBgqp9w";
-/// let ecpub = "EC2ZFTmTv5Fs7UyKZzxY8km4jF635VkhR5KKBMzNP4BK4fPKaVw4";
-/// let force = false;
-/// 
-/// let factom = Factom::new();
-/// let query = factom
-///             .compose_id_key_replacement(
-///               chain_id,
-///               old_key,
-///               new_key,
-///               signer_key,
-///               ecpub,
-///               force
-///             )
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());
-/// ```
-
 pub async fn compose_id_key_replacement(
   api: &Factom, 
   chain_id: &str,
