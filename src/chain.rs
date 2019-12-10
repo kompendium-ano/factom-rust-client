@@ -10,7 +10,7 @@ use super::*;
 /// async fn main() {
 ///   let client = Factom::open_node();
 ///   let chainid= "a642a8674f46696cc47fdb6b65f9c87b2a19c5ea8123b3d2f0c13b6f33a9d5ef";
-///   let chainhead = "e67a0e839098a8f1e6b53156671d031b73c0c58a0389d52c5e76ea86a3c7b1e4";
+///   let chainhead = "4b1f7dc6199c2c0d29d8ef1ab7432987fa1fb322c72ac6edf4831c9c0182253f";
 ///   let response = chain::chain_head(&client, chainid)
 ///                         .await
 ///                         .expect("Api Request");
