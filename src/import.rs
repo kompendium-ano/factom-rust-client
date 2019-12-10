@@ -6,13 +6,14 @@ use std::collections::HashMap;
 /// ```
 /// use factom::*;
 /// 
-/// let addresses = vec!("Fs3E9gV6DXsYzf7Fqx1fVBQPQXV695eP3k5XbmHEZVRLkMdD9qCK");
-/// let factom = Factom::new();
-/// let query = factom
-///             .import_addresses(addresses)
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::new();
+///   let priv_key = "Fs3E9gV6DXsYzf7Fqx1fVBQPQXV695eP3k5XbmHEZVRLkMdD9qCK";
+///   let response = import::import_addresses(&client, vec![priv_key]).await.unwrap();
+///   dbg!(&response);
+///   assert!(response.success())
+/// }
 /// ```
 pub async fn import_addresses(
   api: &Factom,
@@ -40,13 +41,16 @@ pub async fn import_addresses(
 /// ```
 /// use factom::*;
 /// 
-/// let addresses = vec!("idsec2rWrfNTD1x9HPPesA3fz8dmMNZdjmSBULHx8VTXE1J4D9icmAK");
-/// let factom = Factom::new();
-/// let query = factom
-///             .import_identity_keys(addresses)
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::new();
+///   let priv_id_key = "idsec2rWrfNTD1x9HPPesA3fz8dmMNZdjmSBULHx8VTXE1J4D9icmAK";
+///   let response = import::import_identity_keys(&client, vec![priv_id_key])
+///                             .await
+///                             .unwrap();
+///   dbg!(&response);
+///   assert!(response.success())
+/// }
 /// ```
 pub async fn import_identity_keys(
   api: &Factom,
@@ -74,13 +78,16 @@ pub async fn import_identity_keys(
 /// ```
 /// use factom::*;
 /// 
-/// let koinify_phrase = "yellow yellow yellow yellow yellow yellow yellow yellow yellow yellow yellow yellow";
-/// let factom = Factom::new();
-/// let query = factom
-///             .import_koinify(koinify_phrase)
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::new();
+///   let koinify_phrase = "yellow yellow yellow yellow yellow yellow yellow yellow yellow yellow yellow yellow";
+///   let response = import::import_koinify(&client, koinify_phrase)
+///                             .await
+///                             .unwrap();
+///   dbg!(&response);
+///   assert!(response.success());
+/// }
 /// ```
 pub async fn import_koinify(
   api: &Factom,
@@ -107,9 +114,14 @@ pub struct Address {
 /// import-identity-keys function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Keys {
-  pub keys: Vec<Addresses>,
+  pub keys: Vec<Key>,
 }
 
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Key {
+  pub public: String,
+  pub secret: String,
+}
 
 
 

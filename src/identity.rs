@@ -7,12 +7,13 @@ use super ::*;
 /// ```
 /// use factom::*;
 /// 
-/// let factom = Factom::new();
-/// let query = factom
-///             .all_id_keys()
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::new();
+///   let response = identity::all_id_keys(&client).await.unwrap();
+///   dbg!(&response);
+///   assert!(response.success());
+/// }
 /// ```
 pub async fn all_id_keys(api: &Factom)
   -> Result<ApiResponse<IdKeys>>
@@ -46,17 +47,14 @@ pub async fn all_id_keys(api: &Factom)
 /// ```
 /// use factom::*;
 /// 
-/// let factom = Factom::new();
-/// let chain_id = "3b69dabe22c014af9a9bc9dfa7917ce4602a03579597ddf184d8de56702512ae";
-/// let height = 100;
-/// let query = factom
-///             .active_id_keys(
-///               chain_id,
-///               height
-///             )
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();
+///   let chainid = "3b69dabe22c014af9a9bc9dfa7917ce4602a03579597ddf184d8de56702512ae";
+///   let height = 163419;
+///   let response = identity::active_id_keys(&client, chainid, Some(height)).await.unwrap();
+///   dbg!(&response);
+/// }
 /// ```
 pub async fn active_id_keys(
   api: &Factom,
@@ -84,16 +82,15 @@ pub async fn active_id_keys(
 /// ```
 /// use factom::*;
 /// 
-/// let factom = Factom::new();
-/// let public = "idpub26PEBWuumVp19yUSpfGJ2HPrTrU7hgw5empU7FPiTHdCKoy5Ao";
-/// let height = 100;
-/// let query = factom
-///             .remove_id_key(
-///               public
-///             )
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::new();
+///   let response = generate::identity_key(&client).await.unwrap();
+///   let address = response.result.public;
+///   let remove_response = identity::remove_id_key(&client, &address).await.unwrap();
+///   dbg!(&remove_response);
+///   assert!(remove_response.result.success);
+/// }
 /// ```
 pub async fn remove_id_key(
   api: &Factom,
@@ -114,16 +111,19 @@ pub async fn remove_id_key(
 /// ```
 /// use factom::*;
 /// 
-/// let factom = Factom::new();
-/// let public = "idpub26PEBWuumVp19yUSpfGJ2HPrTrU7hgw5empU7FPiTHdCKoy5Ao";
-/// let height = 100;
-/// let query = factom
-///             .id_key(
-///               public
-///             )
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::new();
+///   /// Generate key
+///   let gen_response = generate::identity_key(&client).await.unwrap();
+///   let pub_id = &gen_response.result.public;
+///   let priv_id = &gen_response.result.secret;
+///   /// Get key from wallet
+///   let id_response = identity::id_key(&client, pub_id).await.unwrap();
+///   assert_eq!(&id_response.result.secret, priv_id);
+///   /// Remove key
+///   let remove_response = identity::remove_id_key(&client, &pub_id).await.unwrap();
+/// }
 /// ```
 pub async fn id_key(
   api: &Factom,
@@ -136,11 +136,10 @@ pub async fn id_key(
   parse(response).await
 }
 
-
 /// all-identity-keys function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct IdKeys {
-  pub keys: Vec<Key>,
+  pub keys: Option<Vec<Key>>,
 }
 
 /// identity-key function
@@ -163,4 +162,3 @@ pub struct ActiveIdKeys {
 pub struct RemoveIdKey {
   pub success: bool,
 }
-

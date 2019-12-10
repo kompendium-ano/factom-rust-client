@@ -58,25 +58,44 @@ use std::collections::HashMap;
 /// ```
 /// use factom::*;
 /// 
-/// let hash = "6ecd7c6c40d0e9dbb52457343e083d4306c5b4cd2d6e623ba67cf9d18b39faa7";
-/// let tx_type = "f";
-/// let factom = Factom::new();
-/// let query = factom
-///             .ack(hash, tx_type, None)
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();
+///   let hash = "e96cca381bf25f6dd4dfdf9f7009ff84ee6edaa3f47f9ccf06d2787482438f4b";
+///   let chainid = "f9164cd66af9d5773b4523a510b5eefb9a5e626480feeb6671ef2d17510ca300";
+///   let committxid = "4876ffeb8f95b72911b4a5115dc8a9fbb89d874db2263a75a9062f37bbbf1fa7";
+///   let response = tx::ec_ack(&client, hash, chainid, None).await.unwrap();
+///   dbg!(&response);
+///   assert_eq!(response.result.committxid, committxid);
+/// }
 /// ```
-pub async fn ack(
+pub async fn ec_ack(
   api: &Factom, 
   hash: &str, 
   chainid: &str, 
   full_transaction: Option<&str>
-) -> Result<ApiResponse<Ack>> 
+) -> Result<ApiResponse<EntryAck>> 
 {
   let mut req =  ApiRequest::new("ack");
   req.params.insert("hash".to_string(), json!(hash));
   req.params.insert("chainid".to_string(), json!(chainid));
+  if let Some(tx) = full_transaction{
+    req.params.insert("fulltransaction".to_string(), json!(tx));
+  }
+  let response = factomd_call(api, req).await;
+  parse(response).await
+}
+
+/// See documentation for ec_ack
+pub async fn fct_ack(
+  api: &Factom, 
+  hash: &str, 
+  full_transaction: Option<&str>
+) -> Result<ApiResponse<FactoidAck>> 
+{
+  let mut req =  ApiRequest::new("ack");
+  req.params.insert("hash".to_string(), json!(hash));
+  req.params.insert("chainid".to_string(), json!("f"));
   if let Some(tx) = full_transaction{
     req.params.insert("fulltransaction".to_string(), json!(tx));
   }
@@ -92,18 +111,8 @@ pub async fn ack(
 /// that includes signatures. If you have a factom-walletd instance running, you 
 /// can construct this factoid-submit API call with compose-transaction which 
 /// takes easier to construct arguments.
-/// # Example
-/// ```
-/// use factom::*;
-/// 
-/// let tx = "0201565d109233010100b0a0e100646f3e8750c550e4582eca5047546ffef89c13a175985e320232bacac81cc428afd7c200ce7b98bfdae90f942bc1fe88c3dd44d8f4c81f4eeb88a5602da05abc82ffdb5301718b5edd2914acc2e4677f336c1a32736e5e9bde13663e6413894f57ec272e28dc1908f98b79df30005a99df3c5caf362722e56eb0e394d20d61d34ff66c079afad1d09eee21dcd4ddaafbb65aacea4d5c1afcd086377d77172f15b3aa32250a";
-/// let factom = Factom::new();
-/// let query = factom
-///       .factoid_submit(tx)
-///       .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success()); 
-/// ```
+///
+/// See the examples folder for an example of the full workflow
 pub async fn factoid_submit(
   api: &Factom, 
   transaction: &str
@@ -144,12 +153,16 @@ pub async fn factoid_submit(
 /// ```
 /// use factom::*;
 /// 
-/// let hash = "21fc64855771f2ee12da2a85b1aa0108007ed3a566425f3eaec7c8c7d2db6c6d";
-/// let factom = Factom::new();
-/// let query = factom.transaction(hash)
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();
+///   let tx_hash ="a740ac489821399eac070cf3ba681bc4cb78058a5fedee5e407762aa3d1de158";
+///   let response = tx::transaction(&client, tx_hash)
+///                             .await
+///                             .unwrap();
+///   dbg!(&response);
+///   assert_eq!(response.result.includedindirectoryblockheight, 220000);
+/// }
 /// ```
 pub async fn transaction(
   api: &Factom, 
@@ -168,12 +181,15 @@ pub async fn transaction(
 /// ```
 /// use factom::*;
 /// 
-/// let factom = Factom::new();
-/// let query = factom.pending_transactions(None)
-///             .map(|response| response).map_err(|err| err);
-/// let result = fetch(query);
-/// let response = result.unwrap();
-/// assert!(response.success());   
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();
+///   let response = tx::pending_transactions(&client, None)
+///                             .await
+///                             .unwrap();
+///   dbg!(&response);
+///   assert!(response.success());
+/// }
 /// ```
 pub async fn pending_transactions(
   api: &Factom, 
@@ -196,15 +212,8 @@ pub async fn pending_transactions(
 /// 
 /// To get the ECRate search in the search bar above for “entry-credit-rate”
 /// 
-/// # Example
-/// ```
-/// use factom::*;
-/// 
-/// let api = Factom::testnet_open_node();
-/// let query = api.add_ec_output(EC_OUTPUT);
-/// let response = fetch(query).expect("Fetching query");
-/// assert!(response.result);
-/// 
+/// Add ec output is a part of sending a transaction to see a full example check the 
+/// examples folder.
 pub async fn add_ec_output(
   api: &Factom, 
   txname: &str, 
@@ -299,17 +308,15 @@ pub async fn add_output(
 /// ```
 /// use factom::*;
 /// 
-/// let txname = "test-tx";
-/// let factom = Factom::new();
-/// let handler = factom.clone();
-/// fetch(handler.new_transaction(txname)
-///               .map(|res| res)
-///               .map_err(|err| err)).unwrap();
-/// let query = factom
-///             .delete_transaction(txname)
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();
+///   let tx_name = "test-tx";
+///   tx::new_transaction(&client, tx_name).await.unwrap();
+///   let response = tx::delete_transaction(&client,tx_name).await.unwrap();
+///   dbg!(&response);
+///   assert!(response.success());
+/// }
 /// ```
 pub async fn delete_transaction(
   api: &Factom, 
@@ -332,15 +339,15 @@ pub async fn delete_transaction(
 /// ```
 /// use factom::*;
 /// 
-/// let txname = "new-tx-test";
-/// let factom = Factom::new();
-/// let handler = factom.clone();
-/// let query = factom
-///               .new_transaction(txname)
-///               .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());
-/// fetch(handler.delete_transaction(txname).map(|_| ())).map_err(|_| ()).unwrap();
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();
+///   let tx_name = "test-tx";
+///   tx::new_transaction(&client, tx_name).await.unwrap();
+///   let response = tx::delete_transaction(&client,tx_name).await.unwrap();
+///   dbg!(&response);
+///   assert!(response.success());
+/// }
 /// ```
 pub async fn new_transaction(
   api: &Factom, 
@@ -353,8 +360,6 @@ pub async fn new_transaction(
   parse(response).await
 }
 /// Signs the transaction. It is now ready to be executed.
-/// 
-/// # Example
 /// 
 /// sign_transaction is used in the transaction process, the full process can be 
 /// found in the examples folder
@@ -430,39 +435,6 @@ pub async fn tmp_transactions(api: &Factom)
 /// 
 /// ### By Address
 /// Retrieves all transactions that involve a particular address.
-/// # Example
-/// ```
-/// use factom::*;
-/// SearchBy is an enum for use only in this function.
-/// Options are Range / Address / TxId
-/// ```
-/// use utils::SearchBy;
-/// 
-/// let tx = SearchBy::Range(1,2);
-/// let factom = Factom::testnet_open_node();
-/// let query = factom
-///             .transactions(tx)
-///             .map(|response| response)
-///             .map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success()); 
-/// 
-/// let address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
-/// let add_tx = SearchBy::Address(address);
-/// let add_query = factom
-///                 .transactions(add_tx)
-///                 .map(|response| response).map_err(|err| err);
-/// let add_response = fetch(add_query).unwrap();
-/// assert!(add_response.success());  
-/// 
-/// let txid = "21fc64855771f2ee12da2a85b1aa0108007ed3a566425f3eaec7c8c7d2db6c6d";
-/// let id_tx = SearchBy::Txid(txid);
-/// let id_query = factom
-///                 .transactions(id_tx)
-///                 .map(|response| response).map_err(|err| err);
-/// let id_response = fetch(id_query).unwrap();
-/// assert!(id_response.success());  
-/// ```
 pub async fn transactions(
   api: &Factom, 
   filter: SearchBy
@@ -488,6 +460,9 @@ pub async fn transactions(
 } 
 
 /// Search options for the transactions function
+/// * Range(usize, usize)
+/// * Txid(&str)
+/// * Address(&str)
 pub enum SearchBy{
   Range(usize, usize),
   Txid(&'static str),
@@ -504,18 +479,19 @@ pub struct FctSubmit {
 /// transaction function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Transaction {
+  #[serde(default)]
   pub factoidtransaction: Factoidtransaction,
   pub includedintransactionblock: String,
   pub includedindirectoryblock: String,
-  pub includedindirectoryblockheight: usize,
+  pub includedindirectoryblockheight: isize,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Factoidtransaction {
   pub millitimestamp: usize,
-  pub inputs: Vec<Input>,
-  pub outputs: Vec<Output>,
-  pub outecs: Vec<::serde_json::Value>,
+  pub inputs: Option<Vec<Input>>,
+  pub outputs: Option<Vec<Output>>,
+  pub outecs: Option<Vec<::serde_json::Value>>,
   pub rcds: Vec<String>,
   pub sigblocks: Vec<Sigblock>,
   pub blockheight: usize,
@@ -563,13 +539,22 @@ pub struct PendingTx {
   pub fees: usize,
 }
 
-/// ack function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct Ack {
+pub struct EntryAck {
   pub committxid: String,
   pub entryhash: String,
   pub commitdata: Commitdata,
   pub entrydata: Entrydata,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct FactoidAck {
+    txid: String,
+    transactiondate: i64,
+    transactiondatestring: String,
+    blockdate: i64,
+    blockdatestring: String,
+    status: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -592,9 +577,9 @@ pub struct NewTx {
   pub totalecoutputs: i64,
   pub totalinputs: i64,
   pub totaloutputs: i64,
-  pub inputs: Vec<TxInput>,
-  pub outputs: Vec<TxOutput>,
-  pub ecoutputs: Vec<Ecoutput>,
+  pub inputs: Option<Vec<TxInput>>,
+  pub outputs: Option<Vec<TxOutput>>,
+  pub ecoutputs: Option<Vec<Ecoutput>>,
   pub txid: String,
 }
 

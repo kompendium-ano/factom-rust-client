@@ -1,18 +1,6 @@
 use super::*;
 
 /// Show current holding messages in the queue.
-/// 
-/// #Example
-/// ```
-/// use factom::*;
-/// 
-/// let factom = Factom::new();
-/// let query = factom
-///     .holding_queue()
-///     .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
-/// ```
 pub async fn holding_queue(api: &Factom)
   -> Result<ApiResponse<HoldingQueue>>
 {
@@ -22,20 +10,6 @@ pub async fn holding_queue(api: &Factom)
 }
 
 /// Get information on the current network factomd is connected to (TEST, MAIN, etc)
-/// 
-/// 
-/// #Example
-/// ```
-/// use factom::*;
-/// 
-/// let factom = Factom::new();
-/// let query = factom
-///     .network_info()
-///     .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
-/// ```
-
 pub async fn network_info(api: &Factom)
   -> Result<ApiResponse<NetworkInfo>>
 {
@@ -45,19 +19,6 @@ pub async fn network_info(api: &Factom)
 }
 
 /// Get the predicted future entry credit rate.
-/// 
-/// #Example
-/// ```
-/// use factom::*;
-/// 
-/// let factom = Factom::new();
-/// let query = factom
-///     .predictive_fer()
-///     .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
-/// ```
-
 pub async fn predictive_fer(api: &Factom)
   -> Result<ApiResponse<PredictiveFER>>
 {
@@ -67,19 +28,6 @@ pub async fn predictive_fer(api: &Factom)
 }
 
 /// Get a list of the current network audit servers along with their information.
-/// 
-/// #Example
-/// ```
-/// use factom::*;
-/// 
-/// let factom = Factom::new();
-/// let query = factom
-///     .audit_servers()
-///     .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
-/// ```
-
 pub async fn audit_servers(api: &Factom)
   -> Result<ApiResponse<AuditServers>>
 {
@@ -89,19 +37,6 @@ pub async fn audit_servers(api: &Factom)
 }
 
 /// Get a list of the current network federated servers along with their information.
-/// 
-/// #Example
-/// ```
-/// use factom::*;
-/// 
-/// let factom = Factom::new();
-/// let query = factom
-///     .federated_servers()
-///     .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
-/// ```
-
 pub async fn federated_servers(api: &Factom)
   -> Result<ApiResponse<FederatedServers>>
 {
@@ -115,18 +50,6 @@ pub async fn federated_servers(api: &Factom)
 /// NOTE: If a tag is commented out, this call will return the default value for it.
 /// E.g: In the Example Response “ExchangeRate” is set to “0”. factomd.config default
 ///  does not have an “ExchangeRate” tag. That is why it is set to “0”.
-/// 
-/// #Example
-/// ```
-/// use factom::*;
-/// 
-/// let factom = Factom::new();
-/// let query = factom
-///     .configuration()
-///     .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
-/// ```
 pub async fn configuration(api: &Factom)
   -> Result<ApiResponse<Configuration>>
 {
@@ -135,18 +58,7 @@ pub async fn configuration(api: &Factom)
   parse(response).await
 }
 
-/// 
-/// #Example
-/// ```
-/// use factom::*;
-/// 
-/// let factom = Factom::new();
-/// let query = factom
-///     .process_list()
-///     .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
-/// ```
+/// Get the process list known to the current factomd instance. 
 pub async fn process_list(api: &Factom)
   -> Result<ApiResponse<ProcessList>>
 {
@@ -156,19 +68,6 @@ pub async fn process_list(api: &Factom)
 }
 
 /// List of authority servers in the management chain.
-/// Get the process list known to the current factomd instance.
-/// 
-/// #Example
-/// ```
-/// use factom::*;
-/// 
-/// let factom = Factom::new();
-/// let query = factom
-///     .authorities()
-///     .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
-/// ```
 pub async fn authorities(api: &Factom)
   -> Result<ApiResponse<Authorities>>
 {
@@ -179,18 +78,6 @@ pub async fn authorities(api: &Factom)
 
 /// Causes factomd to re-read the configuration from the config file. Note: This 
 /// may cause consensus problems and could be impractical even in testing.
-/// 
-/// #Example
-/// ```
-/// use factom::*;
-/// 
-/// let factom = Factom::new();
-/// let query = factom
-///     .reload_configuration()
-///     .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
-/// ```
 pub async fn reload_configuration(api: &Factom)
   -> Result<ApiResponse<Configuration>>
 {
@@ -200,18 +87,6 @@ pub async fn reload_configuration(api: &Factom)
 }
 
 /// Get the current package drop rate for network testing.
-/// 
-/// #Example
-/// ```
-/// use factom::*;
-/// 
-/// let factom = Factom::new();
-/// let query = factom
-///     .drop_rate()
-///     .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
-/// ```
 pub async fn drop_rate(api: &Factom)
   -> Result<ApiResponse<DropRate>>
 {
@@ -221,18 +96,6 @@ pub async fn drop_rate(api: &Factom)
 }
 
 /// Change the network drop rate for testing.
-/// 
-/// #Example
-/// ```
-/// use factom::*;
-/// 
-/// let factom = Factom::new();
-/// let query = factom
-///     .set_drop_rate(10)
-///     .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
-/// ```
 pub async fn set_drop_rate(
   api: &Factom,
   drop_rate: usize
@@ -245,19 +108,6 @@ pub async fn set_drop_rate(
 }
 
 /// Get the current msg delay time for network testing.
-/// 
-/// #Example
-/// ```
-/// use factom::*;
-/// 
-/// let factom = Factom::new();
-/// let query = factom
-///     .delay()
-///     .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
-/// ```
-
 pub async fn delay(api: &Factom)
   -> Result<ApiResponse<Delay>>{
   let req =  ApiRequest::new("delay");
@@ -266,17 +116,6 @@ pub async fn delay(api: &Factom)
 }
 
 /// Set the current msg delay time for network testing.
-/// #Example
-/// ```
-/// use factom::*;
-/// 
-/// let factom = Factom::new();
-/// let query = factom
-///     .set_delay(10)
-///     .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
-/// ```
 pub async fn set_delay(
   api: &Factom,
   delay: usize
@@ -289,18 +128,6 @@ pub async fn set_delay(
 }
 
 /// Get the nodes summary string.
-/// 
-/// #Example
-/// ```
-/// use factom::*;
-/// 
-/// let factom = Factom::new();
-/// let query = factom
-///     .summary()
-///     .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
-/// ```
 pub async fn summary(api: &Factom)
   -> Result<ApiResponse<Summary>>{ 
   let req =  ApiRequest::new("summary");
@@ -308,18 +135,8 @@ pub async fn summary(api: &Factom)
   parse(response).await
 }
 
-/// Show current holding messages in the queue.
-/// #Example
-/// ```
-/// use factom::*;
-/// 
-/// let factom = Factom::new();
-/// let query = factom
-///     .messages()
-///     .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
-/// ```
+/// Get a list of messages from the message journal 
+/// (must run factomd with -journaling=true)
 pub async fn messages(api: &Factom)
   -> Result<ApiResponse<Messages>>
 { 

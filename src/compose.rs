@@ -97,22 +97,12 @@ pub async fn compose_entry(
 /// Compose transaction marshals the transaction into a hex encoded string. The 
 /// string can be inputted into the factomd API factoid-submit to be sent to 
 /// the network.
-/// # Example
-/// ```
-/// use factom::*;
-/// 
-/// let tx_name = "my-tx";
-/// let factom = Factom::new();
-/// let query = factom
-///       .compose_transaction(tx_name)
-///       .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success()); 
-/// ```
+///
+/// See the examples folder for a demonstration of the full workflow.
 pub async fn compose_transaction(
   api: &Factom, 
   tx_name: &str
-)-> Result<ApiResponse<ComposeTx>>{
+)-> Result<ApiResponse<ComposeTx>> {
   let mut req =  ApiRequest::new("compose-transaction");
   req.params.insert("tx-name".to_string(), json!(tx_name));
   let response = walletd_call(api, req).await;

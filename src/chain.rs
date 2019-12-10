@@ -6,13 +6,17 @@ use super::*;
 /// ```
 /// use factom::*;
 /// 
-/// let chainid = "9dec48601fba6ddb4bcea12066ba0f2b2467f89c788c5a243eb253c3de0f815b";
-/// let factom = Factom::new();
-/// let query = factom
-///             .chain_head(chainid)
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();
+///   let chainid= "a642a8674f46696cc47fdb6b65f9c87b2a19c5ea8123b3d2f0c13b6f33a9d5ef";
+///   let chainhead = "e67a0e839098a8f1e6b53156671d031b73c0c58a0389d52c5e76ea86a3c7b1e4";
+///   let response = chain::chain_head(&client, chainid)
+///                         .await
+///                         .expect("Api Request");
+///   dbg!(&response);
+///   assert_eq!(response.result.chainhead, chainhead);
+/// }
 /// ```
 pub async fn chain_head(client: &Factom, chainid: &str)
   -> Result<ApiResponse<ChainHead>>
@@ -41,6 +45,8 @@ pub async fn chain_head(client: &Factom, chainid: &str)
 ///  (if you try to send it twice). This is a mechanism to prevent you from double 
 ///  spending. If you encounter this error, just skip to the reveal-chain. The 
 ///  error format can be found here: repeated-commit
+///
+/// See the examples folder for the full process flow linked together.
 pub async fn commit_chain(api: &Factom, message: &str)
   -> Result<ApiResponse<CommitChain>>
 {
@@ -62,6 +68,8 @@ pub async fn commit_chain(api: &Factom, message: &str)
 /// The compose-chain api call has two api calls in its response: commit-chain and 
 /// reveal-chain. To successfully create a chain, the reveal-chain must be called 
 /// after the commit-chain.
+///
+/// See the examples folder for the full process flow linked together.
 pub async fn reveal_chain(api: &Factom, entry: &str)
   -> Result<ApiResponse<RevealChain>>
 {

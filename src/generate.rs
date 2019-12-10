@@ -1,15 +1,21 @@
 use super::*;
 
-/// Create a new Entry Credit Address and store it in the wallet.
+/// Create a new Entry Credit Address and store it in the wallet. If the wallet 
+/// is encrypted, it must be unlocked prior to using this command.
 /// # Example
 /// ```
 /// use factom::*;
-/// let factom = Factom::new();
-/// let query = factom
-///             .generate_ec_address()
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+///
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::new();
+///   let response = generate::ec_address(&client).await.unwrap();
+///   dbg!(&response);
+///   assert!(response.success());
+///   /// Remove doctest address
+///   let address = response.result.public;
+///   let remove = address::remove_address(&client, &address).await.unwrap();
+/// }
 /// ```
 pub async fn ec_address(api: &Factom)
   -> Result<ApiResponse<Generate>>
@@ -24,12 +30,16 @@ pub async fn ec_address(api: &Factom)
 /// ```
 /// use factom::*;
 ///
-/// let factom = Factom::new();
-/// let query = factom
-///            .generate_factoid_address()
-///            .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::new();
+///   let response = generate::factoid_address(&client).await.unwrap();
+///   dbg!(&response);
+///   assert!(response.success());
+///   /// Remove doctest address
+///   let address = response.result.public;
+///   let remove = address::remove_address(&client, &address).await.unwrap();
+/// }
 /// ```
 pub async fn factoid_address(api: &Factom)
   -> Result<ApiResponse<Generate>>
@@ -47,12 +57,16 @@ pub async fn factoid_address(api: &Factom)
 /// ```
 /// use factom::*;
 /// 
-/// let factom = Factom::new();
-/// let query = factom
-///             .generate_factoid_address()
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::new();
+///   let response = generate::identity_key(&client).await.unwrap();
+///   dbg!(&response);
+///   assert!(response.success());
+///   /// Remove doctest address
+///   let address = response.result.public;
+///   let remove = identity::remove_id_key(&client, &address).await.unwrap();
+/// }
 /// ```
 pub async fn identity_key(api: &Factom)
   -> Result<ApiResponse<Generate>>

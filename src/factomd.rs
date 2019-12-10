@@ -25,14 +25,13 @@ use super::*;
 /// during a fault.
 /// # Example
 /// ```
-/// use factom::*;
-/// 
-/// let factom = Factom::new();
-/// let query = factom
-///             .current_minute()
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();
+///   let response = factomd::current_minute(&client).await.expect("Api Request");
+///   dbg!(&response);
+///   assert!(response.result.leaderheight > 0);
+/// }
 /// ```
 pub async fn current_minute(api: &Factom)-> Result<ApiResponse<CurrentMinute>> {
   let req =  ApiRequest::new("current-minute");
@@ -109,12 +108,14 @@ pub async fn current_minute(api: &Factom)-> Result<ApiResponse<CurrentMinute>> {
 /// ```
 /// use factom::*;
 /// 
-/// let factom = Factom::new();
-/// let query = factom
-///             .diagnostics()
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   /// Doctest examples will only work with a local factomd node running
+///   let client = Factom::open_node();
+///   let response = factomd::diagnostics(&client).await.expect("Api Request");
+///   dbg!(&response);
+///   assert!(response.result.leaderheight > 0);
+/// }
 /// ```
 pub async fn diagnostics(api: &Factom) -> Result<ApiResponse<Diagnostics>> {
   let req =  ApiRequest::new("diagnostics");
@@ -129,12 +130,14 @@ pub async fn diagnostics(api: &Factom) -> Result<ApiResponse<Diagnostics>> {
 /// ```
 /// use factom::*;
 /// 
-/// let factom = Factom::new();
-/// let query = factom
-///             .entry_credit_rate()
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   /// Doctest examples will only work with a local factomd node running
+///   let client = Factom::open_node();
+///   let response = factomd::entry_credit_rate(&client).await.expect("Api Request");
+///   dbg!(&response);
+///   assert!(response.result.rate > 0);
+/// }
 /// ```
 pub async fn entry_credit_rate(api: &Factom)-> Result<ApiResponse<EcRate>> {
   let req =  ApiRequest::new("entry-credit-rate");
@@ -167,12 +170,14 @@ pub async fn entry_credit_rate(api: &Factom)-> Result<ApiResponse<EcRate>> {
 /// ```
 /// use factom::*;
 /// 
-/// let factom = Factom::new();
-/// let query = factom.heights()
-///                         .map(|response| response).map_err(|err| err);
-/// let result = fetch(query);
-/// let response = result.unwrap();
-/// assert!(response.success());   
+/// #[tokio::main]
+/// async fn main() {
+///   /// Doctest examples will only work with a local factomd node running
+///   let client = Factom::open_node();
+///   let response = factomd::heights(&client).await.expect("Api Request");
+///   dbg!(&response);
+///   assert!(response.result.leaderheight > 0);
+/// }
 /// ```
 pub async fn heights(api: &Factom)-> Result<ApiResponse<Heights>> {
   let req =  ApiRequest::new("heights");
@@ -186,11 +191,13 @@ pub async fn heights(api: &Factom)-> Result<ApiResponse<Heights>> {
 /// ```
 /// use factom::*;
 /// 
-/// let factom = Factom::new();
-/// let query = factom.properties()
-///                         .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());   
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();
+///   let response = factomd::properties(&client).await.expect("Api Request");
+///   dbg!(&response);
+///   assert!(!response.is_err());
+/// }
 /// ```
 pub async fn properties(api: &Factom)-> Result<ApiResponse<Properties>> {
   let req =  ApiRequest::new("properties");
@@ -198,44 +205,41 @@ pub async fn properties(api: &Factom)-> Result<ApiResponse<Properties>> {
   parse(response).await
 }
 
-/// Retrieve a receipt providing cryptographically verifiable proof that information 
-/// was recorded in the factom blockchain and that this was subsequently anchored 
-/// in the bitcoin blockchain.
+// Retrieve a receipt providing cryptographically verifiable proof that 
+// information was recorded in the factom blockchain. A boolean parameter 
+//  "includerawentry" can be used to request that raw entry data be returned 
+//  at receipt.entry.raw in the JSON result.
 /// # Example
 /// ```
 /// use factom::*;
 /// 
-/// let hash = "6ecd7c6c40d0e9dbb52457343e083d4306c5b4cd2d6e623ba67cf9d18b39faa7";
-/// let factom = Factom::new();
-/// let query = factom.receipt(hash)
-///                         .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let hash = "0ae2ab2cf543eed52a13a5a405bded712444cc8f8b6724a00602e1c8550a4ec2";
+///   let client = Factom::open_node();
+///   let response = factomd::receipt(&client, hash, false).await.expect("Api Request");
+///   dbg!(&response);
+///   let entryblockkeymr = "041c3fed14469a3d0f1a022e3d5321583065e691edb9223605c86766ff881883";
+///   assert_eq!(response.result.receipt.entryblockkeymr,  entryblockkeymr);
+/// }
 /// ```
 pub async fn receipt(
   api: &Factom, 
-  hash: &str
+  hash: &str,
+  includerawentry: bool
 )-> Result<ApiResponse<Receipt>> 
 {
   let mut req =  ApiRequest::new("receipt");
   req.params.insert("hash".to_string(), json!(hash));
+  if includerawentry {
+    req.params.insert("includerawentry".to_string(), json!(true));
+  }
   let response = factomd_call(api, req).await;
   parse(response).await
 }
 
 /// Send a raw hex encoded binary message to the Factom network. This is mostly 
 /// just for debugging and testing.
-/// # Example
-/// ```
-/// use factom::*;
-/// 
-/// let hash = "6ecd7c6c40d0e9dbb52457343e083d4306c5b4cd2d6e623ba67cf9d18b39faa7";
-/// let factom = Factom::new();
-/// let query = factom.send_raw_message(hash)
-///                         .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
-/// ```
 pub async fn send_raw_message(
   api: &Factom, 
   msg: &str
@@ -349,12 +353,12 @@ pub struct Properties {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct ReceiptResult {
-  pub receipt: Receipt,
+pub struct Receipt {
+  pub receipt: ReceiptInner,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct Receipt {
+pub struct ReceiptInner {
   pub entry: Entry,
   pub merklebranch: Vec<Merklebranch>,
   pub entryblockkeymr: String,
@@ -365,6 +369,7 @@ pub struct Receipt {
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Entry {
   pub entryhash: String,
+  #[serde(default)]
   pub raw: String,
   pub timestamp: i64,
 }
