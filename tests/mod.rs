@@ -1,15 +1,16 @@
-use ::factom::*;
+use::factom::*;
 use std::iter;
 use rand::{Rng, thread_rng, distributions::Alphanumeric};
 
 // Hopefully it doesn't need to be said but please don't use these addresses as 
 // they are publicly known! They should be funded on testnet for further usage,
-// as needed. Please raise an issue if they aren't or top them up at:
+// as needed. Please raise an issue if they aren't or top them up yourself at:
 // https://faucet.factoid.org/
 const FCT_PUB: &str = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
 const FCT_PRIV: &str = "Fs3E9gV6DXsYzf7Fqx1fVBQPQXV695eP3k5XbmHEZVRLkMdD9qCK";
 const EC_PUB: &str = "EC2MJzCcHqYJyujnPzjitEaHhtEPVBhmEWUKkv4SVaaKeYcq3fqK";
 // const EC_PRIV: &str = "Es3LS7zYa9DSzZuUC14HDpMinehmzz61JG1XFY62rX5pVDenH8Pk";
+
 const ABLOCK_KEYMR: &str = "072334d94450296810cb647172812a5dc7ce518d29ecab411d47494d38ca4c88";
 const ABLOCK_HEIGHT: u32 = 220000;
 const DBLOCK_KEYMR: &str = "90b344dabe065bcb38c90948cde8ab388e22364257f811da7e7a7e8102efc33f";
@@ -19,6 +20,7 @@ const ECBLOCK_BODYHASH: &str = "c8b7120687c6bc465a5f0fb0517c9bbaf27ee733238aef3f
 const FBLOCK_KEYMR: &str = "32bf997a124dd31c897cca5d92648f8a1fa18626ff396a89cb34a59aaa47c5b3";
 const FBLOCK_HEIGHT: u32 = 218668;
 const FBLOCK_BODYMR: &str = "9886c838cd8eddfaaf809a1425d71c49539e86223d1e624dfd0d65fdc1aa8674";
+
 //pnet chain
 const CHAIN_ID: &str = "a642a8674f46696cc47fdb6b65f9c87b2a19c5ea8123b3d2f0c13b6f33a9d5ef";
 const CHAIN_HEAD: &str = "13db4ce09f6affa27ba86412d3bbc56fb48f2ec167e7a5b99dfe9d47a47ae345";
@@ -37,12 +39,19 @@ const KOINIFY_PUB: &str = "FA3cih2o2tjEUsnnFR4jX1tQXPpSXFwsp3rhVp6odL5PNCHWvZV1"
 
 const TESTNET_CHAIN: &str = "72a2fa10b81a8bffde58ea206254f0eaa7928e9e09a4144efb3ba0bb7be26d52";
 
+const ACK_HASH: &str = "e96cca381bf25f6dd4dfdf9f7009ff84ee6edaa3f47f9ccf06d2787482438f4b";
+const ACK_CHAIN: &str = "f9164cd66af9d5773b4523a510b5eefb9a5e626480feeb6671ef2d17510ca300";
+const ACK_COMMITTXID: &str = "4876ffeb8f95b72911b4a5115dc8a9fbb89d874db2263a75a9062f37bbbf1fa7";
+
+const FCT_TX_ID: &str = "774ec19ff567b202ca2702b1f3411901ccae8995df46517c134ab3560100c848";
+const FCT_TX_TIMESTAMP: usize = 1575574473164;
+
 fn random_string(len: usize)-> String {
   let mut rng = thread_rng();
   iter::repeat(())
-          .map(|()| rng.sample(Alphanumeric))
-          .take(len)
-          .collect()
+        .map(|()| rng.sample(Alphanumeric))
+        .take(len)
+        .collect()
 }
 
 // Address module
@@ -499,7 +508,7 @@ fn properties(){
 #[test]
 fn receipt(){
   let client = Factom::open_node();
-  let query = factomd::receipt(&client, ENTRY_HASH);
+  let query = factomd::receipt(&client, ENTRY_HASH, false);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
   assert!(!response.is_err());
@@ -621,18 +630,12 @@ fn import_koinify(){
   fetch(query).expect("Fectching Query");
 }
 
-// tx module
-const ACK_HASH: &str = "e96cca381bf25f6dd4dfdf9f7009ff84ee6edaa3f47f9ccf06d2787482438f4b";
-const ACK_CHAIN: &str = "f9164cd66af9d5773b4523a510b5eefb9a5e626480feeb6671ef2d17510ca300";
-const ACK_COMMITTXID: &str = "4876ffeb8f95b72911b4a5115dc8a9fbb89d874db2263a75a9062f37bbbf1fa7";
 
-const FCT_TX_ID: &str = "774ec19ff567b202ca2702b1f3411901ccae8995df46517c134ab3560100c848";
-const FCT_TX_TIMESTAMP: usize = 1575574473164;
-
+// txmodule
 #[test]
 fn ack(){
   let client = Factom::open_node();
-  let query = tx::ack(&client, ACK_HASH, ACK_CHAIN, None);
+  let query = tx::ec_ack(&client, ACK_HASH, ACK_CHAIN, None);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
   assert_eq!(response.result.committxid, ACK_COMMITTXID);
@@ -717,17 +720,3 @@ fn wallet_properties() {
   dbg!(&response);
   assert!(!response.is_err());
 }
-
-// Not working
-
-// #[test]
-// fn sign_data() {
-//   let client = Factom::new();
-//   let query = walletd::sign_data(&client, FCT_PUB, SAMPLE_DATA);
-//   let response = fetch(query).expect("Fetching Query");
-//   dbg!(&response);
-//   assert!(!response.is_err());
-// }
-
-
-
