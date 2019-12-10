@@ -147,8 +147,6 @@ fn admin_block(){
   assert_eq!(response.result.ablock.header.dbheight, ABLOCK_HEIGHT as usize);
 }
 
-/// Anchors json response returns either boolean false or hashmap, implementation
-/// currently is unable to handle a false return
 #[test]
 fn anchors(){
   let client = Factom::open_node();
@@ -696,7 +694,7 @@ fn wallet_backup() {
 
 #[test]
 fn wallet_balances() {
-  let client = Factom::new();
+  let client = Factom::open_node();
   let query = walletd::wallet_balances(&client);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
