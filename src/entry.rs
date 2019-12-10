@@ -28,17 +28,6 @@ pub async fn commit_entry(api: &Factom, message: &str)
 }
 
 /// Get an Entry from factomd specified by the Entry Hash.
-/// # Example
-/// ```
-/// use factom::*;
-/// 
-/// let hash = "6ecd7c6c40d0e9dbb52457343e083d4306c5b4cd2d6e623ba67cf9d18b39faa7";
-/// let factom = Factom::new();
-/// let query = factom.entry(hash)
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success()); 
-/// ```
 pub async fn entry(api: &Factom, hash: &str)
   -> Result<ApiResponse<Entry>>
 {
@@ -49,17 +38,6 @@ pub async fn entry(api: &Factom, hash: &str)
 }
 
 /// Retrieve an entry or transaction in raw format, the data is a hex encoded string. 
-/// # Example
-/// ```
-/// use factom::*;
-/// 
-/// let hash = "6ecd7c6c40d0e9dbb52457343e083d4306c5b4cd2d6e623ba67cf9d18b39faa7";
-/// let factom = Factom::new();
-/// let query = factom.raw_data(hash)
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());   
-/// ```
 pub async fn raw_data(
   api: &Factom, 
   hash: &str
@@ -73,17 +51,6 @@ pub async fn raw_data(
 
 ///   Returns an array of the entries that have been submitted but have not been 
 ///   recorded into the blockchain.
-/// # Example
-/// ```
-/// use factom::*;
-/// 
-/// let factom = Factom::new();
-/// let query = factom.pending_entries()
-///             .map(|response| response).map_err(|err| err);
-/// let result = fetch(query);
-/// let response = result.unwrap();
-/// assert!(response.success());  
-/// ```
 pub async fn pending_entries(api: &Factom)
 -> Result<ApiResponse<Vec<PendingEntry>>>{
   let req =  ApiRequest::new("pending-entries");

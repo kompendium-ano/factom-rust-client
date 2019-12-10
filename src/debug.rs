@@ -232,25 +232,6 @@ pub async fn drop_rate(api: &Factom)
 }
 
 /// Change the network drop rate for testing.
-/// 
-///
-/// # Example
-///
-/// ```no_run
-/// use factom::*;
-/// 
-/// #[tokio::main]
-/// async fn main() {
-///   /// Doctest examples will only work with a local factomd node running
-///   let client = Factom::new();
-///   leet drop_rate = 10;
-///   let response = debug::set_drop_rate(&client, drop_rate)
-///                           .await
-///                           .expect("Api Request");
-///   dbg!(&response);
-///   assert!(!response.is_err());
-/// }
-/// ```
 pub async fn set_drop_rate(
   api: &Factom,
   drop_rate: usize
@@ -288,24 +269,6 @@ pub async fn delay(api: &Factom)
 }
 
 /// Set the current msg delay time for network testing.
-///
-/// # Example
-///
-/// ```no_run
-/// use factom::*;
-/// 
-/// #[tokio::main]
-/// async fn main() {
-///   /// Doctest examples will only work with a local factomd node running
-///   let client = Factom::new();
-///   let delay = 10
-///   let response = debug::set_delay(&client, delay)
-///                         .await
-///                         .expect("Api Request");
-///   dbg!(&response);
-///   assert!(!response.is_err());
-/// }
-/// ```
 pub async fn set_delay(
   api: &Factom,
   delay: usize

@@ -85,6 +85,7 @@ pub async fn parse<T>(fut: ResponseFuture) -> Result<ApiResponse<T>>
                 .try_concat()
                 .await
                 .expect("Parsing response body");
+  dbg!(&body);
   let res: ApiResponse<T> = deser(body).await;
   Ok(res)
 }

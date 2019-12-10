@@ -25,12 +25,14 @@ use super::*;
 /// during a fault.
 /// # Example
 /// ```
+/// use factom::*;
+/// 
 /// #[tokio::main]
 /// async fn main() {
 ///   let client = Factom::open_node();
-///   let response = factomd::current_minute(&client).await.expect("Api Request");
+///   let response = factomd::current_minute(&client).await.unwrap();
 ///   dbg!(&response);
-///   assert!(response.result.leaderheight > 0);
+///   assert!(response.success());
 /// }
 /// ```
 pub async fn current_minute(api: &Factom)-> Result<ApiResponse<CurrentMinute>> {
