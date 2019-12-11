@@ -25,7 +25,9 @@ pub mod responses;
 
 pub use api::Factom;
 pub use constants::*; 
+#[cfg(not(feature="no-runtime"))]
 pub use tokio::prelude::*;
+#[cfg(not(feature="no-runtime"))]
 pub use tokio::runtime::Runtime;
 pub use responses::ApiResponse;
 pub use requests::{ApiRequest, fetch};

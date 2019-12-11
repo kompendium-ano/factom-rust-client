@@ -173,7 +173,7 @@ pub async fn directory_block(api: &Factom, keymr: &str)
 ///   let response = block::directory_block_head(&client)
 ///                             .await
 ///                             .expect("Api Request");
-///   assert!(!response.is_err());
+///   assert!(response.success());
 /// }
 /// ```
   pub async fn directory_block_head(api: &Factom)

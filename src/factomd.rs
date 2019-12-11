@@ -198,7 +198,7 @@ pub async fn heights(api: &Factom)-> Result<ApiResponse<Heights>> {
 ///   let client = Factom::open_node();
 ///   let response = factomd::properties(&client).await.expect("Api Request");
 ///   dbg!(&response);
-///   assert!(!response.is_err());
+///   assert!(response.success());
 /// }
 /// ```
 pub async fn properties(api: &Factom)-> Result<ApiResponse<Properties>> {

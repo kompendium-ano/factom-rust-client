@@ -33,13 +33,13 @@ pub async fn address(
 ///```
 /// use factom::*;
 /// 
-///#[tokio::main]
-///async fn main() {
+/// #[tokio::main]
+/// async fn main() {
 ///  let client = Factom::new();
-///  let 
 ///  let my_address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
 ///  let query = address::all_addresses(&client);
 ///  let response = query.await.unwrap();
+///  // Iterate through all returned addresses for my_address 
 ///  assert!(response
 ///           .result
 ///           .addresses

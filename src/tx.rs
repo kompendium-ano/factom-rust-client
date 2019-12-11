@@ -404,12 +404,12 @@ pub async fn sub_fee(
 /// ```
 /// use factom::*;
 /// 
-/// let factom = Factom::new();
-/// let query = factom
-///             .tmp_transactions()
-///             .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::open_node();
+///   let response = tx::tmp_transactions(&client).await.unwrap();
+///   assert!(response.success());
+/// }
 /// ```
 pub async fn tmp_transactions(api: &Factom)
   -> Result<ApiResponse<TmpTransactions>>
@@ -570,6 +570,7 @@ pub struct Entrydata {
 /// new-transaction and add-ec-output functions
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct NewTx {
+  #[serde(default)]
   pub feesrequired: usize,
   pub signed: bool,
   pub name: String,
@@ -635,7 +636,7 @@ pub struct DeleteTx {
 /// tmp-transactions function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct TmpTransactions {
-  pub transactions: Vec<TmpTransaction>,
+  pub transactions: Option<Vec<TmpTransaction>>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]

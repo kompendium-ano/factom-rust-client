@@ -89,9 +89,11 @@ impl Factom {
   /// 
   /// # Example
   /// ```
+  /// use factom::*;
+  /// use http::Uri;
+  /// use std::rc::Rc;
   /// 
-  /// use factom::custom_node;
-  /// let api = custom_node("https://api.factomd.net", "http://localhost:12345");
+  /// let client = Factom::custom_node("https://api.factomd.net", "http://localhost:12345");
   /// ```
   pub fn custom_node(factomd: &str, walletd: &str) -> Factom {
     let factomd_uri = parse_uri(factomd); 
@@ -150,9 +152,12 @@ pub fn parse_debug_uri(host: &str) -> Rc<Uri> {
 /// # Example
 /// ```
 /// use factom::*;
+/// use http::Uri;
+/// use std::rc::Rc;
+/// 
 /// let host = "http://localhost:7077";
 /// let factomd_uri = api::parse_uri(host);
-/// assert_eq!(factomd_uri, Uri::from_static("http://localhost:7077/v2"));
+/// assert_eq!(factomd_uri, Rc::new(Uri::from_static("http://localhost:7077/v2")));
 /// ```
 pub fn parse_uri(host: &str) -> Rc<Uri> {
   inner_parse_uri(host, API_VERSION)

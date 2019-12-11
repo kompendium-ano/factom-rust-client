@@ -112,7 +112,7 @@ pub struct RawData {
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PendingEntry {
   pub entryhash: String,
-  pub chainid: String,
+  pub chainid: Option<String>,
   pub status: String,
 }
 

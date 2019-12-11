@@ -5,13 +5,16 @@ use super::*;
 /// ```
 /// use factom::*;
 /// 
-/// let address = "EC3EAsdwvihEN3DFhGJukpMS4aMPsZvxVvRSqyz5jeEqRVJMDDXx";
-/// let factom = Factom::new();
-/// let query = factom
-///             .entry_credit_balance(address)
-///            .map(|response| response).map_err(|err| err);
-/// let response = fetch(query).unwrap();
-/// assert!(response.success());  
+/// #[tokio::main]
+/// async fn main() {
+///   let client = Factom::testnet_node();
+///   let ec_address = "EC2MJzCcHqYJyujnPzjitEaHhtEPVBhmEWUKkv4SVaaKeYcq3fqK";
+///   let response = balance::multiple_ec_balances(&client, vec![ec_address])
+///                             .await
+///                             .expect("Fetching query");
+///   dbg!(&response);
+///   assert!(response.success());
+/// }
 /// ```
 pub async fn entry_credit_balance(
   api: &Factom, 
@@ -91,12 +94,11 @@ pub async fn factoid_balance(
 /// #[tokio::main]
 /// async fn main() {
 ///   let client = Factom::testnet_node();
-/// let ec_address = "EC2MJzCcHqYJyujnPzjitEaHhtEPVBhmEWUKkv4SVaaKeYcq3fqK";
-///   let fct_address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
+///   let ec_address = "EC2MJzCcHqYJyujnPzjitEaHhtEPVBhmEWUKkv4SVaaKeYcq3fqK";
 ///   let response = balance::multiple_ec_balances(&client, vec![ec_address])
 ///                             .await
 ///                             .expect("Fetching query");
-///   assert!(!response.is_err());
+///   assert!(response.success());
 /// }
 /// ```
 pub async fn multiple_ec_balances(
@@ -153,7 +155,7 @@ pub async fn multiple_ec_balances(
 ///   let response = balance::multiple_fct_balances(&client, vec![fct_address])
 ///                             .await
 ///                             .expect("Fetching query");
-///   assert!(!response.is_err());
+///   assert!(response.success());
 /// }
 /// ```
 pub async fn multiple_fct_balances(

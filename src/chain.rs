@@ -10,10 +10,10 @@ use super::*;
 /// async fn main() {
 ///   let client = Factom::open_node();
 ///   let chainid= "a642a8674f46696cc47fdb6b65f9c87b2a19c5ea8123b3d2f0c13b6f33a9d5ef";
-///   let chainhead = "4b1f7dc6199c2c0d29d8ef1ab7432987fa1fb322c72ac6edf4831c9c0182253f";
+///   let chainhead = "c3f029659aa882f4d53cec935491124fe2ebf30f3d76bb8aa20375626001afb9";
 ///   let response = chain::chain_head(&client, chainid)
 ///                         .await
-///                         .expect("Api Request");
+///                         .unwrap();
 ///   dbg!(&response);
 ///   assert_eq!(response.result.chainhead, chainhead);
 /// }

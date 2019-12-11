@@ -13,7 +13,7 @@ use super::*;
 ///   let client = Factom::new();
 ///   let response = debug::holding_queue(&client).await.expect("Api Request");
 ///   dbg!(&response);
-///   assert!(!response.is_err());
+///   assert!(response.success());
 /// }
 /// ```
 pub async fn holding_queue(api: &Factom)
@@ -37,7 +37,7 @@ pub async fn holding_queue(api: &Factom)
 ///   let client = Factom::new();
 ///   let response = debug::network_info(&client).await.expect("Api Request");
 ///   dbg!(&response);
-///   assert!(!response.is_err());
+///   assert!(response.success());
 /// }
 /// ```
 pub async fn network_info(api: &Factom)
@@ -61,7 +61,7 @@ pub async fn network_info(api: &Factom)
 ///   let client = Factom::new();
 ///   let response = debug::predictive_fer(&client).await.expect("Api Request");
 ///   dbg!(&response);
-///   assert!(!response.is_err());
+///   assert!(response.success());
 /// }
 /// ```
 pub async fn predictive_fer(api: &Factom)
@@ -85,7 +85,7 @@ pub async fn predictive_fer(api: &Factom)
 ///   let client = Factom::new();
 ///   let response = debug::audit_servers(&client).await.expect("Api Request");
 ///   dbg!(&response);
-///   assert!(!response.is_err());
+///   assert!(response.success());
 /// }
 /// ```
 pub async fn audit_servers(api: &Factom)
@@ -109,7 +109,7 @@ pub async fn audit_servers(api: &Factom)
 ///   let client = Factom::new();
 ///   let response = debug::federated_servers(&client).await.expect("Api Request");
 ///   dbg!(&response);
-///   assert!(!response.is_err());
+///   assert!(response.success());
 /// }
 /// ```
 pub async fn federated_servers(api: &Factom)
@@ -137,7 +137,7 @@ pub async fn federated_servers(api: &Factom)
 ///   let client = Factom::new();
 ///   let response = debug::configuration(&client).await.expect("Api Request");
 ///   dbg!(&response);
-///   assert!(!response.is_err());
+///   assert!(response.success());
 /// }
 /// ```
 pub async fn configuration(api: &Factom)
@@ -171,7 +171,7 @@ pub async fn process_list(api: &Factom)
 ///   let client = Factom::new();
 ///   let response = debug::authorities(&client).await.expect("Api Request");
 ///   dbg!(&response);
-///   assert!(!response.is_err());
+///   assert!(response.success());
 /// }
 /// ```
 pub async fn authorities(api: &Factom)
@@ -196,7 +196,7 @@ pub async fn authorities(api: &Factom)
 ///   let client = Factom::new();
 ///   let response = debug::reload_configuration(&client).await.expect("Api Request");
 ///   dbg!(&response);
-///   assert!(!response.is_err());
+///   assert!(response.success());
 /// }
 /// ```
 pub async fn reload_configuration(api: &Factom)
@@ -220,7 +220,7 @@ pub async fn reload_configuration(api: &Factom)
 ///   let client = Factom::new();
 ///   let response = debug::drop_rate(&client).await.expect("Api Request");
 ///   dbg!(&response);
-///   assert!(!response.is_err());
+///   assert!(response.success());
 /// }
 /// ```
 pub async fn drop_rate(api: &Factom)
@@ -258,7 +258,7 @@ pub async fn set_drop_rate(
 ///                         .await
 ///                         .expect("Api Request");
 ///   dbg!(&response);
-///   assert!(!response.is_err());
+///   assert!(response.success());
 /// }
 /// ```
 pub async fn delay(api: &Factom)
@@ -293,7 +293,7 @@ pub async fn set_delay(
 ///   let client = Factom::new();
 ///   let response = debug::summary(&client).await.expect("Api Request");
 ///   dbg!(&response);
-///   assert!(!response.is_err());
+///   assert!(response.success());
 /// }
 /// ```
 pub async fn summary(api: &Factom)
@@ -317,7 +317,7 @@ pub async fn summary(api: &Factom)
 ///   let client = Factom::new();
 ///   let response = debug::messages(&client).await.expect("Api Request");
 ///   dbg!(&response);
-///   assert!(!response.is_err());
+///   assert!(response.success());
 /// }
 /// ```
 pub async fn messages(api: &Factom)
