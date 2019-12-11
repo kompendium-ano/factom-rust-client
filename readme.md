@@ -40,7 +40,7 @@ See the [testing readme]() for instructions on running the test suite.
 
 ## Benchmarking
 A criterion benching harness is provided, if gnuplot is installed it will also automatically 
-generate plots for any benchmarks run, they can be found in your `<LIBRARY>/target/criterion/` folder. This 
+generate plots for any benchmarks run, they can be found in `<LIBRARY>/target/criterion/report/index.html` folder. This 
 can be used to test the performance of factomd, factom-walletd, network connections 
 and the library functions themselves. See the benches folder readme for more information.
 
