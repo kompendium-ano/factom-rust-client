@@ -23,14 +23,10 @@ const FBLOCK_BODYMR: &str = "9886c838cd8eddfaaf809a1425d71c49539e86223d1e624dfd0
 
 //pnet chain
 const CHAIN_ID: &str = "a642a8674f46696cc47fdb6b65f9c87b2a19c5ea8123b3d2f0c13b6f33a9d5ef";
-const CHAIN_HEAD: &str = "13db4ce09f6affa27ba86412d3bbc56fb48f2ec167e7a5b99dfe9d47a47ae345";
-// const CHAIN_HEAD: &str = "c710cb1a185927a46180d434f7c15aca8bab20e570f9490987d1ac6ad52e438c";
 const ENTRY_HASH: &str = "716526c3279184bca11fc453fa9c2ab2f4488a03c821ee107664c9052f01d733";
 const RAW_DATA_HASH: &str = "0ae2ab2cf543eed52a13a5a405bded712444cc8f8b6724a00602e1c8550a4ec2";
 const RAW_DATA: &str = "000caff62ea5b5aa015c706add7b2463a5be07e1f0537617f553558090f23c7f5600420040e57283e4618f13b18c2be8d14926999331ef4ab905639a82d748634201cd85ae1c22b6186a72eee3f4ae12b8f6fa9c73a8a98b5eae238ed6133424bcef062f0e7b224150494d6574686f64223a2268747470733a2f2f706f6c6f6e6965782e636f6d2f7075626c69633f636f6d6d616e643d72657475726e4f72646572426f6f6b5c753030323663757272656e6379506169723d4254435f4e58545c753030323664657074683d34222c2252657475726e44617461223a227b5c2261736b735c223a5b5b5c22302e30303030313334315c222c343437342e37323033353739345d2c5b5c22302e30303030313334325c222c363038302e39363930373133355d2c5b5c22302e30303030313334355c222c31343831342e38353833353730375d2c5b5c22302e30303030313337385c222c38303030305d5d2c5c22626964735c223a5b5b5c22302e30303030313332375c222c363032382e303333313537355d2c5b5c22302e30303030313332365c222c3236302e34333839313430335d2c5b5c22302e30303030313332355c222c3130393931352e30363731363938315d2c5b5c22302e30303030313332335c222c31323030305d5d2c5c22697346726f7a656e5c223a5c22305c227d222c2254696d657374616d70223a313435303134373830317d";
 
-const ID_CHAIN: &str = "3b69dabe22c014af9a9bc9dfa7917ce4602a03579597ddf184d8de56702512ae";
-const ID_HEIGHT: usize = 163419;
 const ID_PRIV: &str = "idsec2rWrfNTD1x9HPPesA3fz8dmMNZdjmSBULHx8VTXE1J4D9icmAK";
 const ID_PUB: &str = "idpub2g25nPNZ2kf6KGTjthYdHT3nykDbwEUEPyGJ52fo55SHwtAvLA";
 
@@ -57,7 +53,9 @@ fn random_string(len: usize)-> String {
 // Address module
 #[test]
 fn address(){
-  let client = Factom::open_node();
+  let client = Factom::new();
+  let import = import::import_addresses(&client, vec!(FCT_PRIV));
+  fetch(import).unwrap();
   let query = factom::address::address(&client, FCT_PUB);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
@@ -67,6 +65,8 @@ fn address(){
 #[test]
 fn all_addresses(){
   let client = Factom::new();
+  let import = import::import_addresses(&client, vec!(FCT_PRIV));
+  fetch(import).unwrap();
   let query = address::all_addresses(&client);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
@@ -227,7 +227,7 @@ fn chain_head(){
   let query = chain::chain_head(&client, CHAIN_ID);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
-  assert_eq!(response.result.chainhead, CHAIN_HEAD);
+  assert!(response.success());
 }
 
 // factom-walletd needs to be run with a command to testnet open node
@@ -283,151 +283,157 @@ fn create_entry(){
   assert!(!reveal_response.is_err());
 }
 
-// Todo: Full transaction
-
-// Todo: Compose an Identity Chain
-
-// Todo: Compose identity attribute
-
-
-
 // Debug Module
 // Open_node doesn't expose debug functionality, these can all be tested with a 
 //local factomd  node running a debug network with a command such as factomd -network=LOCAL
-#[test]
-fn holding_queue(){
-  let client = Factom::new();
-  let query = debug::holding_queue(&client);
-  let response = fetch(query).expect("Fetching Query");
-  dbg!(&response);
-  assert!(!response.is_err());
-}
+// #[test]
+// fn holding_queue(){
+//   let client = Factom::new();
+//   let query = debug::holding_queue(&client);
+//   let response = fetch(query).expect("Fetching Query");
+//   dbg!(&response);
+//   assert!(response.success());
+// }
 
-#[test]
-fn network_info(){
-  let client = Factom::new();
-  let query = debug::network_info(&client);
-  let response = fetch(query).expect("Fetching Query");
-  dbg!(&response);
-  assert!(!response.is_err());
-}
+// Debug tests only work with a local factomd node
+// #[test]
+// fn network_info(){
+//   let client = Factom::new();
+//   let query = debug::network_info(&client);
+//   let response = fetch(query).expect("Fetching Query");
+//   dbg!(&response);
+//   assert!(response.success());
+// }
 
-#[test]
-fn predictive_fer(){
-  let client = Factom::new();
-  let query = debug::predictive_fer(&client);
-  let response = fetch(query).expect("Fetching Query");
-  dbg!(&response);
-  assert!(!response.is_err());
-}
+// Debug tests only work with a local factomd node
+// #[test]
+// fn predictive_fer(){
+//   let client = Factom::new();
+//   let query = debug::predictive_fer(&client);
+//   let response = fetch(query).expect("Fetching Query");
+//   dbg!(&response);
+//   assert!(response.success());
+// }
 
-#[test]
-fn audit_servers(){
-  let client = Factom::new();
-  let query = debug::audit_servers(&client);
-  let response = fetch(query).expect("Fetching Query");
-  dbg!(&response);
-  assert!(!response.is_err());
-}
+// Debug tests only work with a local factomd node
+// #[test]
+// fn audit_servers(){
+//   let client = Factom::new();
+//   let query = debug::audit_servers(&client);
+//   let response = fetch(query).expect("Fetching Query");
+//   dbg!(&response);
+//   assert!(response.success());
+// }
 
-#[test]
-fn federated_servers(){
-  let client = Factom::new();
-  let query = debug::federated_servers(&client);
-  let response = fetch(query).expect("Fetching Query");
-  dbg!(&response);
-  assert!(!response.is_err());
-}
+// Debug tests only work with a local factomd node
+// #[test]
+// fn federated_servers(){
+//   let client = Factom::new();
+//   let query = debug::federated_servers(&client);
+//   let response = fetch(query).expect("Fetching Query");
+//   dbg!(&response);
+//   assert!(response.success());
+// }
 
-#[test]
-fn configuration(){
-  let client = Factom::new();
-  let query = debug::configuration(&client);
-  let response = fetch(query).expect("Fetching Query");
-  dbg!(&response);
-  assert!(!response.is_err());
-}
+// Debug tests only work with a local factomd node
+// #[test]
+// fn configuration(){
+//   let client = Factom::new();
+//   let query = debug::configuration(&client);
+//   let response = fetch(query).expect("Fetching Query");
+//   dbg!(&response);
+//   assert!(response.success());
+// }
 
-#[test]
-fn process_list(){
-  let client = Factom::new();
-  let query = debug::process_list(&client);
-  let response = fetch(query).expect("Fetching Query");
-  dbg!(&response);
-  assert!(!response.is_err());
-}
+// Debug tests only work with a local factomd node
+// #[test]
+// fn process_list(){
+//   let client = Factom::new();
+//   let query = debug::process_list(&client);
+//   let response = fetch(query).expect("Fetching Query");
+//   dbg!(&response);
+//   assert!(response.success());
+// }
 
-#[test]
-fn authorities(){
-  let client = Factom::new();
-  let query = debug::authorities(&client);
-  let response = fetch(query).expect("Fetching Query");
-  dbg!(&response);
-  assert!(!response.is_err());
-}
+// Debug tests only work with a local factomd node
+// #[test]
+// fn authorities(){
+//   let client = Factom::new();
+//   let query = debug::authorities(&client);
+//   let response = fetch(query).expect("Fetching Query");
+//   dbg!(&response);
+//   assert!(response.success());
+// }
 
-#[test]
-fn reload_configuration(){
-  let client = Factom::new();
-  let query = debug::reload_configuration(&client);
-  let response = fetch(query).expect("Fetching Query");
-  dbg!(&response);
-  assert!(!response.is_err());
-}
+// Debug tests only work with a local factomd node
+// #[test]
+// fn reload_configuration(){
+//   let client = Factom::new();
+//   let query = debug::reload_configuration(&client);
+//   let response = fetch(query).expect("Fetching Query");
+//   dbg!(&response);
+//   assert!(response.success());
+// }
 
-#[test]
-fn drop_rate(){
-  let client = Factom::new();
-  let query = debug::network_info(&client);
-  let response = fetch(query).expect("Fetching Query");
-  dbg!(&response);
-  assert!(!response.is_err());
-}
+// Debug tests only work with a local factomd node
+// #[test]
+// fn drop_rate(){
+//   let client = Factom::new();
+//   let query = debug::network_info(&client);
+//   let response = fetch(query).expect("Fetching Query");
+//   dbg!(&response);
+//   assert!(response.success());
+// }
 
-#[test]
-fn set_drop_rate(){
-  let client = Factom::new();
-  let query = debug::set_drop_rate(&client, 10);
-  let response = fetch(query).expect("Fetching Query");
-  dbg!(&response);
-  assert!(!response.is_err());
-}
+// Debug tests only work with a local factomd node
+// #[test]
+// fn set_drop_rate(){
+//   let client = Factom::new();
+//   let query = debug::set_drop_rate(&client, 10);
+//   let response = fetch(query).expect("Fetching Query");
+//   dbg!(&response);
+//   assert!(response.success());
+// }
 
-#[test]
-fn delay(){
-  let client = Factom::new();
-  let query = debug::delay(&client);
-  let response = fetch(query).expect("Fetching Query");
-  dbg!(&response);
-  assert!(!response.is_err());
-}
+// Debug tests only work with a local factomd node
+// #[test]
+// fn delay(){
+//   let client = Factom::new();
+//   let query = debug::delay(&client);
+//   let response = fetch(query).expect("Fetching Query");
+//   dbg!(&response);
+//   assert!(response.success());
+// }
 
-#[test]
-fn set_delay(){
-  let client = Factom::new();
-  let query = debug::set_delay(&client, 10);
-  let response = fetch(query).expect("Fetching Query");
-  dbg!(&response);
-  assert!(!response.is_err());
-}
+// Debug tests only work with a local factomd node
+// #[test]
+// fn set_delay(){
+//   let client = Factom::new();
+//   let query = debug::set_delay(&client, 10);
+//   let response = fetch(query).expect("Fetching Query");
+//   dbg!(&response);
+//   assert!(response.success());
+// }
 
-#[test]
-fn summary(){
-  let client = Factom::new();
-  let query = debug::summary(&client);
-  let response = fetch(query).expect("Fetching Query");
-  dbg!(&response);
-  assert!(!response.is_err());
-}
+// Debug tests only work with a local factomd node
+// #[test]
+// fn summary(){
+//   let client = Factom::new();
+//   let query = debug::summary(&client);
+//   let response = fetch(query).expect("Fetching Query");
+//   dbg!(&response);
+//   assert!(response.success());
+// }
 
-#[test]
-fn messages(){
-  let client = Factom::new();
-  let query = debug::messages(&client);
-  let response = fetch(query).expect("Fetching Query");
-  dbg!(&response);
-  assert!(!response.is_err());
-}
+// Debug tests only work with a local factomd node
+// #[test]
+// fn messages(){
+//   let client = Factom::new();
+//   let query = debug::messages(&client);
+//   let response = fetch(query).expect("Fetching Query");
+//   dbg!(&response);
+//   assert!(response.success());
+// }
 
 // Entry Module
 #[test]
@@ -454,7 +460,7 @@ fn pending_entries(){
   let query = entry::pending_entries(&client);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
-  assert!(!response.is_err());  
+  assert!(response.success());  
 }
 
 // factomd module
@@ -464,7 +470,7 @@ fn current_minute(){
   let query = factomd::current_minute(&client);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
-  assert!(!response.is_err());
+  assert!(response.success());
 }
 
 #[test]
@@ -473,7 +479,7 @@ fn diagnostics(){
   let query = factomd::diagnostics(&client);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
-  assert!(!response.is_err());
+  assert!(response.success());
 }
 
 #[test]
@@ -482,7 +488,7 @@ fn entry_credit_rate(){
   let query = factomd::entry_credit_rate(&client);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
-  assert!(!response.is_err());
+  assert!(response.success());
 }
 
 #[test]
@@ -491,7 +497,7 @@ fn heights(){
   let query = factomd::heights(&client);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
-  assert!(!response.is_err());
+  assert!(response.success());
 }
 
 #[test]
@@ -500,7 +506,7 @@ fn properties(){
   let query = factomd::properties(&client);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
-  assert!(!response.is_err());
+  assert!(response.success());
 }
 
 #[test]
@@ -509,16 +515,7 @@ fn receipt(){
   let query = factomd::receipt(&client, ENTRY_HASH, false);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
-  assert!(!response.is_err());
-}
-
-#[test]
-fn send_raw_message(){
-  let client = Factom::open_node();
-  let query = factomd::send_raw_message(&client, ENTRY_HASH);
-  let response = fetch(query).expect("Fectching Query");
-  dbg!(&response);
-  assert!(!response.is_err());
+  assert!(response.success());
 }
 
 // generate module
@@ -528,7 +525,7 @@ fn generate_factoid_address(){
   let query = generate::factoid_address(&client);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
-  assert!(!response.is_err());
+  assert!(response.success());
 }
 
 #[test]
@@ -537,7 +534,7 @@ fn generate_ec_address(){
   let query = generate::ec_address(&client);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
-  assert!(!response.is_err());
+  assert!(response.success());
 }
 
 #[test]
@@ -546,7 +543,7 @@ fn generate_identity_key(){
   let query = generate::identity_key(&client);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
-  assert!(!response.is_err());
+  assert!(response.success());
 }
 
 // identity module
@@ -556,17 +553,17 @@ fn all_id_keys(){
   let query = identity::all_id_keys(&client);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
-  assert!(!response.is_err());
+  assert!(response.success());
 }
 
-#[test]
-fn active_id_keys(){
-  let client = Factom::open_node();
-  let query = identity::active_id_keys(&client, ID_CHAIN, Some(ID_HEIGHT));
-  let response = fetch(query).expect("Fectching Query");
-  dbg!(&response);
-  assert!(!response.is_err());
-}
+// #[test]
+// fn active_id_keys(){
+//   let client = Factom::open_node();
+//   let query = identity::active_id_keys(&client, ID_CHAIN, Some(ID_HEIGHT));
+//   let response = fetch(query).expect("Fectching Query");
+//   dbg!(&response);
+//   assert!(response.success());
+// }
 
 #[test]
 fn remove_id_key(){
@@ -601,7 +598,7 @@ fn import_addresses(){
   let query = import::import_addresses(&client, vec!(FCT_PRIV));
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
-  assert!(!response.is_err());
+  assert!(response.success());
   let query = address::remove_address(&client, FCT_PUB);
   fetch(query).expect("Fectching Query");
 }
@@ -612,7 +609,7 @@ fn import_id_keys(){
   let query = import::import_identity_keys(&client, vec!(ID_PRIV));
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
-  assert!(!response.is_err());
+  assert!(response.success());
   let query = identity::remove_id_key(&client, ID_PUB);
   fetch(query).expect("Fectching Query");
 }
@@ -623,11 +620,10 @@ fn import_koinify(){
   let query = import::import_koinify(&client, KOINIFY);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
-  assert!(!response.is_err());
+  assert!(response.success());
   let query = address::remove_address(&client, KOINIFY_PUB);
   fetch(query).expect("Fectching Query");
 }
-
 
 // txmodule
 #[test]
@@ -654,7 +650,7 @@ fn pending_transactions(){
   let query = tx::pending_transactions(&client, None);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
-  assert!(!response.is_err());
+  assert!(response.success());
 }
 
 #[test]
@@ -664,21 +660,11 @@ fn new_and_delete_transaction(){
   let query = tx::new_transaction(&client, tx_name);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
-  assert!(!response.is_err());
+  assert!(response.success());
   let query = tx::delete_transaction(&client, tx_name);
   let response = fetch(query).expect("Fectching Query");
   dbg!(&response);
-  assert!(!response.is_err());
-}
-
-#[test]
-fn transactions(){
-  let client = Factom::open_node();
-  let search = tx::SearchBy::Address(FCT_PUB);
-  let query = tx::transactions(&client, search);
-  let response = fetch(query).expect("Fectching Query");
-  dbg!(&response);
-  assert!(!response.is_err());
+  assert!(response.success());
 }
 
 // Walletd module
@@ -688,17 +674,7 @@ fn wallet_backup() {
   let query = walletd::wallet_backup(&client);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
-  assert!(!response.is_err());
-}
-
-
-#[test]
-fn wallet_balances() {
-  let client = Factom::open_node();
-  let query = walletd::wallet_balances(&client);
-  let response = fetch(query).expect("Fetching Query");
-  dbg!(&response);
-  assert!(!response.is_err());
+  assert!(response.success());
 }
 
 #[test]
@@ -707,7 +683,7 @@ fn wallet_height() {
   let query = walletd::wallet_height(&client);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
-  assert!(!response.is_err());
+  assert!(response.success());
 }
 
 #[test]
@@ -716,5 +692,5 @@ fn wallet_properties() {
   let query = walletd::wallet_properties(&client);
   let response = fetch(query).expect("Fetching Query");
   dbg!(&response);
-  assert!(!response.is_err());
+  assert!(response.success());
 }
