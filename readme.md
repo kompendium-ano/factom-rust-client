@@ -15,11 +15,14 @@ factom = "2.0.0"
 
 ## Quickstart
 ```rust
-// Get current block height
+use factom::*;
+// Get current block height from open node
 #[tokio::main]
 async fn main() {
+  //Create a re-usable client
   let client = Factom::open_node();
-  let response = factomd::heights(&client).await.unwrap();
+  // Call the heights function, handle the request result
+  let response = factomd::heights(&client).await.expect("Network Request");
   assert!(response.result.leaderheight > 0);
 }
 ```
@@ -36,7 +39,9 @@ factom = {version="2.0.0", features="no-runtime"}
 ```
 
 ## Testing
-See the [testing readme]() for instructions on running the test suite.
+Most of the functions are covered by the test modules along with all the documentation examples. Beware that running `cargo test` with nocapture will produce a huge amount of output. For many of the tests to pass you will need to be running factom-walletd, any test transactions or addresses are cleaned up afterward. 
+
+See the testing readme for instructions.
 
 ## Benchmarking
 A criterion benching harness is provided, if gnuplot is installed it will also automatically 
@@ -48,7 +53,7 @@ and the library functions themselves. See the benches folder readme for more inf
 A fuzzing suite is provided using the rust implementation of 
 [American Fuzzy Lop](http://lcamtuf.coredump.cx/afl/), with appropriate setup 
 this can be used to fuzz both the Factom rust library along with a simulated 
-Factom network and factom-walletd. See the Fuzz folder [readme] for more information.
+Factom network and factom-walletd. See the fuzz folder readme for more information.
 
 ## Client modules
 The Factom rust client API is separated into logical modules. Links to their respective 
