@@ -29,7 +29,7 @@ async fn main() {
 ```
 ## Usage
 See the examples folder for common workflows, or use `cargo run --example` to 
-view all those you can run. Eg. `cargo run --example get_balance`
+view all those you can run.
 
 ##### Using default settings
 ```rust
