@@ -3,10 +3,10 @@ use constants::*;
 use serde_json::Value;
 use std::collections::HashMap;
 use std::num::Wrapping;
-use futures_util::TryStreamExt;
+use bytes::buf::BufExt as _;
 use crate::responses::ApiResponse;
 use serde::{Serialize, de::DeserializeOwned};
-use hyper::{Chunk, Body, Request, client::ResponseFuture};
+use hyper::{Body, body, Request, client::ResponseFuture};
 use http::{Uri, request::Builder, header::CONTENT_TYPE};
 
 /// Generic request struct is serialized into the JSON body 
@@ -37,10 +37,10 @@ impl ApiRequest {
 
   /// Builds the basis of a request minus the json body
   pub fn builder(uri: &Uri) -> Builder {
-    let mut req = Request::builder();
-    req.method("POST")
-        .header(CONTENT_TYPE, "application/json")
-        .uri(uri);
+    let req = Request::builder()
+                  .method("POST")
+                  .header(CONTENT_TYPE, "application/json")
+                  .uri(uri);
     req
   }
 }
@@ -67,7 +67,7 @@ async fn inner_call(
 ) -> ResponseFuture 
 {
   let json = Body::from(req.json());
-  let mut builder = ApiRequest::builder(&uri);
+  let builder = ApiRequest::builder(&uri);
   let payload = builder.body(json)
                         .expect("Constructing request body");
   api.client.request(payload)
@@ -79,20 +79,12 @@ pub async fn parse<T>(fut: ResponseFuture) -> Result<ApiResponse<T>>
   where T: DeserializeOwned + Default
 {
   let res = fut.await?;
-  let body = res.into_body()
-                .try_concat()
-                .await
-                .expect("Parsing response body");
-  dbg!(&body);
-  let res: ApiResponse<T> = deser(body).await;
+  let body = body::aggregate(res.into_body())
+                  .await
+                  .expect("Parsing response body");
+  let res: ApiResponse<T> =serde_json::from_reader(body.reader())
+                            .expect("Deserialising JSON");
   Ok(res)
-}
-
-// Inner deserialisation method
-async fn deser<T>(body: Chunk) -> ApiResponse<T> 
-  where T: DeserializeOwned + Default
-{
-  serde_json::from_slice(&body).expect("Deserialising JSON")
 }
 
 /// Fetch is a convenience function that will run a future to it's completion,
@@ -101,6 +93,6 @@ async fn deser<T>(body: Chunk) -> ApiResponse<T>
 /// a single runtime and re-use it's blocking method instead
 #[cfg(not(feature="no-runtime"))]
 pub fn fetch<F: Future>(query: F) -> F::Output {
-  let rt = Runtime::new().expect("Initialising Runtime");
+  let mut rt = Runtime::new().expect("Initialising Runtime");
   rt.block_on(query)
 }

@@ -123,7 +123,7 @@ impl Factom {
 /// Creates a https client, this is placed in the Factom struct and is responsible
 /// for making network requests
 fn new_client() -> HttpsClient {
-  let connector = HttpsConnector::new().expect("TLS initialization");
+  let connector = HttpsConnector::new();
   let client = Client::builder().build::<_, hyper::Body>(connector);
   Rc::new(client)
 }

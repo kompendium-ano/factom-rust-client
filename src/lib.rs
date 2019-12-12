@@ -42,8 +42,7 @@ use requests::{parse, factomd_call, walletd_call, debug_call};
 use hyper_tls::HttpsConnector;
 use serde::{Serialize, Deserialize};
 use hyper::{Client, client::HttpConnector};
-#[cfg(not(feature="no-runtime"))]
-use hyper::rt::Future;
+use futures::prelude::*;
 
 /// Reference counted Hyper client with custom https connector
 pub type HttpsClient = Rc<Client<HttpsConnector<HttpConnector>, hyper::Body>>;
