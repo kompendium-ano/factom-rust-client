@@ -22,6 +22,7 @@ pub mod factomd;
 pub mod walletd;
 pub mod requests;
 pub mod responses;
+pub mod utils;
 
 pub use api::Factom;
 pub use constants::*; 
