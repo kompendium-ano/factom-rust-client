@@ -88,19 +88,21 @@ Beware that running `cargo test` with nocapture will produce a huge amount of ou
 For many of the tests to pass you will need to be running factom-walletd, any 
 test transactions or addresses are cleaned up afterward. 
 
-See the testing readme for instructions.
+See the [tests readme](https://github.com/kompendium-llc/factom-rust-client/tree/master/tests) for instructions.
 
 ## Benchmarking
 A criterion benching harness is provided, if gnuplot is installed it will also automatically 
 generate plots for any benchmarks run, they can be found at `<LIBRARY>/target/criterion/report/index.html`. This 
 can be used to test the performance of factomd, factom-walletd, network connections 
-and the library functions themselves. See the benches folder readme for more information.
+and the library functions themselves.
 
 ## Fuzzing
 A fuzzing suite is provided using the rust implementation of 
 [American Fuzzy Lop](http://lcamtuf.coredump.cx/afl/), with appropriate setup 
 this can be used to fuzz both the Factom rust library along with a simulated 
-Factom network and factom-walletd. See the fuzz folder readme for more information.
+Factom network and factom-walletd. See the 
+[fuzz folder readme](https://github.com/kompendium-llc/factom-rust-client/tree/master/fuzz) 
+for more information.
 
 ## Contributing
 PR's welcome. Fork the library and submit to dev branch. 
