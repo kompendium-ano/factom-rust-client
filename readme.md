@@ -71,6 +71,17 @@ let response = entry::entry(hash).await.unwrap();
 dbg!(response);
 ```
 
+##### Traverse a Chain
+```rust
+ let client = Factom::open_node();
+ let chain = "843dbee7a49a9b9510d399759fbce24b1f700268c94508085abce352d70ed1f6";
+ // traverse_chain is a utility that returns Vec<Entry>, the number of blocks to
+ // parse can be specified, to traverse the entire chain use a depth of 0, here 
+ // only 1 block,the chainhead itself, will be retrieved.
+ let response = utils::traverse_chain(&client, chain, 1).await;
+ dbg!(response);
+ ```
+
 ## Runtime
 This library re-exports the tokio runtime and executor by default, to disable this
 and use a different runtime modify your `cargo.toml` with a feature flag:
