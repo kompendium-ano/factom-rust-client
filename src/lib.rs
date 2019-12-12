@@ -3,8 +3,9 @@
  html_favicon_url = "https://www.factom.com/wp-content/uploads/2019/06/cropped-factom_favicon_azul-05-192x192.png")]
 
 //! A rust client for the Factom network API.
-//!
-//! Documentation for the api calls are located on the [Factom struct page](struct.Factom.html)
+//! The official API docs can be found at: https://docs.factom.com/
+//! For more information or support ask on discord: https://discord.gg/mYmcQM2 
+
 pub mod address;
 pub mod api;
 pub mod balance;
