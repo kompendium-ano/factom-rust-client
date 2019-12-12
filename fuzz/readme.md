@@ -19,8 +19,11 @@ To get started:
 
 ```bash
 cargo install afl
+# In the root folder
+cd fuzz
+cargo afl build
 ```
 
-Currently the only input is the send-raw-message api function which puts various messages into factomd for debugging purposes. You can find the documentation for send-raw-message
+Currently the only input is the send-raw-message api function which puts various messages into factomd for debugging purposes. You can find the api documentation for send-raw-message
 [here](https://docs.factom.com/api#send-raw-message) and [here](https://docs.rs/factom/2.0.0./factom)
 
