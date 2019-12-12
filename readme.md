@@ -2,7 +2,7 @@
 
 [![Crates.io](https://img.shields.io/crates/v/factom.svg)](https://crates.io/crates/factom)
 [![Released API docs](https://docs.rs/factom/badge.svg)](https://docs.rs/factom)
-[![Build Status](https://travis-ci.com/Kompendium-llc/Factom-Client.svg?branch=master)](https://travis-ci.com/Kompendium-llc/Factom-Client)
+[![Build Status](https://travis-ci.com/kompendium-llc/factom-rust-client.svg?branch=master)](https://travis-ci.com/kompendium-llc/factom-rust-client)
 [![dependency status](https://deps.rs/crate/factom/2.0.0/status.svg)](https://deps.rs/crate/factom/2.0.0)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
