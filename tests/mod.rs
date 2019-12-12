@@ -32,8 +32,6 @@ const ID_PUB: &str = "idpub2g25nPNZ2kf6KGTjthYdHT3nykDbwEUEPyGJ52fo55SHwtAvLA";
 const KOINIFY: &str = "yellow yellow yellow yellow yellow yellow yellow yellow yellow yellow yellow yellow";
 const KOINIFY_PUB: &str = "FA3cih2o2tjEUsnnFR4jX1tQXPpSXFwsp3rhVp6odL5PNCHWvZV1";
 
-const TESTNET_CHAIN: &str = "72a2fa10b81a8bffde58ea206254f0eaa7928e9e09a4144efb3ba0bb7be26d52";
-
 const ACK_HASH: &str = "e96cca381bf25f6dd4dfdf9f7009ff84ee6edaa3f47f9ccf06d2787482438f4b";
 const ACK_CHAIN: &str = "f9164cd66af9d5773b4523a510b5eefb9a5e626480feeb6671ef2d17510ca300";
 const ACK_COMMITTXID: &str = "4876ffeb8f95b72911b4a5115dc8a9fbb89d874db2263a75a9062f37bbbf1fa7";
