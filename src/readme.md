@@ -4,7 +4,7 @@ functions are below. Full documentation is hosted at https://docs.rs/factom/
 
 ----
 
-### [Address](https://docs.rs/factom/2.0.2/factom/address/index.html)
+### [Address](https://docs.rs/factom/2.1.0/factom/address/index.html)
 
 Relating to Address functions
 
@@ -14,12 +14,12 @@ Relating to Address functions
 
 ----
 
-### [Api](https://docs.rs/factom/2.0.2/factom/api/index.html)
+### [Api](https://docs.rs/factom/2.1.0/factom/api/index.html)
 
 The main api client module holds Factom struct from which requests are constructed.
 
 ----
-### [Balance](https://docs.rs/factom/2.0.2/factom/balance/index.html)
+### [Balance](https://docs.rs/factom/2.1.0/factom/balance/index.html)
 
 For balance related functions.
 
@@ -30,7 +30,7 @@ For balance related functions.
 
 ----
 
-### [Block](https://docs.rs/factom/2.0.2/factom/block/index.html)
+### [Block](https://docs.rs/factom/2.1.0/factom/block/index.html)
 
 For functions dealing with block data queries.
 
@@ -48,7 +48,7 @@ For functions dealing with block data queries.
 
 ----
 
-### [Chain](https://docs.rs/factom/2.0.2/factom/chain/index.html)
+### [Chain](https://docs.rs/factom/2.1.0/factom/chain/index.html)
 
 For functions handling chain data.
 
@@ -58,7 +58,7 @@ For functions handling chain data.
 
 ----
 
-### [Compose](https://docs.rs/factom/2.0.2/factom/compose/index.html)
+### [Compose](https://docs.rs/factom/2.1.0/factom/compose/index.html)
 
 Functions that compose transactions, entries and identities.
 
@@ -72,7 +72,7 @@ Functions that compose transactions, entries and identities.
 
 ----
 
-### [Constants](https://docs.rs/factom/2.0.2/factom/constants/index.html)
+### [Constants](https://docs.rs/factom/2.1.0/factom/constants/index.html)
 
 Static constants for use within the library.
 
@@ -87,7 +87,7 @@ Static constants for use within the library.
 
 ----
 
-### [Debug](https://docs.rs/factom/2.0.2/factom/debug/index.html)
+### [Debug](https://docs.rs/factom/2.1.0/factom/debug/index.html)
 
 Factomd debug functions. Tests exist but are disabled for this module and require running a local factomd node.
 
@@ -109,7 +109,7 @@ Factomd debug functions. Tests exist but are disabled for this module and requir
 
 ----
 
-### [Entry](https://docs.rs/factom/2.0.2/factom/entry/index.html)
+### [Entry](https://docs.rs/factom/2.1.0/factom/entry/index.html)
 For querying entires.
 
 * commit_entry
@@ -120,7 +120,7 @@ For querying entires.
 
 ----
 
-### [Factomd](https://docs.rs/factom/2.0.2/factom/factomd/index.html)
+### [Factomd](https://docs.rs/factom/2.1.0/factom/factomd/index.html)
 
 General functions relating to factomd
 
@@ -134,7 +134,7 @@ General functions relating to factomd
 
 ----
 
-### [Generate](https://docs.rs/factom/2.0.2/factom/generate/index.html)
+### [Generate](https://docs.rs/factom/2.1.0/factom/generate/index.html)
 
 Functions for generating addresses or identities.
 
@@ -144,7 +144,7 @@ Functions for generating addresses or identities.
 
 ----
 
-### [Identity](https://docs.rs/factom/2.0.2/factom/identity/index.html)
+### [Identity](https://docs.rs/factom/2.1.0/factom/identity/index.html)
 
 Relating to identity functions.
 
@@ -155,7 +155,7 @@ Relating to identity functions.
 
 ----
 
-### [Import](https://docs.rs/factom/2.0.2/factom/import/index.html)
+### [Import](https://docs.rs/factom/2.1.0/factom/import/index.html)
 
 For importing addresses or identities
 
@@ -165,7 +165,7 @@ For importing addresses or identities
 
 ----
 
-### [Requests](https://docs.rs/factom/2.0.2/factom/requests/index.html)
+### [Requests](https://docs.rs/factom/2.1.0/factom/requests/index.html)
 
 Request handling functions intrinsic to the factom struct
 
@@ -175,13 +175,13 @@ Request handling functions intrinsic to the factom struct
 
 ---
 
-### [Responses](https://docs.rs/factom/2.0.2/factom/responses/index.html)
+### [Responses](https://docs.rs/factom/2.1.0/factom/responses/index.html)
 
 Response handling functions to parse json responses into objects
 
 ---
 
-### [Tx](https://docs.rs/factom/2.0.2/factom/tx/index.html)
+### [Tx](https://docs.rs/factom/2.1.0/factom/tx/index.html)
 
 Functions relating to transactions
 
@@ -200,7 +200,7 @@ Functions relating to transactions
 * tmp_transactions
 * transactions
 
-### [Walletd](https://docs.rs/factom/2.0.2/factom/walletd/index.html)
+### [Walletd](https://docs.rs/factom/2.1.0/factom/walletd/index.html)
 
 General utility functions relating to factom-walletd
 
@@ -211,4 +211,13 @@ General utility functions relating to factom-walletd
 * wallet_properties
 
 
-### [Utils](https://docs.rs/factom/2.0.2/factom/utils/index.html)
+### [Utils](https://docs.rs/factom/2.1.0/factom/utils/index.html)
+
+Helper functions for common workflows
+
+* create_chain
+* create_entry
+* create_id_chain
+* traverse_chain
+* fct_to_factoshi
+* factoshi_to_fct
