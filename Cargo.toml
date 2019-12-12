@@ -1,7 +1,7 @@
 [package]
 name = "factom"
 version = "2.0.1"
-authors = ["17392435+MitchellBerry@users.noreply.github.com"]
+authors = ["Mitchell Berry <17392435+MitchellBerry@users.noreply.github.com>"]
 edition = "2018"
 repository = "https://github.com/MitchellBerry/Factom-Client"
 homepage = "https://github.com/MitchellBerry/Factom-Client"
