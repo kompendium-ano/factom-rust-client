@@ -32,8 +32,6 @@ name = "benches"
 harness = false
 
 [badges]
-travis-ci = { repository = "https://github.com/kompendium-llc/factom-rust-client", branch = "master" }
-codecov = { repository = "https://github.com/kompendium-llc/factom-rust-client", branch = "master", service = "github" }
 maintenance = { status = "passively-maintained" }
 
 [features]
