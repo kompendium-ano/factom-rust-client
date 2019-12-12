@@ -79,7 +79,7 @@ This library re-exports the tokio runtime and executor by default, to disable th
 and use a different runtime modify your `cargo.toml` with a feature flag:
 ```toml
 [dependencies]
-factom = {version="^2", features="no-runtime"}
+factom = {version="^2", default-features=false}
 ```
 
 ## Testing
