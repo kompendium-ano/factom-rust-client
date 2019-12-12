@@ -4,211 +4,211 @@ functions are below. Full documentation is hosted at https://docs.rs/factom/
 
 ----
 
-### Address
+### [Address](https://docs.rs/factom/2.0.2/factom/address/index.html)
 
 Relating to Address functions
 
-* [address](ggg-address)
-* [all-addresses](ggg-all-addresses)
-* [remove-address](ggg-remove-address)
+* address
+* all-addresses
+* remove-address
 
 ----
 
-### Api
+### [Api](https://docs.rs/factom/2.0.2/factom/api/index.html)
 
 The main api client module holds Factom struct from which requests are constructed.
 
 ----
-### Balance
+### [Balance](https://docs.rs/factom/2.0.2/factom/balance/index.html)
 
 For balance related functions.
 
-* [entry-credit-balance](ggg-entry-credit-balance)
-* [factoid-balance](ggg-factoid-balance)
-* [multiple-ec-balances](ggg-multiple-ec-balances)
-* [multiple-fct-balances](ggg-multiple-fct-balances)
+* entry-credit-balance
+* factoid-balance
+* multiple-ec-balances
+* multiple-fct-balances
 
 ----
 
-### Block
+### [Block](https://docs.rs/factom/2.0.2/factom/block/index.html)
 
 For functions dealing with block data queries.
 
-* [ablock_by_height](ggg-ablock_by_height)
-* [admin_block](ggg-admin_block)
-* [anchors](ggg-anchors)
-* [dblock_by_height](ggg-dblock_by_height)
-* [directory_block](ggg-directory_block)
-* [directory_block_head](ggg-directory_block_head)
-* [ecblock_by_height](ggg-ecblock_by_height)
-* [entry_block](ggg-entry_block)
-* [entry_credit_block](ggg-entry_credit_block)
-* [factoid_block](ggg-factoid_block)
-* [fblock_by_height](ggg-fblock_by_height)
+* ablock_by_height
+* admin_block
+* anchors
+* dblock_by_height
+* directory_block
+* directory_block_head
+* ecblock_by_height
+* entry_block
+* entry_credit_block
+* factoid_block
+* fblock_by_height
 
 ----
 
-### Chain
+### [Chain](https://docs.rs/factom/2.0.2/factom/chain/index.html)
 
 For functions handling chain data.
 
-* [chain_head](ggg-chain_head)
-* [commit_chain](ggg-commit_chain)
-* [reveal_chain](ggg-reveal_chain)
+* chain_head
+* commit_chain
+* reveal_chain
 
 ----
 
-### Compose
+### [Compose](https://docs.rs/factom/2.0.2/factom/compose/index.html)
 
 Functions that compose transactions, entries and identities.
 
-* [compose_chain](ggg-compose_chain)
-* [compose_entry](ggg-compose_entry)
-* [compose_transaction](ggg-compose_transaction)
-* [compose_id_attribute<T>](ggg-compose_id_attribute<T>)
-* [compose_id_attribute_endorsement](ggg-compose_id_attribute_endorsement)
-* [compose_id_chain](ggg-compose_id_chain)
-* [compose_id_key_replacement](ggg-compose_id_key_replacement)
+* compose_chain
+* compose_entry
+* compose_transaction
+* compose_id_attribute<T>
+* compose_id_attribute_endorsement
+* compose_id_chain
+* compose_id_key_replacement
 
 ----
 
-### Constants
+### [Constants](https://docs.rs/factom/2.0.2/factom/constants/index.html)
 
 Static constants for use within the library.
 
-* [WALLETD_DEFAULT](ggg-WALLETD_DEFAULT)
-* [FACTOMD_DEFAULT](ggg-FACTOMD_DEFAULT)
-* [OPENNODE_URI](ggg-OPENNODE_URI)
-* [DEV_OPENNODE_URI](ggg-DEV_OPENNODE_URI)
-* [DEBUG](ggg-DEBUG)
-* [API_VERSION](ggg-API_VERSION)
-* [JSONRPC ](ggg-JSONRPC )
-* [ID](ggg-ID)
+* WALLETD_DEFAULT
+* FACTOMD_DEFAULT
+* OPENNODE_URI
+* DEV_OPENNODE_URI
+* DEBUG
+* API_VERSION
+* JSONRPC 
+* ID
 
 ----
 
-### Debug
+### [Debug](https://docs.rs/factom/2.0.2/factom/debug/index.html)
 
 Factomd debug functions. Tests exist but are disabled for this module and require running a local factomd node.
 
-* [holding_queue](ggg-holding_queue)
-* [network_info](ggg-network_info)
-* [predictive_fer](ggg-predictive_fer)
-* [audit_servers](ggg-audit_servers)
-* [federated_servers](ggg-federated_servers)
-* [configuration](ggg-configuration)
-* [process_list](ggg-process_list)
-* [authorities](ggg-authorities)
-* [reload_configuration](ggg-reload_configuration)
-* [drop_rate](ggg-drop_rate)
-* [set_drop_rate](ggg-set_drop_rate)
-* [delay](ggg-delay)
-* [set_delay](ggg-set_delay)
-* [summary](ggg-summary)
-* [messages](ggg-messages)
+* holding_queue
+* network_info
+* predictive_fer
+* audit_servers
+* federated_servers
+* configuration
+* process_list
+* authorities
+* reload_configuration
+* drop_rate
+* set_drop_rate
+* delay
+* set_delay
+* summary
+* messages
 
 ----
 
-### Entry
+### [Entry](https://docs.rs/factom/2.0.2/factom/entry/index.html)
 For querying entires.
 
-* [commit_entry](ggg-commit_entry)
-* [entry](ggg-entry)
-* [raw_data](ggg-raw_data)
-* [pending_entries](ggg-pending_entries)
-* [reveal_entry](ggg-reveal_entry)
+* commit_entry
+* entry
+* raw_data
+* pending_entries
+* reveal_entry
 
 ----
 
-### Factomd
+### [Factomd](https://docs.rs/factom/2.0.2/factom/factomd/index.html)
 
 General functions relating to factomd
 
-* [current_minute](ggg-current_minute)
-* [diagnostics](ggg-diagnostics)
-* [entry_credit_rate](ggg-entry_credit_rate)
-* [heights](ggg-heights)
-* [properties](ggg-properties)
-* [receipt](ggg-receipt)
-* [send_raw_message](ggg-send_raw_message)
+* current_minute
+* diagnostics
+* entry_credit_rate
+* heights
+* properties
+* receipt
+* send_raw_message
 
 ----
 
-### Generate
+### [Generate](https://docs.rs/factom/2.0.2/factom/generate/index.html)
 
 Functions for generating addresses or identities.
 
-* [generate_ec_address](ggg-generate_ec_address)
-* [generate_factoid_address](ggg-generate_factoid_address)
-* [generate_identity_key](ggg-generate_identity_key)
+* generate_ec_address
+* generate_factoid_address
+* generate_identity_key
 
 ----
 
-### Identity
+### [Identity](https://docs.rs/factom/2.0.2/factom/identity/index.html)
 
 Relating to identity functions.
 
-* [all_id_keys](ggg-all_id_keys)
-* [active_id_keys](ggg-active_id_keys)
-* [remove_id_key](ggg-remove_id_key)
-* [id_key](ggg-id_key)
+* all_id_keys
+* active_id_keys
+* remove_id_key
+* id_key
 
 ----
 
-### Import
+### [Import](https://docs.rs/factom/2.0.2/factom/import/index.html)
 
 For importing addresses or identities
 
-* [import_addresses](ggg-import_addresses)
-* [import_identity_keys](ggg-import_identity_keys)
-* [import_koinify](ggg-import_koinify)
+* import_addresses
+* import_identity_keys
+* import_koinify
 
 ----
 
-### Requests
+### [Requests](https://docs.rs/factom/2.0.2/factom/requests/index.html)
 
 Request handling functions intrinsic to the factom struct
 
-* [factomd_call](ggg-factomd_call)
-* [walletd_call](ggg-walletd_call)
-* [debug_call](ggg-debug_call)
+* factomd_call
+* walletd_call
+* debug_call
 
 ---
 
-### Responses
+### [Responses](https://docs.rs/factom/2.0.2/factom/responses/index.html)
 
 Response handling functions to parse json responses into objects
 
-
-
 ---
 
-### Tx
+### [Tx](https://docs.rs/factom/2.0.2/factom/tx/index.html)
 
 Functions relating to transactions
 
-* [ack](ggg-ack)
-* [factoid_submit](ggg-factoid_submit)
-* [transaction](ggg-transaction)
-* [pending_transactions](ggg-pending_transactions)
-* [add_ec_output](ggg-add_ec_output)
-* [add_fee](ggg-add_fee)
-* [add_input](ggg-add_input)
-* [add_output](ggg-add_output)
-* [delete_transaction](ggg-delete_transaction)
-* [new_transaction](ggg-new_transaction)
-* [sign_transaction](ggg-sign_transaction)
-* [sub_fee](ggg-sub_fee)
-* [tmp_transactions](ggg-tmp_transactions)
-* [transactions](ggg-transactions)
+* ack
+* factoid_submit
+* transaction
+* pending_transactions
+* add_ec_output
+* add_fee
+* add_input
+* add_output
+* delete_transaction
+* new_transaction
+* sign_transaction
+* sub_fee
+* tmp_transactions
+* transactions
 
-### Walletd
+### [Walletd](https://docs.rs/factom/2.0.2/factom/walletd/index.html)
 
 General utility functions relating to factom-walletd
 
-* [wallet_backup](ggg-wallet_backup)
-* [wallet_balances](ggg-wallet_balances)
-* [unlock_wallet](ggg-unlock_wallet)
-* [wallet_height](ggg-wallet_height)
-* [wallet_properties](ggg-wallet_properties)
-<!-- * [sign_data](ggg-sign_data) -->
+* wallet_backup
+* wallet_balances
+* unlock_wallet
+* wallet_height
+* wallet_properties
+
+
+### [Utils](https://docs.rs/factom/2.0.2/factom/utils/index.html)
