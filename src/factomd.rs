@@ -1,3 +1,4 @@
+//! General functions relating to factomd
 use super::*;
 
 /// The current-minute API call returns:

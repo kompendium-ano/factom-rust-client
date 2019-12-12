@@ -1,3 +1,4 @@
+//! For creating and querying entires.
 use super::*;
 
 /// Send an Entry Commit Message to factom to create a new Entry. The entry commit 

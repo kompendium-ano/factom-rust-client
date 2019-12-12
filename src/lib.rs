@@ -26,6 +26,8 @@ pub mod utils;
 
 pub use api::Factom;
 pub use constants::*; 
+#[cfg(not(feature="no-runtime"))]
+pub use requests::fetch;
 pub use requests::ApiRequest;
 pub use responses::ApiResponse;
 
@@ -33,8 +35,6 @@ pub use responses::ApiResponse;
 pub use tokio::prelude::*;
 #[cfg(not(feature="no-runtime"))]
 pub use tokio::runtime::Runtime;
-#[cfg(not(feature="no-runtime"))]
-pub use requests::fetch;
 
 use std::rc::Rc;
 use serde_json::json;

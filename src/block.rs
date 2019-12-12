@@ -1,4 +1,4 @@
-//! The Block module contains all api methods which query block data
+//! Contains all api methods which query block data
 use super::*;
 
 /// Anchortype is a required argument in the anchors function 

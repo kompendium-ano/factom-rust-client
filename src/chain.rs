@@ -1,3 +1,4 @@
+//! For functions handling chain data.
 use super::*;
 
 /// Return the keymr of the head of the chain for a chain ID (the unique hash 

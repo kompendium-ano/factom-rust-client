@@ -1,3 +1,4 @@
+//! Functions for generating addresses or identities.
 use super::*;
 
 /// Create a new Entry Credit Address and store it in the wallet. If the wallet 

@@ -1,3 +1,4 @@
+//! Relating to identity functions.
 use super ::*;
 
 /// Returns all of the identity key pairs that are currently stored in the wallet. 

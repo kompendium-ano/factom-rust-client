@@ -1,3 +1,4 @@
+//! The api client module holds the Factom struct and request client.
 use super::*;
 use url::Url;
 use constants::*;

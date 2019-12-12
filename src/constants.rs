@@ -1,3 +1,4 @@
+//!Static constants for use with the library.
 /// Default factom-walletd location
 pub const WALLETD_DEFAULT: &str = "http://localhost:8089";
 /// Default factomd location

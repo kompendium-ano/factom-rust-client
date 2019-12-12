@@ -1,3 +1,4 @@
+//!  Request handling functions intrinsic to the factom struct
 use super::*; 
 use constants::*;
 use serde_json::Value;

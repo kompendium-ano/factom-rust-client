@@ -1,3 +1,4 @@
+//! Response handling functions to parse json responses into objects
 use super::*;
 use std::default::Default;
 use std::error::Error;

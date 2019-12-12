@@ -179,20 +179,6 @@ Request handling functions intrinsic to the factom struct
 
 Response handling functions to parse json responses into objects
 
-* [ack](ggg-ack)
-* [factoid_submit](ggg-factoid_submit)
-* [transaction](ggg-transaction)
-* [pending_transactions](ggg-pending_transactions)
-* [add_ec_output](ggg-add_ec_output)
-* [add_fee](ggg-add_fee)
-* [add_input](ggg-add_input)
-* [add_output](ggg-add_output)
-* [delete_transaction](ggg-delete_transaction)
-* [new_transaction](ggg-new_transaction)
-* [sign_transaction](ggg-sign_transaction)
-* [sub_fee](ggg-sub_fee)
-* [tmp_transactions](ggg-tmp_transactions)
-* [transactions](ggg-transactions)
 
 
 ---

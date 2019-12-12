@@ -1,3 +1,4 @@
+//! For importing addresses or identities
 use super::*;
 use std::collections::HashMap;
 

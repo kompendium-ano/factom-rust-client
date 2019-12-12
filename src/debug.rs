@@ -1,3 +1,4 @@
+//! Factomd debug functions.
 use super::*;
 
 /// Show current holding messages in the queue.

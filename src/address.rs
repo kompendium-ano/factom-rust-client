@@ -1,3 +1,4 @@
+//! Relating to Address functions
 use super::*;
 
 /// Retrieve the public and private parts of a Factoid or Entry Credit address 

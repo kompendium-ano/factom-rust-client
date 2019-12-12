@@ -1,3 +1,4 @@
+//! General utility functions relating to factom-walletd
 use super::*;
 
 /// Return the wallet seed and all addresses in the wallet for backup and offline 

@@ -1,3 +1,4 @@
+//! For balance related functions.
 use super::*;
 
 /// Return its current balance for a specific entry credit address.

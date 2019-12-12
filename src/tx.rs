@@ -1,3 +1,4 @@
+//! Functions relating to transactions
 use super::*;
 use std::collections::HashMap;
 
