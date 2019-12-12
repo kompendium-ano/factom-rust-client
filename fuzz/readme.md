@@ -4,7 +4,7 @@ This fuzzing suite uses a rust implementation of American Fuzzy Lop, you can fin
 
 The library itself is located here: https://github.com/rust-fuzz/afl.rs
 
-Note: It doesn't build on windows due to xdg. You might have luck with Windows Subsystem for Linux.
+Note: It doesn't build on windows. You might have luck with Windows Subsystem for Linux.
 
 You can fuzz both the api client library and the factomd/factom-walletd binaries 
 with this tool. Setting up factomd for debug logging is highly recommended as below. 
