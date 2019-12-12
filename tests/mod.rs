@@ -250,33 +250,31 @@ fn create_chain_and_make_entry(){
   let reveal_query = chain::reveal_chain(&client, &reveal);
   let reveal_response = fetch(reveal_query).expect("Fetching Query");
   dbg!(&reveal_response);
-  assert!(!reveal_response.is_err());
+  assert!(reveal_response.success());
 
+  // Make Entry
   let rand_ext_id = &random_string(12);
   let ext_ids = vec!("Api Client", "Test Entry", rand_ext_id);
   let content = random_string(32);
   
-  // Make Entry
   let compose_query = compose::compose_entry(&client,
-                                            TESTNET_CHAIN,
+                                            &reveal_response.result.chainid,
                                             ext_ids, 
                                             &content, 
                                             EC_PUB);
   let compose_response = fetch(compose_query).expect("Fetching Query");
   dbg!(&compose_response);
-  assert!(!compose_response.is_err());
 
   let commit = compose_response.result.commit.params.message;
   let commit_query = entry::commit_entry(&client, &commit);
   let commit_response = fetch(commit_query).expect("Fetching Query");
   dbg!(&commit_response);
-  assert!(!commit_response.is_err());
-  
+
   let reveal = compose_response.result.reveal.params.entry;
   let reveal_query = entry::reveal_entry(&client, &reveal);
   let reveal_response = fetch(reveal_query).expect("Fetching Query");
   dbg!(&reveal_response);
-  assert!(!reveal_response.is_err());
+  assert!(reveal_response.success());
 }
 
 // Debug Module
