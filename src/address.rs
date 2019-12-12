@@ -11,9 +11,11 @@ use super::*;
 ///#[tokio::main]
 ///async fn main() {
 ///  let client = Factom::new();
+///  let priv_key = "Fs3E9gV6DXsYzf7Fqx1fVBQPQXV695eP3k5XbmHEZVRLkMdD9qCK";
+///  import::import_addresses(&client, vec![priv_key]).await.unwrap();
 ///  let my_address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
 ///  let query = address::address(&client, my_address);
-///  let response = query.await.expect("Fetching query");
+///  let response = query.await.unwrap();
 ///  assert_eq!(response.result.public, my_address);
 /// } 
 /// ```
@@ -37,6 +39,8 @@ pub async fn address(
 /// #[tokio::main]
 /// async fn main() {
 ///  let client = Factom::new();
+///  let priv_key = "Fs3E9gV6DXsYzf7Fqx1fVBQPQXV695eP3k5XbmHEZVRLkMdD9qCK";
+///  import::import_addresses(&client, vec![priv_key]).await.unwrap();
 ///  let my_address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
 ///  let query = address::all_addresses(&client);
 ///  let response = query.await.unwrap();
