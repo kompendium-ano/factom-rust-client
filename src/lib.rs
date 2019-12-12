@@ -27,14 +27,14 @@ pub mod utils;
 
 pub use api::Factom;
 pub use constants::*; 
-#[cfg(not(feature="no-runtime"))]
+#[cfg(feature="default")]
 pub use requests::fetch;
 pub use requests::ApiRequest;
 pub use responses::ApiResponse;
 
-#[cfg(not(feature="no-runtime"))]
+#[cfg(feature="default")]
 pub use tokio::prelude::*;
-#[cfg(not(feature="no-runtime"))]
+#[cfg(feature="default")]
 pub use tokio::runtime::Runtime;
 
 use std::rc::Rc;
@@ -43,6 +43,7 @@ use requests::{parse, factomd_call, walletd_call, debug_call};
 use hyper_tls::HttpsConnector;
 use serde::{Serialize, Deserialize};
 use hyper::{Client, client::HttpConnector};
+#[cfg(feature="default")]
 use futures::prelude::*;
 
 /// Reference counted Hyper client with custom https connector

@@ -92,7 +92,7 @@ pub async fn parse<T>(fut: ResponseFuture) -> Result<ApiResponse<T>>
 /// the function will create a new runtime for every call, if making multiple
 /// api calls for synchronous usage it's recommended to create 
 /// a single runtime and re-use it's blocking method instead
-#[cfg(not(feature="no-runtime"))]
+#[cfg(feature="default")]
 pub fn fetch<F: Future>(query: F) -> F::Output {
   let mut rt = Runtime::new().expect("Initialising Runtime");
   rt.block_on(query)
