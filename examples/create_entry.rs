@@ -9,6 +9,8 @@ use rand::{Rng, thread_rng, distributions::Alphanumeric};
 const EC_PUB: &str = "EC2MJzCcHqYJyujnPzjitEaHhtEPVBhmEWUKkv4SVaaKeYcq3fqK";
 const CHAINID: &str = "72a2fa10b81a8bffde58ea206254f0eaa7928e9e09a4144efb3ba0bb7be26d52";
 
+// This example is for demonstration purposes. There is a helper function
+// utils::create_entry which vastly simplifies this process
 #[tokio::main]
 async fn main() {
   println!("This example assumes you have gone through the create_chain example\

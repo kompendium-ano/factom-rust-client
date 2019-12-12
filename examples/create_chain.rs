@@ -6,6 +6,8 @@ use factom::{
 
 const EC_PUB: &str = "EC2MJzCcHqYJyujnPzjitEaHhtEPVBhmEWUKkv4SVaaKeYcq3fqK";
 
+// This example is for demonstration purposes. There is a helper function
+// utils::create_chain which vastly simplifies this process
 #[tokio::main]
 async fn main() {
   println!("Initial Local Node Setup:\nfactomd -network=LOCAL -blktime=20\n\

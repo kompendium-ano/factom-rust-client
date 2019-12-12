@@ -3,8 +3,8 @@ use factom::{Factom, chain::chain_head, block::entry_block};
 // Transactions chain
 const PNET_TX_CHAIN: &str = "cffce0f409ebba4ed236d49d89c70e4bd1f1367d86402a3363366683265a242d";
 
-// This example partially traverses the pegnet conversion chain starting
-// from the most recent entries
+// This example is for demonstration purposes. There is a helper function
+// utils::traverse_chain which vastly simplifies this process
 #[tokio::main]
 async fn main() {
   let api = Factom::open_node();
