@@ -230,11 +230,11 @@ fn chain_head(){
   assert!(response.success());
 }
 
-// factom-walletd needs to be run with a command to testnet open node
-// `factom-walletd -s https://dev.factomd.net/`
+// This test only passes with a local or testnet factomd 
 #[test]
-fn create_chain(){
-  let client = Factom::testnet_node();
+fn create_chain_and_make_entry(){
+  // Create Chain
+  let client = Factom::new();
   let rand_ext_id = &random_string(12);
   let ext_ids = vec!("Api Client", "Test Chain", rand_ext_id);
   let content = random_string(32);
@@ -252,15 +252,12 @@ fn create_chain(){
   let reveal_response = fetch(reveal_query).expect("Fetching Query");
   dbg!(&reveal_response);
   assert!(!reveal_response.is_err());
-}
 
-#[test]
-fn create_entry(){
-  let client = Factom::testnet_node();
   let rand_ext_id = &random_string(12);
   let ext_ids = vec!("Api Client", "Test Entry", rand_ext_id);
   let content = random_string(32);
   
+  // Make Entry
   let compose_query = compose::compose_entry(&client,
                                             TESTNET_CHAIN,
                                             ext_ids, 
