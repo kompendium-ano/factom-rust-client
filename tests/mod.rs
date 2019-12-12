@@ -231,7 +231,7 @@ fn chain_head(){
 }
 
 // factom-walletd needs to be run with a command to testnet open node
-// > factom-walletd -s https://dev.factomd.net/
+// `factom-walletd -s https://dev.factomd.net/`
 #[test]
 fn create_chain(){
   let client = Factom::testnet_node();
