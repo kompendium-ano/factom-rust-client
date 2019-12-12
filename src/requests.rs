@@ -9,7 +9,6 @@ use serde::{Serialize, de::DeserializeOwned};
 use hyper::{Chunk, Body, Request, client::ResponseFuture};
 use http::{Uri, request::Builder, header::CONTENT_TYPE};
 
-
 /// Generic request struct is serialized into the JSON body 
 #[derive(Serialize, Debug, Clone)]
 pub struct ApiRequest {
@@ -74,7 +73,6 @@ async fn inner_call(
   api.client.request(payload)
 }
 
-
 /// Parses the response and deserialises the API call into an appropriate 
 /// ApiResponse struct
 pub async fn parse<T>(fut: ResponseFuture) -> Result<ApiResponse<T>> 
@@ -101,10 +99,8 @@ async fn deser<T>(body: Chunk) -> ApiResponse<T>
 /// the function will create a new runtime for every call, if making multiple
 /// api calls for synchronous usage it's recommended to create 
 /// a single runtime and re-use it's blocking method instead
+#[cfg(not(feature="no-runtime"))]
 pub fn fetch<F: Future>(query: F) -> F::Output {
   let rt = Runtime::new().expect("Initialising Runtime");
   rt.block_on(query)
 }
-
-
-
