@@ -7,17 +7,21 @@ use crate::chain::RevealChain;
 /// Creates a chain going through the entire compose, commit, reveal workflow
 /// 
 /// # Example
+/// 
 /// ```no_run
 ///  use factom::*;
-///
+/// 
+/// #[tokio::main]
+/// async fn main() {
 /// let client = Factom::new();
 /// let name = vec!["Factom","Test","Identity"];
-/// let pubkeys = ["idpub2k8zGYQUfekxehyUKeqPw6QPiJ5hkV3bbc9JBgL7GNrEiqMpQX",
+/// let pubkeys = vec!["idpub2k8zGYQUfekxehyUKeqPw6QPiJ5hkV3bbc9JBgL7GNrEiqMpQX",
 ///                 "idpub3fXRj21gXveTk6RKYrpJniWV2pAanQktekEt62yhJUQXyPdvwL",
 ///                 "idpub2GU1Pcax2PibH8hHZg58fKRiSJKQWQkWYkpmt7VH1jCXBgqp9w"];
 /// let ec_pub = "EC2MJzCcHqYJyujnPzjitEaHhtEPVBhmEWUKkv4SVaaKeYcq3fqK";
-/// let response = utils::create_id_chain(&client, ext_ids, content, ec_pub).await;
+/// let response = utils::create_id_chain(&client, name, pubkeys, ec_pub).await;
 /// dbg!(response);
+/// }
 /// ```
 pub async fn create_id_chain(
   client: &Factom,
@@ -51,6 +55,8 @@ pub async fn create_id_chain(
 /// ```no_run
 ///  use factom::*;
 ///
+/// #[tokio::main]
+/// async fn main() {
 /// let client = Factom::new();
 /// let chainid = "72a2fa10b81a8bffde58ea206254f0eaa7928e9e09a4144efb3ba0bb7be26d52";
 /// let ext_ids = vec!["Api Client", "Test Chain"];
@@ -58,6 +64,7 @@ pub async fn create_id_chain(
 /// let ec_pub = "EC2MJzCcHqYJyujnPzjitEaHhtEPVBhmEWUKkv4SVaaKeYcq3fqK";
 /// let response = utils::create_entry(&client,chainid, ext_ids, content, ec_pub).await;
 /// dbg!(response);
+/// }
 /// ```
 pub async fn create_entry(
   client: &Factom,
@@ -89,13 +96,15 @@ pub async fn create_entry(
 /// # Example
 /// ```no_run
 ///  use factom::*;
-///
+/// #[tokio::main]
+/// async fn main() {
 /// let client = Factom::new();
 /// let ext_ids = vec!["Api Client", "Test Chain"];
 /// let content = "Testing";
 /// let ec_pub = "EC2MJzCcHqYJyujnPzjitEaHhtEPVBhmEWUKkv4SVaaKeYcq3fqK";
 /// let response = utils::create_chain(&client, ext_ids, content, ec_pub).await;
 /// dbg!(response);
+/// }
 /// ```
 pub async fn create_chain(
   client: &Factom,
@@ -122,13 +131,16 @@ pub async fn create_chain(
 /// A depth of 0 will traverse the whole chain.
 /// 
 /// # Example
-/// ```
+/// ```no_run
 /// use factom::*;
 /// 
+/// #[tokio::main]
+/// async fn main() {
 /// let client = Factom::open_node();
 /// let chain = "843dbee7a49a9b9510d399759fbce24b1f700268c94508085abce352d70ed1f6";
 /// let response = utils::traverse_chain(&client, chain, 1).await;
 /// dbg!(response);
+/// }
 /// ```
 pub async fn traverse_chain(
   client: &Factom, 
