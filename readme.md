@@ -32,25 +32,22 @@ async fn main() {
 See the examples folder for common workflows, or use `cargo run --example` to 
 view all those you can run.
 
-##### Using default settings
+##### Configuration
 ```rust
+// Default settings
+// factomd: http://localhost:8088
+// factom-walletd: http://localhost:8089
 let client = Factom::new();
-```
 
-##### Using the open node
-```rust
-// factom-walletd is at `http://localhost:8089`
+// Using open node
+// factomd: https://api.factomd.net/v2
 let client = Factom::open_node();
-```
 
-##### Using the testnet open node
-```rust
-// factom-walletd is located at: 'http://localhost:8089`
+// Using the tesnet open node
+// factomd: https://api.factomd.net/v2
 let client = Factom::testnet_node();
-```
 
-##### Custom factomd and factom-walletd locations
-```rust
+// Using custom node locations
 let factomd = "https://api.factomd.net/";
 let factom_walletd = "http://192.168.1.42:18089";
 let client = Factom::custom_node(factomd, factom_walletd)
