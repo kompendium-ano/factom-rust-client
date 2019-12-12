@@ -8,7 +8,7 @@ install:
   - sudo dpkg -i factom-amd64.deb
 
 script:
-  - factomd -network=LOCAL -blktime=20 &
+  - factomd -network=LOCAL -blktime=5 &
   - factom-walletd &
   - sleep 20
   - factom-cli importaddress Fs3E9gV6DXsYzf7Fqx1fVBQPQXV695eP3k5XbmHEZVRLkMdD9qCK

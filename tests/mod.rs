@@ -1,5 +1,5 @@
 use::factom::*;
-use std::iter;
+use std::{iter,thread, time};
 use rand::{Rng, thread_rng, distributions::Alphanumeric};
 
 // Hopefully it doesn't need to be said but please don't use these addresses as 
@@ -255,8 +255,14 @@ fn create_chain_and_make_entry(){
   let ext_ids = vec!("Api Client", "Test Entry", rand_ext_id);
   let content = random_string(32);
   
+  let chainid = &reveal_response.result.chainid;
+  dbg!(chainid);
+
+  // Wait for next block
+  thread::sleep(time::Duration::from_secs(10));
+
   let compose_query = compose::compose_entry(&client,
-                                            &reveal_response.result.chainid,
+                                            chainid,
                                             ext_ids, 
                                             &content, 
                                             EC_PUB);
