@@ -11,7 +11,7 @@
 Add to cargo.toml:
 ```toml
 [dependencies]
-factom = "2.0.0"
+factom = "^2"
 ```
 
 ## Quickstart
@@ -31,12 +31,54 @@ async fn main() {
 See the examples folder for common workflows, or use `cargo run --example` to 
 view all those you can run. Eg. `cargo run --example get_balance`
 
+##### Using default settings
+```rust
+let client = Factom::new();
+```
+
+##### Using the open node
+```rust
+// factom-walletd is at `http://localhost:8089`
+let client = Factom::open_node();
+```
+
+##### Using the testnet open node
+```rust
+// factom-walletd is located at: 'http://localhost:8089`
+let client = Factom::testnet_node();
+```
+
+##### Custom factomd and factom-walletd locations
+```rust
+let factomd = "https://api.factomd.net/";
+let factom_walletd = "http://192.168.1.42:18089";
+let client = Factom::custom_node(factomd, factom_walletd)
+```
+
+##### Retrieve a Balance
+```rust
+let client = factom.testnet_node();
+let testnet_address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
+let response = balance::factoid_balance(&client, testnet_address).await.unwrap();
+// factoid balance returns factoshis, convert
+let factoids = utils::factoshis_to_fct(response.result.balance);
+println!("The testnet balance of {} is {} factoids", FCT_PUB, factoids);
+```
+
+##### Get Entry Data
+```rust
+let client = factom.testnet_node();
+let hash = "97c4e7adce9ed277b62adfb9fb7a31ca4778181e49dcdfebca967102dd424fbc";
+let response = entry::entry(hash).await.unwrap();
+dbg!(response);
+```
+
 ## Runtime
 This library re-exports the tokio runtime and executor by default, to disable this
 and use a different runtime modify your `cargo.toml` with a feature flag:
 ```toml
 [dependencies]
-factom = {version="2.0.0", features="no-runtime"}
+factom = {version="^2", features="no-runtime"}
 ```
 
 ## Testing
@@ -62,4 +104,3 @@ Factom network and factom-walletd. See the fuzz folder readme for more informati
 ## Contributing
 PR's welcome. Fork the library and submit to dev branch. 
 By contributing to this library you agree to it being Apache 2.0 licensed 
-
