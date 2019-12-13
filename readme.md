@@ -55,7 +55,7 @@ let client = Factom::custom_node(factomd, factom_walletd)
 
 ##### Retrieve a Balance
 ```rust
-let client = factom.testnet_node();
+let client = factom::testnet_node();
 let testnet_address = "FA2jK2HcLnRdS94dEcU27rF3meoJfpUcZPSinpb7AwQvPRY6RL1Q";
 let response = balance::factoid_balance(&client, testnet_address).await.unwrap();
 // factoid balance returns factoshis, convert
@@ -65,7 +65,7 @@ println!("The testnet balance of {} is {} factoids", FCT_PUB, factoids);
 
 ##### Get Entry Data
 ```rust
-let client = factom.testnet_node();
+let client = factom::testnet_node();
 let hash = "97c4e7adce9ed277b62adfb9fb7a31ca4778181e49dcdfebca967102dd424fbc";
 let response = entry::entry(hash).await.unwrap();
 dbg!(response);
