@@ -44,7 +44,7 @@ let client = Factom::new();
 let client = Factom::open_node();
 
 // Using the tesnet open node
-// factomd: https://api.factomd.net/v2
+// factomd: https://dev.factomd.net/v2
 let client = Factom::testnet_node();
 
 // Using custom node locations
