@@ -5,6 +5,8 @@
 //! A rust client for the Factom network API.
 //! The official API docs can be found at: https://docs.factom.com/
 //! For more information or support ask on discord: https://discord.gg/mYmcQM2 
+#[cfg(feature="default")]
+pub extern crate tokio;
 
 pub mod address;
 pub mod api;
@@ -36,6 +38,7 @@ pub use responses::ApiResponse;
 pub use tokio::prelude::*;
 #[cfg(feature="default")]
 pub use tokio::runtime::Runtime;
+
 
 use std::rc::Rc;
 use serde_json::json;
