@@ -1,6 +1,6 @@
 [package]
 name = "factom"
-version = "2.1.0"
+version = "2.1.1"
 authors = ["Mitchell Berry <17392435+MitchellBerry@users.noreply.github.com>"]
 edition = "2018"
 repository = "https://github.com/kompendium-llc/factom-rust-client"
@@ -27,6 +27,9 @@ tokio-executor = {version = "=0.2.0-alpha.6", optional = true }
 [dev-dependencies]
 rand = "0.7.2"
 criterion = "0.3"
+sha2 = "0.8.0"
+bs58 = "0.2.2"
+hex = "0.4.0"
 
 [[bench]]
 name = "benches"
