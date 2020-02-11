@@ -42,7 +42,7 @@ pub async fn entry_credit_balance(
 ///  let response = balance::factoid_balance(&client, fct_address)
 ///                            .await
 ///                            .expect("Fetching query");
-///  assert!(response.result.balance > 0);
+///  assert_eq!(response.error.code, 0);
 /// }
 /// ```
 pub async fn factoid_balance(
