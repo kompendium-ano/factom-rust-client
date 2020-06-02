@@ -29,7 +29,7 @@ async fn main() {
 }
 ```
 ## Usage
-See the examples folder for common workflows, or use `cargo run --example` to 
+See the examples folder for common workflows, or use `cargo run --example` to
 view all those you can run.
 
 ##### Configuration
@@ -76,7 +76,7 @@ dbg!(response);
  let client = Factom::open_node();
  let chain = "843dbee7a49a9b9510d399759fbce24b1f700268c94508085abce352d70ed1f6";
  // traverse_chain is a utility that returns Vec<Entry>, the number of blocks to
- // parse can be specified, to traverse the entire chain use a depth of 0, here 
+ // parse can be specified, to traverse the entire chain use a depth of 0, here
  // only 1 block,the chainhead itself, will be retrieved.
  let response = utils::traverse_chain(&client, chain, 1).await;
  dbg!(response);
@@ -91,27 +91,37 @@ factom = {version="^2", default-features=false}
 ```
 
 ## Testing
-Most of the functions are covered by the test modules along with all the documentation examples. 
-Beware that running `cargo test` with nocapture will produce a huge amount of output. 
-For many of the tests to pass you will need to be running factom-walletd, any 
-test transactions or addresses are cleaned up afterward. 
+Most of the functions are covered by the test modules along with all the documentation examples.
+Beware that running `cargo test` with nocapture will produce a huge amount of output.
+For many of the tests to pass you will need to be running factom-walletd, any
+test transactions or addresses are cleaned up afterward.
 
 See the [tests readme](https://github.com/kompendium-llc/factom-rust-client/tree/master/tests) for instructions.
 
 ## Benchmarking
-A criterion benching harness is provided, if gnuplot is installed it will also automatically 
-generate plots for any benchmarks run, they can be found at `<LIBRARY>/target/criterion/report/index.html`. This 
-can be used to test the performance of factomd, factom-walletd, network connections 
+A criterion benching harness is provided, if gnuplot is installed it will also automatically
+generate plots for any benchmarks run, they can be found at `<LIBRARY>/target/criterion/report/index.html`. This
+can be used to test the performance of factomd, factom-walletd, network connections
 and the library functions themselves.
 
 ## Fuzzing
-A fuzzing suite is provided using the rust implementation of 
-[American Fuzzy Lop](http://lcamtuf.coredump.cx/afl/), with appropriate setup 
-this can be used to fuzz both the Factom rust library along with a simulated 
-Factom network and factom-walletd. See the 
-[fuzz folder readme](https://github.com/kompendium-llc/factom-rust-client/tree/master/fuzz) 
+A fuzzing suite is provided using the rust implementation of
+[American Fuzzy Lop](http://lcamtuf.coredump.cx/afl/), with appropriate setup
+this can be used to fuzz both the Factom rust library along with a simulated
+Factom network and factom-walletd. See the
+[fuzz folder readme](https://github.com/kompendium-llc/factom-rust-client/tree/master/fuzz)
 for more information.
 
-## Contributing
-PR's welcome. Fork the library and submit to dev branch. 
-By contributing to this library you agree to it being Apache 2.0 licensed 
+## Learn
+- [Accessing the Factom blockchain from different programming languages](https://medium.com/kompendium-developments/accessing-factom-blockchain-from-different-programming-languages-7f09030efe16)
+- [Building simple blockchain game with Factom](https://medium.com/kompendium-developments/accessing-factom-blockchain-from-different-programming-languages-7f09030efe16)
+
+## Contributions
+
+The Library developed by Kompendium, LLC in partnership with [Mitchell Berry](https://github.com/MitchellBerry), [Sergey Bushnyak](https://sigrlami.eu), [Kelecorix, Inc](https://kelecorix.com) and for the good of the Factom community.
+
+If you're an active user or find it useful we strongly encourage you to support our efforts and ensure long maintenance by contributing a small donation to one of the following cryptocurrency addresses:
+
+- BTC: 39oVXpsgsyW8ZgzsnX3sV7HLdtXWfT96qN
+- ETH: 0x9cDBA6bb44772259B3A3fb89cf233A147a720f34
+- FCT: FA38cwer93mmPw1HxjScLmK1yF9iJTu5P87T2vdkbuLovm2YXyss
