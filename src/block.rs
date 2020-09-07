@@ -1,28 +1,28 @@
 //! Contains all api methods which query block data
 use super::*;
 
-/// Anchortype is a required argument in the anchors function 
+/// Anchortype is a required argument in the anchors function
 pub enum AnchorType {
-  Hash(String),
-  Height(usize)
+    Hash(String),
+    Height(usize),
 }
 
 /// Retrieve administrative blocks for any given height.
-/// 
-/// The admin block contains data related to the identities within the factom 
-/// system and the decisions the system makes as it builds the block chain. The 
-/// abentries’ (admin block entries) in the JSON response can be of various types, 
-/// the most common is a directory block signature (DBSig). A majority of the 
-/// federated servers sign every directory block, meaning every block after m5 
+///
+/// The admin block contains data related to the identities within the factom
+/// system and the decisions the system makes as it builds the block chain. The
+/// abentries’ (admin block entries) in the JSON response can be of various types,
+/// the most common is a directory block signature (DBSig). A majority of the
+/// federated servers sign every directory block, meaning every block after m5
 /// will contain 5 DBSigs in each admin block.
-/// 
-/// The ABEntries are detailed 
+///
+/// The ABEntries are detailed
 /// [here](https://github.com/FactomProject/FactomDocs/blob/master/factomDataStructureDetails.md#adminid-bytes)
-/// 
+///
 /// # Example
 /// ```
 /// use factom::*;  
-/// 
+///
 /// #[tokio::main]
 /// async fn main() {
 ///   let client = Factom::open_node();
@@ -34,13 +34,14 @@ pub enum AnchorType {
 ///    assert_eq!(response.result.ablock.header.prevbackrefhash, prevbackrefhash);
 /// }
 /// ```
-pub async fn ablock_by_height(api: &Factom, height: u32)
-  -> Result<ApiResponse<ABlockHeightResult>>
-{
-  let mut req =  ApiRequest::new("ablock-by-height");
-  req.params.insert("height".to_string(), json!(height));
-  let response = factomd_call(api, req).await;
-  parse(response).await
+pub async fn ablock_by_height(
+    api: &Factom,
+    height: u32,
+) -> Result<ApiResponse<ABlockHeightResult>> {
+    let mut req = ApiRequest::new("ablock-by-height");
+    req.params.insert("height".to_string(), json!(height));
+    let response = factomd_call(api, req).await;
+    parse(response).await
 }
 
 /// Retrieve a specified admin block given its merkle root key.
@@ -59,28 +60,25 @@ pub async fn ablock_by_height(api: &Factom, height: u32)
 ///    assert_eq!(response.result.ablock.header.prevbackrefhash, prevbackrefhash);
 /// }
 /// ```
-pub async fn admin_block(api: &Factom, keymr: &str)
-  -> Result<ApiResponse<ABlockResult>>
-{
-  let mut req =  ApiRequest::new("admin-block");
-  req.params.insert("keymr".to_string(), json!(keymr));
-  let response = factomd_call(api, req).await;
-  parse(response).await
+pub async fn admin_block(api: &Factom, keymr: &str) -> Result<ApiResponse<ABlockResult>> {
+    let mut req = ApiRequest::new("admin-block");
+    req.params.insert("keymr".to_string(), json!(keymr));
+    let response = factomd_call(api, req).await;
+    parse(response).await
 }
 
-
-///  Retrieve information about the directory block anchors that have been confirmed 
+///  Retrieve information about the directory block anchors that have been confirmed
 ///  on Bitcoin and Ethereum.
-/// 
-/// Parameter options: - "height" - the directory block height (integer) to request 
-/// anchors for - "hash" - the object’s hash (hex string) to request anchors for 
-/// (e.g. entry hash, entry block keymr, factoid block keymr, admin block lookup 
+///
+/// Parameter options: - "height" - the directory block height (integer) to request
+/// anchors for - "hash" - the object’s hash (hex string) to request anchors for
+/// (e.g. entry hash, entry block keymr, factoid block keymr, admin block lookup
 /// hash, entry credit block header hash, or directory block keymr)
-/// 
+///
 /// # Example
 /// ```
 /// use factom::*;
-/// 
+///
 /// #[tokio::main]
 /// async fn main() {
 ///   let client = Factom::open_node();
@@ -91,24 +89,25 @@ pub async fn admin_block(api: &Factom, keymr: &str)
 ///    assert_eq!(response.result.directoryblockheight, directoryblockheight);
 /// }
 /// ```
-pub async fn anchors(api: &Factom, target: AnchorType)
-  -> Result<ApiResponse<Anchor>>
-{
-  let mut req =  ApiRequest::new("anchors");
-  match target {
-    AnchorType::Hash(h) => {req.params.insert("hash".to_string(), json!(h));},
-    AnchorType::Height(i) => {req.params.insert("height".to_string(), json!(i));}
-  }
-  let response = factomd_call(api, req).await;
-  parse(response).await
+pub async fn anchors(api: &Factom, target: AnchorType) -> Result<ApiResponse<Anchor>> {
+    let mut req = ApiRequest::new("anchors");
+    match target {
+        AnchorType::Hash(h) => {
+            req.params.insert("hash".to_string(), json!(h));
+        }
+        AnchorType::Height(i) => {
+            req.params.insert("height".to_string(), json!(i));
+        }
+    }
+    let response = factomd_call(api, req).await;
+    parse(response).await
 }
-
 
 /// Retrieve a directory block given only its height.
 /// # Example
 /// ```
 /// use factom::*;
-/// 
+///
 /// #[tokio::main]
 /// async fn main() {
 ///   let client = Factom::open_node();
@@ -122,25 +121,24 @@ pub async fn anchors(api: &Factom, target: AnchorType)
 
 /// ```
 pub async fn dblock_by_height(
-  api: &Factom, 
-  height: u32
-)-> Result<ApiResponse<DBlockHeightResult>>
-{
-  let mut req =  ApiRequest::new("dblock-by-height");
-  req.params.insert("height".to_string(), json!(height));
-  let response = factomd_call(api, req).await;
-  parse(response).await
+    api: &Factom,
+    height: u32,
+) -> Result<ApiResponse<DBlockHeightResult>> {
+    let mut req = ApiRequest::new("dblock-by-height");
+    req.params.insert("height".to_string(), json!(height));
+    let response = factomd_call(api, req).await;
+    parse(response).await
 }
 
-/// Every directory block has a KeyMR (Key Merkle Root), which can be used to 
-/// retrieve it. The response will contain information that can be used to 
-/// navigate through all transactions (entry and factoid) within that block. The 
-/// header of the directory block will contain information regarding the previous 
-/// directory block’s keyMR, directory block height, and the timestamp. 
+/// Every directory block has a KeyMR (Key Merkle Root), which can be used to
+/// retrieve it. The response will contain information that can be used to
+/// navigate through all transactions (entry and factoid) within that block. The
+/// header of the directory block will contain information regarding the previous
+/// directory block’s keyMR, directory block height, and the timestamp.
 /// # Example
 /// ```
 /// use factom::*;
-/// 
+///
 /// #[tokio::main]
 /// async fn main() {
 ///   let client = Factom::open_node();
@@ -152,21 +150,19 @@ pub async fn dblock_by_height(
 ///    assert_eq!(response.result.header.prevblockkeymr, prevblockkeymr);
 /// }
 /// ```
-pub async fn directory_block(api: &Factom, keymr: &str)
-  -> Result<ApiResponse<DBlock>>
-{
-  let mut req =  ApiRequest::new("directory-block");
-  req.params.insert("keymr".to_string(), json!(keymr));
-  let response = factomd_call(api, req).await;
-  parse(response).await
+pub async fn directory_block(api: &Factom, keymr: &str) -> Result<ApiResponse<DBlock>> {
+    let mut req = ApiRequest::new("directory-block");
+    req.params.insert("keymr".to_string(), json!(keymr));
+    let response = factomd_call(api, req).await;
+    parse(response).await
 }
-/// The directory block head is the last known directory block by factom, or in 
-/// other words, the most recently recorded block. This can be used to grab the 
-/// latest block and the information required to traverse the entire blockchain. 
+/// The directory block head is the last known directory block by factom, or in
+/// other words, the most recently recorded block. This can be used to grab the
+/// latest block and the information required to traverse the entire blockchain.
 /// # Example
 /// ```
 /// use factom::*;
-/// 
+///
 /// #[tokio::main]
 /// async fn main() {
 ///   let client = Factom::open_node();
@@ -176,20 +172,18 @@ pub async fn directory_block(api: &Factom, keymr: &str)
 ///   assert!(response.success());
 /// }
 /// ```
-  pub async fn directory_block_head(api: &Factom)
-  -> Result<ApiResponse<DBlockHead>>
-{
-  let req =  ApiRequest::new("directory-block-head");
-  let response = factomd_call(api, req).await;
-  parse(response).await
+pub async fn directory_block_head(api: &Factom) -> Result<ApiResponse<DBlockHead>> {
+    let req = ApiRequest::new("directory-block-head");
+    let response = factomd_call(api, req).await;
+    parse(response).await
 }
 
-/// Retrieve the entry credit block for any given height. These blocks contain 
+/// Retrieve the entry credit block for any given height. These blocks contain
 /// entry credit transaction information.
 /// # Example
 /// ```
 /// use factom::*;
-/// 
+///
 /// #[tokio::main]
 /// async fn main() {
 ///   let client = Factom::open_node();
@@ -202,16 +196,17 @@ pub async fn directory_block(api: &Factom, keymr: &str)
 /// }
 
 /// ```
-pub async fn ecblock_by_height(api: &Factom, height: u32)
-  -> Result<ApiResponse<EBlockHeightResult>>
-{
-  let mut req =  ApiRequest::new("ecblock-by-height");
-  req.params.insert("height".to_string(), json!(height));
-  let response = factomd_call(api, req).await;
-  parse(response).await
+pub async fn ecblock_by_height(
+    api: &Factom,
+    height: u32,
+) -> Result<ApiResponse<EBlockHeightResult>> {
+    let mut req = ApiRequest::new("ecblock-by-height");
+    req.params.insert("height".to_string(), json!(height));
+    let response = factomd_call(api, req).await;
+    parse(response).await
 }
 
-/// Retrieve a specified entry block given its merkle root key. The entry block 
+/// Retrieve a specified entry block given its merkle root key. The entry block
 /// contains 0 to many entries
 /// # Example
 /// ```
@@ -229,21 +224,19 @@ pub async fn ecblock_by_height(api: &Factom, height: u32)
 /// }
 
 /// ```
-pub async fn entry_block(api: &Factom, keymr: &str)
-  -> Result<ApiResponse<EBlock>>
-{
-  let mut req =  ApiRequest::new("entry-block");
-  req.params.insert("keymr".to_string(), json!(keymr));
-  let response = factomd_call(api, req).await;
-  parse(response).await
+pub async fn entry_block(api: &Factom, keymr: &str) -> Result<ApiResponse<EBlock>> {
+    let mut req = ApiRequest::new("entry-block");
+    req.params.insert("keymr".to_string(), json!(keymr));
+    let response = factomd_call(api, req).await;
+    parse(response).await
 }
 
-/// Retrieve a specified entrycredit block given its merkle root key. The numbers 
+/// Retrieve a specified entrycredit block given its merkle root key. The numbers
 /// are minute markers.
 /// # Example
 /// ```
 /// use factom::*;
-/// 
+///
 /// #[tokio::main]
 /// async fn main() {
 ///   let client = Factom::open_node();
@@ -255,20 +248,18 @@ pub async fn entry_block(api: &Factom, keymr: &str)
 ///    assert_eq!(response.result.ecblock.header.bodyhash, bodyhash);
 /// }
 /// ```
-pub async fn entry_credit_block(api: &Factom, keymr: &str)
-  -> Result<ApiResponse<EcBlockResult>>
-{
-  let mut req =  ApiRequest::new("entrycredit-block");
-  req.params.insert("keymr".to_string(), json!(keymr));
-  let response = factomd_call(api, req).await;
-  parse(response).await
+pub async fn entry_credit_block(api: &Factom, keymr: &str) -> Result<ApiResponse<EcBlockResult>> {
+    let mut req = ApiRequest::new("entrycredit-block");
+    req.params.insert("keymr".to_string(), json!(keymr));
+    let response = factomd_call(api, req).await;
+    parse(response).await
 }
 
 /// Retrieve a specified factoid block given its merkle root key.
 /// # Example
-/// ``` 
+/// ```
 /// use factom::*;
-/// 
+///
 /// #[tokio::main]
 /// async fn main() {
 ///   let client = Factom::open_node();
@@ -280,13 +271,11 @@ pub async fn entry_credit_block(api: &Factom, keymr: &str)
 ///    assert_eq!(response.result.fblock.bodymr, bodymr);
 /// }
 /// ```
-pub async fn factoid_block(api: &Factom, keymr: &str)
--> Result<ApiResponse<FBlockResult>>
-{
-  let mut req =  ApiRequest::new("factoid-block");
-  req.params.insert("keymr".to_string(), json!(keymr));
-  let response = factomd_call(api, req).await;
-  parse(response).await
+pub async fn factoid_block(api: &Factom, keymr: &str) -> Result<ApiResponse<FBlockResult>> {
+    let mut req = ApiRequest::new("factoid-block");
+    req.params.insert("keymr".to_string(), json!(keymr));
+    let response = factomd_call(api, req).await;
+    parse(response).await
 }
 
 /// Retrieve the factoid block for any given height. These blocks contain factoid transaction information.
@@ -306,316 +295,313 @@ pub async fn factoid_block(api: &Factom, keymr: &str)
 ///   assert_eq!(response.result.fblock.bodymr, bodymr);
 /// }
 ///```
-pub async fn fblock_by_height(api: &Factom, height: u32)
-  -> Result<ApiResponse<FBlockResult>>
-{
-  let mut req =  ApiRequest::new("fblock-by-height");
-  req.params.insert("height".to_string(), json!(height));
-  let response = factomd_call(api, req).await;
-  parse(response).await
+pub async fn fblock_by_height(api: &Factom, height: u32) -> Result<ApiResponse<FBlockResult>> {
+    let mut req = ApiRequest::new("fblock-by-height");
+    req.params.insert("height".to_string(), json!(height));
+    let response = factomd_call(api, req).await;
+    parse(response).await
 }
-
 
 /// ablock-by-height function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ABlockHeightResult {
-  pub ablock: AblockHeight,
-  pub rawdata: String,
+    pub ablock: AblockHeight,
+    pub rawdata: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct AblockHeight {
-  pub header: Header,
-  pub abentries: Vec<ABHeightentry>,
-  pub backreferencehash: String,
-  pub lookuphash: String,
+    pub header: Header,
+    pub abentries: Vec<ABHeightentry>,
+    pub backreferencehash: String,
+    pub lookuphash: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ABHeightentry {
-  #[serde(default)]
-  pub identityadminchainid: String,
-  #[serde(default)]
-  pub prevdbsig: Prevdbsig,
+    #[serde(default)]
+    pub identityadminchainid: String,
+    #[serde(default)]
+    pub prevdbsig: Prevdbsig,
 }
 
 /// admin block function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ABlockResult {
-  pub ablock: Ablock,
-  pub rawdata: String,
+    pub ablock: Ablock,
+    pub rawdata: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Ablock {
-  pub header: Header,
-  pub abentries: Vec<Abentry>,
-  pub backreferencehash: String,
-  pub lookuphash: String,
+    pub header: Header,
+    pub abentries: Vec<Abentry>,
+    pub backreferencehash: String,
+    pub lookuphash: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Header {
-  pub prevbackrefhash: String,
-  pub dbheight: usize,
-  pub headerexpansionsize: usize,
-  pub headerexpansionarea: String,
-  pub messagecount: usize,
-  pub bodysize: usize,
-  pub adminchainid: String,
-  pub chainid: String,
+    pub prevbackrefhash: String,
+    pub dbheight: usize,
+    pub headerexpansionsize: usize,
+    pub headerexpansionarea: String,
+    pub messagecount: usize,
+    pub bodysize: usize,
+    pub adminchainid: String,
+    pub chainid: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Abentry {
-  pub identityadminchainid: Option<String>,
-  pub prevdbsig: Option<Prevdbsig>,
-  pub minutenumber: Option<u8>,
+    pub identityadminchainid: Option<String>,
+    pub prevdbsig: Option<Prevdbsig>,
+    pub minutenumber: Option<u8>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Prevdbsig {
-  #[serde(rename = "pub")]
-  pub pub_field: String,
-  pub sig: String,
+    #[serde(rename = "pub")]
+    pub pub_field: String,
+    pub sig: String,
 }
 
 /// anchors function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Anchor {
-  pub directoryblockheight: usize,
-  pub directoryblockkeymr: String,
-  #[serde(default)]
-  pub bitcoin: Bitcoin,
-  pub ethereum: Ethereuem
+    pub directoryblockheight: usize,
+    pub directoryblockkeymr: String,
+    #[serde(default)]
+    pub bitcoin: Bitcoin,
+    pub ethereum: Ethereuem,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Ethereuem {
-  pub recordheight: usize,
-  pub dbheightmax: usize,
-  pub dbheightmin: usize,
-  pub windowmr: String,
-  pub merklebranch: Vec<MerkleBranch>,
-  pub contractaddress: String,
-  pub txid: String,
-  pub blockhash: String,
-  pub txindex: usize
+    pub recordheight: usize,
+    pub dbheightmax: usize,
+    pub dbheightmin: usize,
+    pub windowmr: String,
+    pub merklebranch: Vec<MerkleBranch>,
+    pub contractaddress: String,
+    pub txid: String,
+    pub blockhash: String,
+    pub txindex: usize,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Bitcoin {
-  pub transactionhash: String,
-  pub blockhash: String
+    pub transactionhash: String,
+    pub blockhash: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MerkleBranch {
-  pub left: String,
-  pub right: String,
-  pub top: String
+    pub left: String,
+    pub right: String,
+    pub top: String,
 }
 
 /// dblock-by-height function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DBlockHeightResult {
-  pub dblock: DblockHeight,
-  pub rawdata: String,
+    pub dblock: DblockHeight,
+    pub rawdata: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DblockHeight {
-  pub header: DBlockHeightHeader,
-  pub dbentries: Vec<Dbentry>,
-  pub dbhash: String,
-  pub keymr: String,
+    pub header: DBlockHeightHeader,
+    pub dbentries: Vec<Dbentry>,
+    pub dbhash: String,
+    pub keymr: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DBlockHeightHeader {
-  pub version: u8,
-  pub networkid: usize,
-  pub bodymr: String,
-  pub prevkeymr: String,
-  pub prevfullhash: String,
-  pub timestamp: usize,
-  pub dbheight: usize,
-  pub blockcount: usize,
-  pub chainid: String,
+    pub version: u8,
+    pub networkid: usize,
+    pub bodymr: String,
+    pub prevkeymr: String,
+    pub prevfullhash: String,
+    pub timestamp: usize,
+    pub dbheight: usize,
+    pub blockcount: usize,
+    pub chainid: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Dbentry {
-  pub chainid: String,
-  pub keymr: String,
+    pub chainid: String,
+    pub keymr: String,
 }
 
 /// directory block function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DBlock {
-  pub header: DBlockHeader,
-  pub entryblocklist: Vec<Entryblocklist>,
+    pub header: DBlockHeader,
+    pub entryblocklist: Vec<Entryblocklist>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DBlockHeader {
-  pub prevblockkeymr: String,
-  pub sequencenumber: usize,
-  pub timestamp: usize,
+    pub prevblockkeymr: String,
+    pub sequencenumber: usize,
+    pub timestamp: usize,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Entryblocklist {
-  pub chainid: String,
-  pub keymr: String,
+    pub chainid: String,
+    pub keymr: String,
 }
 
 /// directory-block-head function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DBlockHead {
-  pub keymr: String
+    pub keymr: String,
 }
 
 /// ecblock-by-height function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct EBlockHeightResult {
-  pub ecblock: EcBlock,
-  pub rawdata: String,
+    pub ecblock: EcBlock,
+    pub rawdata: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct EcBlock {
-  pub header: ECHeightHeader,
-  pub body: Body,
+    pub header: ECHeightHeader,
+    pub body: Body,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ECHeightHeader {
-  pub bodyhash: String,
-  pub prevheaderhash: String,
-  pub prevfullhash: String,
-  pub dbheight: usize,
-  pub headerexpansionarea: String,
-  pub objectcount: usize,
-  pub bodysize: usize,
-  pub chainid: String,
-  pub ecchainid: String,
+    pub bodyhash: String,
+    pub prevheaderhash: String,
+    pub prevfullhash: String,
+    pub dbheight: usize,
+    pub headerexpansionarea: String,
+    pub objectcount: usize,
+    pub bodysize: usize,
+    pub chainid: String,
+    pub ecchainid: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Body {
-  pub entries: Vec<Entry>,
+    pub entries: Vec<Entry>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Entry {
-  pub serverindexnumber: Option<u8>,
-  pub version: Option<u8>,
-  pub millitime: Option<String>,
-  pub entryhash: Option<String>,
-  pub credits: Option<usize>,
-  pub ecpubkey: Option<String>,
-  pub sig: Option<String>,
-  pub number: Option<usize>,
+    pub serverindexnumber: Option<u8>,
+    pub version: Option<u8>,
+    pub millitime: Option<String>,
+    pub entryhash: Option<String>,
+    pub credits: Option<usize>,
+    pub ecpubkey: Option<String>,
+    pub sig: Option<String>,
+    pub number: Option<usize>,
 }
 
 /// entry-block function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct EBlock {
-  pub header: EBlockHeader,
-  pub entrylist: Vec<Entrylist>,
+    pub header: EBlockHeader,
+    pub entrylist: Vec<Entrylist>,
 }
 
 /// entry-block function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct EBlockHeader {
-  pub blocksequencenumber: usize,
-  pub chainid: String,
-  pub prevkeymr: String,
-  pub timestamp: usize,
-  pub dbheight: usize,
+    pub blocksequencenumber: usize,
+    pub chainid: String,
+    pub prevkeymr: String,
+    pub timestamp: usize,
+    pub dbheight: usize,
 }
 
 /// entry-block function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Entrylist {
-  pub entryhash: String,
-  pub timestamp: usize,
+    pub entryhash: String,
+    pub timestamp: usize,
 }
 
 /// entrycredit-block function
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct EcBlockResult {
-  pub ecblock: Ecblock,
-  pub rawdata: String,
+    pub ecblock: Ecblock,
+    pub rawdata: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Ecblock {
-  pub header: EcBlockHeader,
-  pub body: Body,
+    pub header: EcBlockHeader,
+    pub body: Body,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct EcBlockHeader {
-  pub bodyhash: String,
-  pub prevheaderhash: String,
-  pub prevfullhash: String,
-  pub dbheight: usize,
-  pub headerexpansionarea: String,
-  pub objectcount: usize,
-  pub bodysize: usize,
-  pub chainid: String,
-  pub ecchainid: String,
+    pub bodyhash: String,
+    pub prevheaderhash: String,
+    pub prevfullhash: String,
+    pub dbheight: usize,
+    pub headerexpansionarea: String,
+    pub objectcount: usize,
+    pub bodysize: usize,
+    pub chainid: String,
+    pub ecchainid: String,
 }
 
 // factoid-block and fblock-by-height functions
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct FBlockResult {
-  pub fblock: Fblock,
-  pub rawdata: String,
+    pub fblock: Fblock,
+    pub rawdata: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Fblock {
-  pub bodymr: String,
-  pub prevkeymr: String,
-  pub prevledgerkeymr: String,
-  pub exchrate: usize,
-  pub dbheight: usize,
-  pub transactions: Vec<Transaction>,
-  pub chainid: String,
-  pub keymr: String,
-  pub ledgerkeymr: String,
+    pub bodymr: String,
+    pub prevkeymr: String,
+    pub prevledgerkeymr: String,
+    pub exchrate: usize,
+    pub dbheight: usize,
+    pub transactions: Vec<Transaction>,
+    pub chainid: String,
+    pub keymr: String,
+    pub ledgerkeymr: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Transaction {
-  pub txid: String,
-  pub blockheight: usize,
-  pub millitimestamp: usize,
-  pub inputs: Vec<Input>,
-  pub outputs: Vec<Output>,
-  pub outecs: Vec<::serde_json::Value>,
-  pub rcds: Vec<String>,
-  pub sigblocks: Vec<Sigblock>,
+    pub txid: String,
+    pub blockheight: usize,
+    pub millitimestamp: usize,
+    pub inputs: Vec<Input>,
+    pub outputs: Vec<Output>,
+    pub outecs: Vec<::serde_json::Value>,
+    pub rcds: Vec<String>,
+    pub sigblocks: Vec<Sigblock>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Input {
-  pub amount: usize,
-  pub address: String,
-  pub useraddress: String,
+    pub amount: usize,
+    pub address: String,
+    pub useraddress: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Output {
-  pub amount: usize,
-  pub address: String,
-  pub useraddress: String,
+    pub amount: usize,
+    pub address: String,
+    pub useraddress: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Sigblock {
-  pub signatures: Vec<String>,
+    pub signatures: Vec<String>,
 }
