@@ -1,7 +1,7 @@
 # Factom Rust API Client
-
-[![Crates.io](https://img.shields.io/crates/v/factom.svg)](https://crates.io/crates/factom)
 [![Build Status](https://travis-ci.com/kompendium-llc/factom-rust-client.svg?branch=master)](https://travis-ci.com/kompendium-llc/factom-rust-client)
+![Github Action Rust](https://github.com/kompendium-ano/factom-rust-client/workflows/Rust/badge.svg)
+[![Crates.io](https://img.shields.io/crates/v/factom.svg)](https://crates.io/crates/factom)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Installation
